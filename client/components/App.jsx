@@ -11,7 +11,7 @@ class App extends React.Component {
     render() {
         return (
             <div className="mainContainer">
-                Bananas
+                <h1>Shinobi</h1>
                 <FunctionForm />
             </div>
         );

@@ -1,20 +1,72 @@
+* {
+  &:focus {
+    outline: none;
+    border: 1px solid #ddd;
+  }
+}
 body, html {
-    background: #eee;
-    margin: 0;
-    padding: 0;
-    font-family: sans-serif;
-    font-size: 16px;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    box-sizing: border-box;
+  background: #eee;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  font-size: 16px;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+}
+input, textarea {
+  display: block;
+  background: #f7f7f7;
+  border: 1px solid #eee;
+  padding: .5em 1em;
+  font-family: monospace;
+  font-size: 1rem;
+  border-radius: 2px;
+  &::placeholder {
+    color: #bbb;
+  }
+}
+textarea {
+  width: 93%;
+}
+input[name="functionName"] {
+  display: inline-block;
+  width: 65%;
+}
+select {
+  background: #f7f7f7;
+  border: 1px solid #eee;
+  padding: .5em 1em;
+  width: 23%;
+  margin-left: 10px;
+  font-family: monospace;
+  font-size: 1rem;
+  border-radius: 2px;
+}
+option {
+  &:hover {
+    background: purple;
+  }
 }
 .mainContainer {
-    background: white;
-    width: 500px;
-    height: 500px;
-    padding: 1em;
+  background: white;
+  width: 500px;
+  padding: 1rem;
+  text-align: left;
+  margin: 3rem 0;
+  border-radius: 2px;
+  h1 {
     text-align: center;
-    margin-top: 3em;
-    border-radius: 2px;
+  }
+}
+button {
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  background: #eee;
+  padding: 1em 3em;
+  transition: .25s ease all;
+  &:hover {
+    background: #8fcc52;
+  }
 }
