@@ -9,7 +9,9 @@ class App extends React.Component {
 
     render() {
         return (
-            <div>bananas</div>
+            <div>
+                <p>bananas</p>
+            </div>
         );
     }
 }
