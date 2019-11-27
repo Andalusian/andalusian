@@ -1,0 +1,19 @@
+body, html {
+    background: #eee;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    font-size: 16px;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+}
+.mainContainer {
+    background: white;
+    width: 500px;
+    height: 500px;
+    padding: 1em;
+    text-align: center;
+    margin-top: 3em;
+}
