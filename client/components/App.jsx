@@ -1,5 +1,6 @@
 import React from 'react';
-import axios from 'axios';
+
+import FunctionForm from './FunctionForm.jsx'
 
 class App extends React.Component {
     constructor() {
@@ -11,6 +12,7 @@ class App extends React.Component {
         return (
             <div className="mainContainer">
                 Bananas
+                <FunctionForm />
             </div>
         );
     }
