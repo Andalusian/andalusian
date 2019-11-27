@@ -17,7 +17,7 @@ const FunctionForm = (props) => {
         </pre>
           <MyDropzone />
         <pre>
-          <textarea id="codeHere" placeholder="<code here />" spellCheck="false" rows="25"></textarea>
+          <textarea id="codeHere" defaultValue={props.code} placeholder="<code here />" spellCheck="false" rows="25"></textarea>
         </pre>
         <button>Deploy</button>
       </React.Fragment>

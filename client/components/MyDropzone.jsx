@@ -12,6 +12,7 @@ function MyDropzone() {
                 // Do whatever you want with the file contents
                 const binaryStr = reader.result
                 console.log(binaryStr)
+
             }
             reader.readAsText(file)
         })
@@ -20,15 +21,15 @@ function MyDropzone() {
     const {getRootProps, getInputProps} = useDropzone({onDrop})
 
     return (
-        <div className="dropzone" {...getRootProps()}>
-            <span>
+        <div id="dropz" {...getRootProps()}>
+            <div id="drop1" className="dropzone">
             <input {...getInputProps()} />
-            <p>Drag or click to upload your function</p>
-            </span>
-            <span>
+            <p>Upload your Function</p>
+            </div>
+            <div className="dropzone" >
                 <input {...getInputProps()} />
-                <p>Drag or click to upload your key file</p>
-            </span>
+                <p>Upload your Key File</p>
+            </div>
         </div>
     )
 }
