@@ -14,10 +14,7 @@ const FunctionForm = (props) => {
           <option value="go111">Go 1.11</option>
           <option value="go113">Go 1.13</option>
         </select>
-        <pre>
-          <textarea placeholder="config" rows="10"></textarea>
-        </pre>
-          <MyDropzone uploadedFunction={props.uploadedFunction} writeFunction={props.writeFunction} />
+          <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
         <button>Deploy</button>
       </React.Fragment>
     );
