@@ -2,18 +2,18 @@ import React from "react";
 import MyDropzone from "./MyDropzone.jsx";
 
 const AWSFunctionForm = props => {
-  initialSetUp();
+  // initialSetUp();
 
-  function initialSetUp() {
-    // RUN THE TWO COMMANDS BELOW IN TERMINAL
-    // TO INSTALL AWS CLI
-    let initialSetUpCommand1 = `curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-macos.zip" -o "awscliv2.zip"`; //
-    let initialSetUpCommand2 = `unzip awscliv2.zip`; //
-    let initialSetUpCommand3 = `sudo ./aws/install`;
-    // TO INSTALL AWS SAM
-    let initialSetUpCommand4 = `brew tap aws/tap`;
-    let initialSetUpCommand5 = `brew install aws-sam-cli`;
-  }
+  // function initialSetUp() {
+  //   // RUN THE TWO COMMANDS BELOW IN TERMINAL
+  //   // TO INSTALL AWS CLI
+  //   let initialSetUpCommand1 = `curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-macos.zip" -o "awscliv2.zip"`; //
+  //   let initialSetUpCommand2 = `unzip awscliv2.zip`; //
+  //   let initialSetUpCommand3 = `sudo ./aws/install`;
+  //   // TO INSTALL AWS SAM
+  //   let initialSetUpCommand4 = `brew tap aws/tap`;
+  //   let initialSetUpCommand5 = `brew install aws-sam-cli`;
+  // }
 
   function configure() {
     // WE NEED TO GRAB THESE FROM THE INPUT FORM
