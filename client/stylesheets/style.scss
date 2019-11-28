@@ -75,3 +75,22 @@ button {
     background: #8fcc52;
   }
 }
+
+#dropz {
+  display: flex;
+  font-size: 9pt;
+  justify-content: space-around;
+}
+
+#drop1 {
+  margin-right: 5px;
+}
+
+.dropzone {
+  transition: .25s ease all;
+  &:hover {
+    background: #8fcc52;
+  }
+  border-style: dashed;
+  border-color: #3b3a39;
+}

@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 const gcloudRouter = require('./routers/gcloudRouter');
 const awsRouter = require('./routers/awsRouter');
 const azureRouter = require('./routers/azureRouter');
-const dbRouter = require('./routers/dbRouter');
+// const dbRouter = require('./routers/dbRouter');
 // GCLOUD
 app.use('/gcloud', gcloudRouter);
 
@@ -32,7 +32,7 @@ app.use('/aws', awsRouter);
 app.use('/azure', azureRouter);
 
 // DATABASE
-app.use('/db', dbRouter);
+// app.use('/db', dbRouter);
 
 // 404 NOT FOUND HANDLER
 app.use('*', (req, res) => {

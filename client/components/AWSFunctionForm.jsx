@@ -54,60 +54,48 @@ const AWSFunctionForm = props => {
         <option value="go111">Go 1.11</option>
         <option value="go113">Go 1.13</option>
       </select>
-      <h4>Configuration</h4>
-      <input
-        type="text"
-        name="accessKey"
-        class="coupledInputs"
-        placeholder="Access key ID"
-        onChange={e => props.updateInfo(e.target.name, e.target.value)}
-      />
-      <input
-        type="text"
-        name="secretAccessKey"
-        class="coupledInputs"
-        placeholder="Secret access key"
-        onChange={e => props.updateInfo(e.target.name, e.target.value)}
-      />
-      <input
-        type="text"
-        name="region"
-        class="coupledInputs"
-        placeholder="Region"
-        onChange={e => props.updateInfo(e.target.name, e.target.value)}
-      />
-      <input
-        type="text"
-        name="outputFormat"
-        class="coupledInputs"
-        placeholder="Output Format"
-        onChange={e => props.updateInfo(e.target.name, e.target.value)}
-      />
-      <input
-        type="text"
-        name="fileName"
-        class="coupledInputs"
-        placeholder="File Name"
-        onChange={e => props.updateInfo(e.target.name, e.target.value)}
-      />
+      <pre>
+        <h4>Configuration</h4>
+        <input
+          type="text"
+          name="accessKey"
+          placeholder="Access key ID"
+          onChange={e => props.updateInfo(e.target.name, e.target.value)}
+        />
+        <input
+          type="text"
+          name="secretAccessKey"
+          placeholder="Secret access key"
+          onChange={e => props.updateInfo(e.target.name, e.target.value)}
+        />
+        <input
+          type="text"
+          name="region"
+          placeholder="Region"
+          onChange={e => props.updateInfo(e.target.name, e.target.value)}
+        />
+        <input
+          type="text"
+          name="outputFormat"
+          placeholder="Output Format"
+          onChange={e => props.updateInfo(e.target.name, e.target.value)}
+        />
+        <button onClick={configure()}>Save Configuration</button>
+        <h4>SAM Template</h4>
+        <textarea rows="10" spellCheck="false">
+          AWSTemplateFormatVersion: "2010-09-09" // Transform:
+          AWS::Serverless-2016-10-31 // Resources: // ENTER_FILE_NAME: // Type:
+          AWS::Serverless::Function // Properties: // Handler:
+          ENTER_FILE_NAME.handler // Runtime: nodejs8.10
+        </textarea>
+      </pre>
+      <MyDropzone />
       <input
         type="text"
         name="S3BucketName"
-        class="coupledInputs"
         placeholder="S3 Bucket Name"
-        onChange={e => props.updateInfo(e.target.name, e.target.value)}
+        onChange={e => props.updateInfo(e)}
       />
-      <button onClick={configure()}>Save Configuration</button>
-      <h4>SAM Template</h4>
-      <MyDropzone />
-      <pre>
-        <textarea
-          id="codeHere"
-          placeholder="<code here />"
-          spellCheck="false"
-          rows="20"
-        ></textarea>
-      </pre>
       <button onClick={AWSDeploy()}>Deploy on AWS</button>
     </React.Fragment>
   );
