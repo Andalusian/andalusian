@@ -85,7 +85,7 @@ const AWSFunctionForm = props => {
         />
         <button onClick={configure()}>Save Configuration</button>
         <h4>SAM Template</h4>
-        <textarea rows="10">
+        <textarea rows="10" spellCheck="false">
           AWSTemplateFormatVersion: "2010-09-09" // Transform:
           AWS::Serverless-2016-10-31 // Resources: // ENTER_FILE_NAME: // Type:
           AWS::Serverless::Function // Properties: // Handler:
@@ -93,14 +93,6 @@ const AWSFunctionForm = props => {
         </textarea>
       </pre>
       <MyDropzone />
-      <pre>
-        <textarea
-          id="codeHere"
-          placeholder="<code here />"
-          spellCheck="false"
-          rows="25"
-        ></textarea>
-      </pre>
       <input
         type="text"
         name="S3BucketName"
