@@ -20,6 +20,7 @@ input, textarea, .dropzone {
   background: #f7f7f7;
   border: 1px solid #eee;
   padding: .5em 1em;
+  margin: 10px 0;
   font-family: monospace;
   font-size: 1rem;
   border-radius: 2px;
@@ -33,6 +34,9 @@ textarea {
 input[name="functionName"] {
   display: inline-block;
   width: 65%;
+}
+.coupledInputs {
+  margin: 0;
 }
 select {
   background: #f7f7f7;
@@ -55,7 +59,7 @@ option {
   padding: 1rem;
   text-align: left;
   margin: 3rem 0;
-  border-radius: 2px;
+  border-radius: 3px;
   h1 {
     text-align: center;
   }
@@ -64,6 +68,7 @@ button {
   border: 1px solid #ddd;
   border-radius: 2px;
   background: #eee;
+  margin-top: 10px;
   padding: 1em 3em;
   transition: .25s ease all;
   &:hover {

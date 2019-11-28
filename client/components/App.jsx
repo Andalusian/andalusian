@@ -6,12 +6,13 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      uploadCode: "",
-      S3BucketName: "",
-      accessKey: "",
-      secretAccessKey: "",
-      region: "",
-      outputFormat: ""
+      uploadCode: '',
+      S3BucketName: '',
+      accessKey: '',
+      secretAccessKey: '',
+      region: '',
+      outputFormat: '',
+      fileName: '',
     };
     this.updateInfo = this.updateInfo.bind(this);
   }
@@ -27,13 +28,13 @@ class App extends React.Component {
       <div className="mainContainer">
         <h1>Shinobi</h1>
         <FunctionForm code={this.state.uploadCode} />
-        <h2>AWS</h2>
         <AWSFunctionForm
           S3BucketName={this.state.S3BucketName}
           accessKey={this.state.accessKey}
           secretAccessKey={this.state.secretAccessKey}
           region={this.state.region}
           outputFormat={this.state.outputFormat}
+          fileName={this.state.fileName}
           updateInfo={this.updateInfo}
         />
       </div>

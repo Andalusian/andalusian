@@ -5,11 +5,14 @@ const User = require('../models/userModel');
 const dbController = {};
 
 dbController.encrypt = (req, res, next) => {
-
   return next();
 }
 
 dbController.decrypt = (req, res, next) => {
+  return next();
+}
+
+dbController.createNewUser = (req, res, next) => {
   return next();
 }
 

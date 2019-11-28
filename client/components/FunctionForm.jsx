@@ -4,6 +4,7 @@ import MyDropzone from "./MyDropzone.jsx";
 const FunctionForm = (props) => {
     return (
       <React.Fragment>
+        <h2>Google Cloud</h2>
         <input type="text" name="functionName" placeholder="Function Name" />
         <select>
           <option value="node8">Node 8</option>
@@ -12,27 +13,13 @@ const FunctionForm = (props) => {
           <option value="go111">Go 1.11</option>
           <option value="go113">Go 1.13</option>
         </select>
-        {/* <pre>
-          <textarea
-            placeholder="config"
-            spellCheck="false"
-            rows="10"
-          ></textarea>
-        </pre> */}
-        <pre>
-          <textarea
-            placeholder="config"
-            spellCheck="false"
-            rows="10"
-          ></textarea>
-        </pre>
         <MyDropzone />
         <pre>
           <textarea
             id="codeHere"
             placeholder="<code here />"
             spellCheck="false"
-            rows="25"
+            rows="20"
           ></textarea>
         </pre>
         <button>Deploy</button>
