@@ -39,9 +39,9 @@ gcloudController.deploy = (req, res, next) => {
     return res.status(400).json('Improper runtime');
   }
   // FUNCTION NAME
-  for (let i = 0; i < fn_name.length; i++) {
-    fn_name[i]
-  }
+  // for (let i = 0; i < fn_name.length; i++) {
+  //   fn_name[i]
+  // }
 
   // BUILD FUNCTION FILE
   if (runtime === 'nodejs8' || runtime === 'nodejs10') {
