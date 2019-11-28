@@ -11,11 +11,19 @@ const FunctionForm = () => {
           <option value="go111">Go 1.11</option>
           <option value="go113">Go 1.13</option>
         </select>
+        {/* <pre>
+          <textarea
+            placeholder="config"
+            spellCheck="false"
+            rows="10"
+          ></textarea>
+        </pre> */}
         <pre>
-          <textarea placeholder="config" rows="10"></textarea>
-        </pre>
-        <pre>
-          <textarea placeholder="<code here />" spellcheck="false" rows="25"></textarea>
+          <textarea
+            placeholder="<code here />"
+            spellCheck="false"
+            rows="20"
+          ></textarea>
         </pre>
 
         <button>Deploy</button>
