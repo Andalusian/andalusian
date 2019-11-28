@@ -2,6 +2,8 @@ import React from 'react';
 import MyDropzone from "./MyDropzone.jsx";
 
 const FunctionForm = (props) => {
+    console.log('hello', props.code)
+
     return (
       <React.Fragment>
         <input type="text" name="functionName" placeholder="Function Name" />
@@ -15,10 +17,7 @@ const FunctionForm = (props) => {
         <pre>
           <textarea placeholder="config" rows="10"></textarea>
         </pre>
-          <MyDropzone />
-        <pre>
-          <textarea id="codeHere" placeholder="<code here />" spellCheck="false" rows="25"></textarea>
-        </pre>
+          <MyDropzone uploadedFunction={props.uploadedFunction} writeFunction={props.writeFunction} />
         <button>Deploy</button>
       </React.Fragment>
     );

@@ -6,7 +6,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      uploadCode: "",
+      uploadedFunction: "",
+        uploadedKey: "",
       S3BucketName: "",
       accessKey: "",
       secretAccessKey: "",
@@ -29,6 +30,7 @@ class App extends React.Component {
         <FunctionForm code={this.state.uploadCode} />
         <h2>AWS</h2>
         <AWSFunctionForm
+            code={this.state.uploadedFunction}
           S3BucketName={this.state.S3BucketName}
           accessKey={this.state.accessKey}
           secretAccessKey={this.state.secretAccessKey}
