@@ -4,12 +4,7 @@ import axios from "axios";
 
 const AWSFunctionForm = props => {
   function configure() {
-    // PASS THESE TO BACKEND TO RUN THESE IN THE COMMAND LINE TO CONFIGURE AWS
-    // let configureCommand1 = `aws2 configure set aws_access_key_id ${props.accessKey}`;
-    // let configureCommand2 = `aws2 configure set aws_secret_access_key ${props.secretAccessKey}`;
-    // let configureCommand3 = `aws2 configure set region ${props.region}`;
-    // let configureCommand4 = `aws2 configure set output ${props.outputFormat}`;
-
+    console.log("in aws component configure");
     axios
       .post("/aws/configure", {
         accessKey: props.accessKey,
@@ -26,15 +21,6 @@ const AWSFunctionForm = props => {
   }
 
   function AWSDeploy() {
-    // PASS THESE TO BACKEND TO RUN THE TWO COMMANDS BELOW IN TERMINAL
-    // let bucketNameCommand1 = `sam package \
-    // --template-file template.yml \
-    // --output-template-file package.yml \
-    // --s3-bucket ${props.S3BucketName}`; //
-    // let bucketNameCommand2 = `sam deploy \
-    // --template-file package.yml \
-    // --stack-name my-date-time-app \
-    // --capabilities CAPABILITY_IAM`;
     axios
       .post("/aws/deploy", {
         S3BucketName: props.S3BucketName
@@ -83,7 +69,7 @@ const AWSFunctionForm = props => {
           placeholder="Output Format"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
-        <button onClick={configure()}>Save Configuration</button>
+        <button onClick={() => configure()}>Save Configuration</button>
         <h4>SAM Template</h4>
         <textarea rows="10" spellCheck="false">
           AWSTemplateFormatVersion: "2010-09-09" // Transform:
@@ -99,7 +85,7 @@ const AWSFunctionForm = props => {
         placeholder="S3 Bucket Name"
         onChange={e => props.updateInfo(e)}
       />
-      <button onClick={AWSDeploy()}>Deploy on AWS</button>
+      <button onClick={() => AWSDeploy()}>Deploy on AWS</button>
     </React.Fragment>
   );
 };
