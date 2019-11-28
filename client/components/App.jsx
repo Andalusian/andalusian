@@ -20,14 +20,14 @@ class App extends React.Component {
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
-    this.setState(updateObj);
+    this.setState(updateObj, () => console.log(this.state.uploadedFunction));
   }
 
   render() {
     return (
       <div className="mainContainer">
         <h1>Shinobi</h1>
-        <FunctionForm code={this.state.uploadCode} />
+        <FunctionForm updateInfo={this.updateInfo} code={this.state.uploadedFunction} />
         <h2>AWS</h2>
         <AWSFunctionForm
             code={this.state.uploadedFunction}
