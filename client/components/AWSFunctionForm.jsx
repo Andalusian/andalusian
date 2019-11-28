@@ -59,25 +59,25 @@ const AWSFunctionForm = props => {
           type="text"
           name="accessKey"
           placeholder="Access key ID"
-          onChange={e => props.updateInfo(e)}
+          onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <input
           type="text"
           name="secretAccessKey"
           placeholder="Secret access key"
-          onChange={e => props.updateInfo(e)}
+          onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <input
           type="text"
           name="region"
           placeholder="Region"
-          onChange={e => props.updateInfo(e)}
+          onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <input
           type="text"
           name="outputFormat"
           placeholder="Output Format"
-          onChange={e => props.updateInfo(e)}
+          onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <button onClick={configure()}>Save Configuration</button>
         <h4>SAM Template</h4>

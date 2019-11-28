@@ -16,9 +16,9 @@ class App extends React.Component {
     this.updateInfo = this.updateInfo.bind(this);
   }
 
-  updateInfo(e) {
+  updateInfo(property, value) {
     let updateObj = {};
-    updateObj[e.target.name] = e.target.value;
+    updateObj[property] = value;
     this.setState(updateObj);
   }
 
