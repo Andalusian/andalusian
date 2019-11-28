@@ -6,15 +6,21 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            uploadCode: ""
+            uploadedFunction: "",
+            uploadedKey: ""
         };
+        this.writeFunction = this.writeFunction.bind(this);
+    }
+
+    writeFunction(val) {
+        this.setState({uploadedFunction: val})
     }
 
     render() {
         return (
             <div className="mainContainer">
                 <h1>Shinobi</h1>
-                <FunctionForm code={this.state.uploadCode} />
+                <FunctionForm writeFunction={this.writeFunction} code={this.state.uploadedFunction} />
             </div>
         );
     }
