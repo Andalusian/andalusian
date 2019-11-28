@@ -15,7 +15,7 @@ function MyDropzone(props) {
                 const binaryStr = reader.result
                 console.log(binaryStr)
                 setTempUploadedFunction(binaryStr);
-                props.writeFunction(binaryStr)
+                props.updateInfo('uploadedFunction', binaryStr)
             }
             reader.readAsText(file)
         })
@@ -37,7 +37,7 @@ function MyDropzone(props) {
             </div>
         </div>
             <pre>
-          <textarea id="codeHere" defaultValue={tempUploadedFunction} placeholder="<code here />" spellCheck="false" rows="25"></textarea>
+          <textarea onChange={(e) => props.updateInfo('uploadedFunction', e.target.value)} id="codeHere" defaultValue={tempUploadedFunction} placeholder="<code here />" spellCheck="false" rows="25"></textarea>
         </pre>
         </div>
     )

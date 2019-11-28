@@ -88,7 +88,7 @@ const AWSFunctionForm = props => {
           ENTER_FILE_NAME.handler // Runtime: nodejs8.10
         </textarea>
       </pre>
-      <MyDropzone />
+      <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
       <input
         type="text"
         name="S3BucketName"
