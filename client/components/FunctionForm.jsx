@@ -3,7 +3,6 @@ import MyDropzone from "./MyDropzone.jsx";
 const axios = require('axios')
 
 const FunctionForm = (props) => {
-
     return (
       <React.Fragment>
         <input onChange={(e) => props.updateInfo('fn_name', e.target.value)} type="text" name="functionName" placeholder="Function Name" />
