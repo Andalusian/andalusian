@@ -2,8 +2,6 @@ import React from 'react';
 import MyDropzone from "./MyDropzone.jsx";
 
 const FunctionForm = (props) => {
-    console.log('hello', props.code)
-
     return (
       <React.Fragment>
         <h2>Google Cloud</h2>
@@ -15,10 +13,7 @@ const FunctionForm = (props) => {
           <option value="go111">Go 1.11</option>
           <option value="go113">Go 1.13</option>
         </select>
-        <pre>
-          <textarea placeholder="config" spellCheck="false" rows="10"></textarea>
-        </pre>
-          <MyDropzone uploadedFunction={props.uploadedFunction} writeFunction={props.writeFunction} />
+          <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
         <button>Deploy</button>
       </React.Fragment>
     );

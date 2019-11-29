@@ -31,7 +31,7 @@ class App extends React.Component {
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
-    this.setState(updateObj);
+    this.setState(updateObj, () => console.log(this.state));
   }
 
   handleLogin() {}
@@ -48,7 +48,7 @@ class App extends React.Component {
     return (
       <div className="mainContainer">
         <h1>Shinobi</h1>
-        {!this.state.isLogin && (
+        {!this.state.isLogin && !this.state.isSignup && (
           <Login
             updateInfo={this.updateInfo}
             handleLogin={this.handleLogin}
@@ -62,7 +62,10 @@ class App extends React.Component {
             handleToggleSignup={this.handleToggleSignup}
           />
         )}
-        <FunctionForm code={this.state.uploadCode} />
+        <FunctionForm
+          updateInfo={this.updateInfo}
+          code={this.state.uploadedFunction}
+        />
         <AWSFunctionForm
           code={this.state.uploadedFunction}
           S3BucketName={this.state.S3BucketName}
