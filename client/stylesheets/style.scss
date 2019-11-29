@@ -41,7 +41,7 @@ select {
   width: 23%;
   margin-left: 10px;
   font-family: monospace;
-  font-size: 1rem;
+  font-size: 9pt;
   border-radius: 2px;
 }
 option {
@@ -75,6 +75,9 @@ button {
   display: flex;
   font-size: 9pt;
   justify-content: space-around;
+  &:focus {
+    outline: 0;
+  }
 }
 
 #drop1 {
@@ -88,4 +91,11 @@ button {
   }
   border-style: dashed;
   border-color: #3b3a39;
+  &:focus {
+    outline: 0;
+  }
+}
+
+.functionName {
+  margin-bottom: 15px;
 }

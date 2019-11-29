@@ -77,7 +77,7 @@ const AWSFunctionForm = props => {
         />
         <button onClick={() => configure()}>Save Configuration</button>
       </pre>
-      <MyDropzone />
+      <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
       <input
         type="text"
         name="S3BucketName"
