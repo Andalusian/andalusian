@@ -12,10 +12,10 @@ const AWSFunctionForm = props => {
         region: props.region,
         outputFormat: props.outputFormat
       })
-      .then(function(response) {
+      .then(function (response) {
         console.log(response);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   }
@@ -23,19 +23,25 @@ const AWSFunctionForm = props => {
   function AWSDeploy() {
     axios
       .post("/aws/deploy", {
-        S3BucketName: props.S3BucketName
+        S3BucketName: props.S3BucketName,
+        functionName: props.functionName
       })
-      .then(function(response) {
+      .then(function (response) {
         console.log(response);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   }
 
   return (
     <React.Fragment>
-      <input type="text" name="functionName" placeholder="Function Name" />
+      <input
+        type="text"
+        name="functionName"
+        placeholder="Function Name"
+        onChange={e => props.updateInfo(e.target.name, e.target.value)}
+      />
       <select>
         <option value="node8">Node 8</option>
         <option value="node10">Node 10</option>
@@ -70,20 +76,13 @@ const AWSFunctionForm = props => {
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <button onClick={() => configure()}>Save Configuration</button>
-        <h4>SAM Template</h4>
-        <textarea rows="10" spellCheck="false">
-          AWSTemplateFormatVersion: "2010-09-09" // Transform:
-          AWS::Serverless-2016-10-31 // Resources: // ENTER_FILE_NAME: // Type:
-          AWS::Serverless::Function // Properties: // Handler:
-          ENTER_FILE_NAME.handler // Runtime: nodejs8.10
-        </textarea>
       </pre>
       <MyDropzone />
       <input
         type="text"
         name="S3BucketName"
         placeholder="S3 Bucket Name"
-        onChange={e => props.updateInfo(e)}
+        onChange={e => props.updateInfo(e.target.name, e.target.value)}
       />
       <button onClick={() => AWSDeploy()}>Deploy on AWS</button>
     </React.Fragment>
