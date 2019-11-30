@@ -9,19 +9,15 @@ gcloudController.authUser = (req, res, next) => {
   const { key_file } = req.body;
 
   // BUILD KEYFILE
-  fs.writeFileSync(path.join(__dirname, '../platforms/gcloud/keyfile.json'), JSON.stringify(keyfile));
+  fs.writeFileSync(path.join(__dirname, '../platforms/gcloud/keyfile.json'), key_file);
 
   // AUTHORIZE USER
-  exec(`gcloud auth activate-service-account --keyfile ${key_file} --quiet`, (error, stdout, stderr) => {
+  exec(`gcloud auth activate-service-account --key-file ${path.join(__dirname, '../platforms/gcloud/keyfile.json')} --quiet`, (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`);
       return res.sendStatus(500);
     }
-    if (stderr) {
-      console.error(`stderr: ${stderr}`);
-      return res.sendStatus(400);
-    }
-    
+    console.error(`stderr: ${stderr}`);
     console.log(`stdout: ${stdout}`);
     return next();
   }); 
@@ -31,7 +27,6 @@ gcloudController.deploy = (req, res, next) => {
   // VARIABLES
   const { fn_name, runtime, fn } = req.body;
   const runTimes = new Set(['nodejs8', 'nodejs10', 'python37', 'go111', 'go113']);
-  let fileName = '';
 
   // SANITIZATION
   // RUNTIME
@@ -39,35 +34,30 @@ gcloudController.deploy = (req, res, next) => {
     return res.status(400).json('Improper runtime');
   }
   // FUNCTION NAME
-  // for (let i = 0; i < fn_name.length; i++) {
-  //   fn_name[i]
-  // }
+  for (let i = 0; i < fn_name.length; i++) {
+    if (!/[a-z0-9A-Z-_]/gm.test(fn_name[i])) return res.status(400).json('Name formatted incorrectly.\nMust only contain letters, numbers, underscores, and hyphens.');
+  }
 
   // BUILD FUNCTION FILE
   if (runtime === 'nodejs8' || runtime === 'nodejs10') {
-    fs.writeFileSync(path.join(__dirname, '../platforms/gcloud/microservice.js'), fn);
-    fileName = 'microservice.js';
+    fs.writeFileSync(path.join(__dirname, '../platforms/gcloud/function.js'), fn);
   } else if (runtime === 'python37') {
-    fs.writeFileSync(path.join(__dirname, '../platforms/gcloud/microservice.py'), fn);
-    fileName = 'microservice.py';
+    fs.writeFileSync(path.join(__dirname, '../platforms/gcloud/function.py'), fn);
   } else if (runtime === 'go111' || runtime === 'go113') {
-    fs.writeFileSync(path.join(__dirname, '../platforms/gcloud/microservice.go'), fn);
-    fileName = 'microservice.go';
+    fs.writeFileSync(path.join(__dirname, '../platforms/gcloud/function.go'), fn);
   }
 
   // DEPLOY MICROFUNCTION
-  exec(`gcloud functions deploy ${fn_name} --runtime ${runtime} --source ${path.join(__dirname, ('../platforms/gcloud/' + fileName))} --trigger-http --quiet`, (error, stdout, stderr) => {
+  exec(`gcloud functions deploy ${fn_name} --runtime ${runtime} --source ${path.join(__dirname, ('../platforms/gcloud/'))} --trigger-http --format=json --quiet`, (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`);
       return res.sendStatus(500);
     }
-    if (stderr) {
-      console.error(`stderr: ${stderr}`);
-      return res.sendStatus(400);
-    }
-    
+
+    console.error(`stderr: ${stderr}`);
     console.log(`stdout: ${stdout}`);
-    res.locals.endpoint = stdout.httpsTrigger.url;
+
+    res.locals.endpoint = {endpoint: JSON.parse(stdout).httpsTrigger.url};
     return next();
   });
 }
