@@ -45,6 +45,7 @@ const AWSFunctionForm = props => {
 
   return (
     <React.Fragment>
+      <h2>AWS</h2>
       <input type="text" name="functionName" placeholder="Function Name" />
       <select>
         <option value="node8">Node 8</option>
