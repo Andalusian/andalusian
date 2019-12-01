@@ -49,7 +49,7 @@ select {
   width: 25%;
   margin-left: 10px;
   font-family: monospace;
-  font-size: 1rem;
+  font-size: 9pt;
   border-radius: 2px;
 }
 option {
@@ -103,4 +103,8 @@ button {
   &:focus {
     outline: 0;
   }
+}
+
+.functionName {
+  margin-bottom: 15px;
 }

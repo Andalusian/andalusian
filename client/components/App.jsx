@@ -20,6 +20,8 @@ class App extends React.Component {
       password: '',
       isLogin: false,
       isSignup: false,
+      fn_name: "",
+      runtime: undefined,
     };
     
     this.updateInfo = this.updateInfo.bind(this);

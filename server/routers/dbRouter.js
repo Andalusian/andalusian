@@ -15,7 +15,7 @@ router.post(
   }
 );
 
-router.post('/storeData', dbController.encrypt, (req, res) => {
+router.post('/storeData', dbController.encrypt, dbController.decrypt, (req, res) => {
   res.sendStatus(400);
 });
 
