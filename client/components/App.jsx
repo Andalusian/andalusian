@@ -22,7 +22,7 @@ class App extends React.Component {
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
-    this.setState(updateObj, () => console.log(this.state.runtime));
+    this.setState(updateObj, () => console.log(this.state.uploadedFunction));
   }
 
   render() {
