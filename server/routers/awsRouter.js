@@ -2,7 +2,15 @@ const express = require("express");
 const router = express.Router();
 const awsController = require("../controllers/awsController");
 
-router.post("/configure", awsController.configure, (req, res) => {
+router.post("/configureAWS", awsController.configureAWS, (req, res) => {
+  res.status(200);
+});
+
+router.post("/configureTemp", awsController.configureTemp, (req, res) => {
+  res.status(200);
+});
+
+router.post("/packageSAM", awsController.packageSAM, (req, res) => {
   res.status(200);
 });
 
@@ -11,8 +19,26 @@ router.post("/deploy", awsController.deploy, (req, res) => {
 });
 
 router.get("/listFunctions", awsController.listFunctions, (req, res) => {
-  console.log("in listFunctions ROUTER --> ", res.locals.func);
-  return res.status(200).json(res.locals.func);
+  return res.status(200).send(res.locals.func);
 })
 
+router.get("/allBuckets", awsController.allBuckets, (req, res) => {
+  return res.status(200).send(res.locals.buckets);
+})
+
+router.get("/getCurrRegion", awsController.getCurrRegion, (req, res) => {
+  return res.status(200).send(res.locals.region);
+})
+
+router.post("/getFuncInfo", awsController.getFuncInfo, (req, res) => {
+  return res.status(200).send(res.locals.funcInfo);
+})
+
+router.post("/createBucket", awsController.createBucket, (req, res) => {
+  return res.status(200);
+})
+
+// router.post("/deleteBucket", awsController.deleteBucket, (req, res) => {
+//   return res.status(200).send(res.locals.buckets);
+// })
 module.exports = router;

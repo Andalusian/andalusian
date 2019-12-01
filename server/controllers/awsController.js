@@ -4,7 +4,7 @@ const { exec } = require("child_process");
 const awsController = {};
 
 // FROM TALYA TO SCOTT: CALLBACK HELL BEGINS..
-awsController.configure = (req, res, next) => {
+awsController.configureAWS = (req, res, next) => {
   exec(
     `aws2 configure set aws_access_key_id ${req.body.accessKey}`,
     (error, stdout, stderr) => {
@@ -49,131 +49,72 @@ awsController.configure = (req, res, next) => {
   return next();
 };
 
-awsController.deploy = (req, res, next) => {
-
+awsController.configureTemp = (req, res, next) => {
   exec(
-    `mkdir SAMUploadFolder`,
-    (error, stdout, stderr) => {
-      exec(
-        `cd ./SAMUploadFolder`,
-        (error, stdout, stderr) => {
-          exec(
-            `echo "AWSTemplateFormatVersion: '2010-09-09'
-  Transform: AWS::Serverless-2016-10-31  \n
-  Resources:
+    `echo 'AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31  \n
+Resources:
     ${req.body.functionName}:
       Type: AWS::Serverless::Function
       Properties:
         Handler: ${req.body.functionName}.handler
-        Runtime: nodejs8.10" >> template.yml`,
-            (error, stdout, stderr) => {
-              exec(
-                `touch ${req.body.functionName}.js`,
-                (error, stdout, stderr) => {
-                  exec(
-                    `sam package --template-file template.yml --output-template-file package.yml --s3-bucket ${req.body.S3BucketName}`,
-                    (error, stdout, stderr) => {
-                      exec(
-                        `sam deploy --template-file package.yml --stack-name ${req.body.functionName} --capabilities CAPABILITY_IAM`,
-                        (error, stdout, stderr) => {
-                          if (error) {
-                            console.error(`exec error: ${error}`);
-                            return;
-                          }
-                          console.log(`stdout: ${stdout}`);
-                          console.error(`stderr: ${stderr}`);
-                          return next();
-                        }
-                      );
-                    })
-                })
-            })
+        Runtime: nodejs8.10' >> template.yml`,
+    (error, stdout, stderr) => {
+      exec(
+        `echo "${req.body.codeHere}" >> ${req.body.functionName}.js`,
+        (error, stdout, stderr) => {
+          if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+          }
+          console.log(`stdout: ${stdout}`);
+          console.error(`stderr: ${stderr}`);
+          return next();
         })
     })
+}
 
-  //  exec(
-  //     `mkdir SAMUploadFolder`,
-  //     (error, stdout, stderr) => {
-  //       if (error) {
-  //         console.error(`exec error: ${error}`);
-  //         return;
-  //       }
-  //       console.log(`stdout: ${stdout}`);
-  //       console.error(`stderr: ${stderr}`);
-  //     }
-  //   );
+awsController.packageSAM = (req, res, next) => {
 
-  // await exec(
-  //   `cd ./SAMUploadFolder`,
-  //   (error, stdout, stderr) => {
-  //     if (error) {
-  //       console.error(`exec error: ${error}`);
-  //       return;
-  //     }
-  //     console.log(`stdout: ${stdout}`);
-  //     console.error(`stderr: ${stderr}`);
-  //   }
-  // );
+  console.log("in packageSAM cont")
+  exec(
+    `sam package --template-file template.yml --output-template-file package.yml --s3-bucket ${req.body.S3BucketName}`,
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+      return next();
+    })
+  // IT TOOK ABOUT 2-3 MINUTES TO PACKAGE
+}
 
-  // await exec(
-  //   `echo "AWSTemplateFormatVersion: '2010-09-09'
-  // Transform: AWS::Serverless-2016-10-31  \n
-  // Resources:
-  //   ${req.body.functionName}:
-  //     Type: AWS::Serverless::Function
-  //     Properties:
-  //       Handler: ${req.body.functionName}.handler
-  //       Runtime: nodejs8.10" >> template.yml`,
-  //   (error, stdout, stderr) => {
-  //     if (error) {
-  //       console.error(`exec error: ${error}`);
-  //       return;
-  //     }
-  //     console.log(`stdout: ${stdout}`);
-  //     console.error(`stderr: ${stderr}`);
-  //   }
-  // );
+awsController.deploy = (req, res, next) => {
+  exec(
+    `sam deploy --template-file package.yml --stack-name ${req.body.functionName} --capabilities CAPABILITY_IAM`,
+    (error, stdout, stderr) => {
+      exec(
+        `rm template.yml package.yml ${req.body.functionName}.js`,
+        (error, stdout, stderr) => {
+          if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+          }
+          console.log(`stdout: ${stdout}`);
+          console.error(`stderr: ${stderr}`);
+          return next();
+        })
+    }
+  );
 
-  // await exec(
-  //   `touch ${req.body.functionName}.js`,
-  //   (error, stdout, stderr) => {
-  //     if (error) {
-  //       console.error(`exec error: ${error}`);
-  //       return;
-  //     }
-  //     console.log(`stdout: ${stdout}`);
-  //     console.error(`stderr: ${stderr}`);
-  //   }
-  // );
-
-  // await exec(
-  //   `sam package --template-file template.yml --output-template-file package.yml --s3-bucket ${req.body.S3BucketName}`,
-  //   (error, stdout, stderr) => {
-  //     if (error) {
-  //       console.error(`exec error: ${error}`);
-  //       return;
-  //     }
-  //     console.log(`stdout: ${stdout}`);
-  //     console.error(`stderr: ${stderr}`);
-  //   }
-  // );
-
-  // await exec(
-  //   `sam deploy --template-file package.yml --stack-name ${req.body.functionName} --capabilities CAPABILITY_IAM`,
-  //   (error, stdout, stderr) => {
-  //     if (error) {
-  //       console.error(`exec error: ${error}`);
-  //       return;
-  //     }
-  //     console.log(`stdout: ${stdout}`);
-  //     console.error(`stderr: ${stderr}`);
-  //   }
-  // );
-
-  // REMINDER TO SELF - SET UP TO DELETE THE FOLDER AFTER THE PROCESS IS COMPLETED
-
-
+  // IT TOOK ABOUT 2-3 MINUTES TO DEPLOY. ONCE DEPLOYED, YOU CAN SEE THE FUNCTION IN AWS CLOUDFORMATION AND LAMBDA
+  // https://us-west-2.console.aws.amazon.com/cloudformation/home
+  // https://us-west-2.console.aws.amazon.com/lambda/home
 };
+
+// REMINDER TO SELF - SET UP TO DELETE THE FOLDER AFTER THE PROCESS IS COMPLETED
 
 awsController.listFunctions = (req, res, next) => {
   exec(
@@ -183,12 +124,89 @@ awsController.listFunctions = (req, res, next) => {
         console.error(`exec error: ${error}`);
         return;
       }
-      // FROM TALYA TO SCOTT: WHEN YOU CONSOLE LOG STDOUT, IT GIVES ME THE FUNCTIONS ARRAY WHICH IS WHAT I WANT. BUT WHEN IT GETS TO THE FRONT END AND A CONSOLE LOG THE RESPONSE, IT LOOKS LIKE THIS {data: "", status: 200, statusText: "OK", headers: {…}, config: {…}, …} SO I CAN'T PROCESS IT YET
       res.locals.func = stdout;
-      console.log("MY RES ----> ", res.locals.func)
       console.error(`stderr: ${stderr}`);
+      return next();
     }
   );
-  return next();
 }
+
+awsController.allBuckets = (req, res, next) => {
+  exec(
+    `aws2 s3api list-buckets`,
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      res.locals.buckets = stdout;
+      console.error(`stderr: ${stderr}`);
+      return next();
+    }
+  );
+}
+
+awsController.getCurrRegion = (req, res, next) => {
+  exec(
+    `aws2 configure get region`,
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      res.locals.region = stdout;
+      console.error(`stderr: ${stderr}`);
+      return next();
+    }
+  );
+}
+
+awsController.getFuncInfo = (req, res, next) => {
+  exec(
+    `aws2 lambda get-function --function-name ${req.body.funcName}`,
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      res.locals.funcInfo = stdout;
+      console.error(`stderr: ${stderr}`);
+      return next();
+    }
+  );
+}
+
+awsController.createBucket = (req, res, next) => {
+  exec(
+    `aws2 s3api create-bucket --bucket ${req.body.S3BucketName} --region ${req.body.newBucketRegion} --create-bucket-configuration LocationConstraint=${req.body.newBucketRegion}`,
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      console.error(`stderr: ${stderr}`);
+      return next();
+    }
+  );
+}
+
+
+// awsController.deleteBucket = (req, res, next) => {
+//   console.log("controller body --->", req.body)
+//   exec(
+//     `aws2 s3api delete-bucket --bucket ${req.body}`,
+//     (error, stdout, stderr) => {
+//       if (error) {
+//         console.error(`exec error: ${error}`);
+//         return;
+//       }
+//       res.locals.buckets = stdout;
+//       console.log("MY RES ----> ", res.locals.buckets)
+//       console.error(`stderr: ${stderr}`);
+//       return next();
+//     }
+//   );
+// }
+
+
 module.exports = awsController;
