@@ -15,7 +15,7 @@ body, html {
   justify-content: center;
   box-sizing: border-box;
 }
-input, textarea, .dropzone {
+input, textarea, .dropzone, .microList {
   display: block;
   background: #f7f7f7;
   border: 1px solid #eee;
@@ -98,4 +98,9 @@ button {
 
 .functionName {
   margin-bottom: 15px;
+}
+
+.radio {
+  display: flex;
+  justify-content: flex-start;
 }
