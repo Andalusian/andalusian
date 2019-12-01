@@ -110,6 +110,10 @@ const AWSFunctionForm = props => {
         />
         <button onClick={() => configureAWS()}>Save Configuration</button>
       </pre>
+<<<<<<< HEAD
+=======
+      <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
+>>>>>>> 5181ee8d3bb3d18a89cd6600136ba89043a617aa
       <input
         type="text"
         name="functionName"
