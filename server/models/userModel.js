@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 // Connect to Mongo
 const { mongo_uri } = require('../../config');
-mongoose.connect(mongo_uri, { newUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(mongo_uri, { useNewUrlParser: true, useUnifiedTopology: true});
 
 // Define User Schemas
 const userSchema = new Schema({

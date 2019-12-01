@@ -34,7 +34,9 @@ class App extends React.Component {
     this.setState(updateObj, () => console.log(this.state));
   }
 
-  handleLogin() {}
+  handleLogin() {
+    axios.post('/db/storeData', { userData: this.state.username });
+  }
 
   handleSignup() {}
 

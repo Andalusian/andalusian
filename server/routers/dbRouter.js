@@ -7,12 +7,16 @@ router.get('/userInfo', dbController.decrypt, (req, res) => {
 });
 
 router.post(
-  "/newUser",
+  '/newUser',
   dbController.hashPassword,
   dbController.createUser,
   (req, res) => {
     res.sendStatus(400);
   }
 );
+
+router.post('/storeData', dbController.encrypt, (req, res) => {
+  res.sendStatus(400);
+});
 
 module.exports = router;
