@@ -5,7 +5,7 @@
   }
 }
 body, html {
-  background: #eee;
+  background: #d4d4d4;
   margin: 0;
   padding: 0;
   font-family: sans-serif;
@@ -20,6 +20,7 @@ input, textarea, .dropzone, .microList {
   background: #f7f7f7;
   border: 1px solid #eee;
   padding: .5em 1em;
+  margin: 10px 0;
   font-family: monospace;
   font-size: 1rem;
   border-radius: 2px;
@@ -34,11 +35,21 @@ input[name="functionName"] {
   display: inline-block;
   width: 65%;
 }
+.coupledInputs {
+  margin: 0;
+}
+.toggleSignup {
+  display: inline-block;
+  margin-left: 1rem;
+  &:hover {
+    cursor: pointer;
+  }
+}
 select {
   background: #f7f7f7;
   border: 1px solid #eee;
   padding: .5em 1em;
-  width: 23%;
+  width: 25%;
   margin-left: 10px;
   font-family: monospace;
   font-size: 9pt;
@@ -55,7 +66,7 @@ option {
   padding: 1rem;
   text-align: left;
   margin: 3rem 0;
-  border-radius: 2px;
+  border-radius: 3px;
   h1 {
     text-align: center;
   }
@@ -64,6 +75,7 @@ button {
   border: 1px solid #ddd;
   border-radius: 2px;
   background: #eee;
+  margin-top: 10px;
   padding: 1em 3em;
   transition: .25s ease all;
   &:hover {
