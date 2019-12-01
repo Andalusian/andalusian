@@ -1,7 +1,8 @@
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
-const { Worker, isMainThread, parentPort } = require('worker_threads');
+// const { Worker, isMainThread, parentPort } = require('worker_threads');
+const { cryptoKey } = require('../../config');
 const User = require('../models/userModel');
 
 const dbController = {};
@@ -14,7 +15,7 @@ dbController.hashPassword = (req, res, next) => {
       return next(err);
     } else {
       res.locals.userInfo = {
-        username: username,
+        username,
         password: hash
       };
       return next();
@@ -22,18 +23,30 @@ dbController.hashPassword = (req, res, next) => {
   });
 }
 
+dbController.createUser = (req, res, next) => {
+  console.log("within createUser controller");
+  const { username, password } = res.locals.userInfo;
+  User.create({ username, password }, function (err, response) {
+    if (err) {
+      console.log(`Error in dbController.createUser: ${err}`);
+      return next(err);
+    } else {
+      console.log(`User ${username} created in database`);
+      return next();
+    }
+  });
+}
+
 dbController.encrypt = (req, res, next) => {
   console.log('within dbController.encrypt');
-  const { userData } = req.body;
+  const { googleKey } = req.body;
 
-  let iv = crypto.randomBytes(16);
-
-  let key = '12345678123456781234567812345678';
-  let cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
-  let encrypted = cipher.update(userData, 'utf-8', 'hex');
+  const iv = crypto.randomBytes(8).toString('hex');
+  let cipher = crypto.createCipheriv('aes-256-cbc', cryptoKey, iv);
+  let encrypted = cipher.update(googleKey, 'utf-8', 'hex');
   encrypted += cipher.final('hex');
 
-  res.locals.userData = encrypted;
+  res.locals.userData = { googleKey: encrypted, cryptoIV: iv };
 
   console.log('encrypted: ' + encrypted);
 
@@ -42,26 +55,28 @@ dbController.encrypt = (req, res, next) => {
 
 dbController.decrypt = (req, res, next) => {
   const { userData } = res.locals;
-  let decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
-  let decrypted = decipher.update(userData, 'hex', 'utf-8');
+  const { googleKey, cryptoIV } = userData;
+  let decipher = crypto.createDecipheriv('aes-256-cbc', cryptoKey, iv);
+  let decrypted = decipher.update(encrypted, 'hex', 'utf-8');
   decrypted += decipher.final('utf-8');
 
   console.log('decrpyted: ' + decrypted);
   return next();
 }
 
-dbController.createUser = (req, res, next) => {
-  console.log("hit createUser controller");
-  const { username, password } = res.locals.userInfo;
-  User.create({ username, password }, function(err, response) {
+dbController.storeGoogleKey = (req, res, next) => {
+  const { username } = req.body;
+  const { userData } = res.locals;
+  const { googleKey, cryptoIV } = userData;
+  User.findOneAndUpdate({ username }, { googleKey, cryptoIV }, function (err, response) {
     if (err) {
-      console.log(`Error in dbController.createUser: ${err}`);
+      console.log(`Error in dbController.storeGoogleKey: ${err}`);
       return next(err);
     } else {
-      // console.log(`User ${username} created in database`);
+      console.log(`Added encrypted key to ${username} in database`);
       return next();
     }
   });
-};
+}
 
 module.exports = dbController;

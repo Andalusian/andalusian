@@ -17,7 +17,7 @@ const Signup = props => {
       />
       <button onClick={props.handleSignup}>Sign Up</button>
       <div className="toggleSignup" onClick={props.handleToggleSignup}>
-        Log In Instead
+        Log In
       </div>
     </div>
   );

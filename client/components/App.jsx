@@ -28,19 +28,30 @@ class App extends React.Component {
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignup = this.handleSignup.bind(this);
     this.handleToggleSignup = this.handleToggleSignup.bind(this);
+    this.handleSubmitGoogleKey = this.handleSubmitGoogleKey.bind(this);
   }
 
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
-    this.setState(updateObj, () => console.log(this.state));
+    this.setState(updateObj);
   }
 
-  handleLogin() {
-    axios.post('/db/storeData', { userData: this.state.username });
+  handleLogin() {}
+
+  handleSignup() {
+    axios.post('/db/createNewUser', { username: this.state.username, password: this.state.password })
+      .then(() => {
+        this.setState({ 
+          isLogin: true,
+          isSignup: false,
+        });
+      });
   }
 
-  handleSignup() {}
+  handleSubmitGoogleKey() {
+    axios.post('/db/storeGoogleKey', { username: this.state.username, googleKey: this.state.uploadedKey });
+  }
 
   handleToggleSignup() {
     this.setState(prevState => ({
@@ -62,12 +73,13 @@ class App extends React.Component {
         {this.state.isSignup && (
           <Signup
             updateInfo={this.updateInfo}
-            handleLogin={this.handleSignup}
+            handleSignup={this.handleSignup}
             handleToggleSignup={this.handleToggleSignup}
           />
         )}
         <FunctionForm
           updateInfo={this.updateInfo}
+          submitGoogleKey={this.handleSubmitGoogleKey}
           code={this.state.uploadedFunction}
         />
         <AWSFunctionForm

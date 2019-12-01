@@ -41,6 +41,9 @@ input[name="functionName"] {
 .toggleSignup {
   display: inline-block;
   margin-left: 1rem;
+  &:hover {
+    cursor: pointer;
+  }
 }
 select {
   background: #f7f7f7;
