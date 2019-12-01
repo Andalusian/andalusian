@@ -1,10 +1,9 @@
-<<<<<<< HEAD
 import React from "react";
 import FunctionForm from "./FunctionForm.jsx";
 import AWSFunctionForm from "./AWSFunctionForm.jsx";
+import MicroList from "./MicroList.jsx"
 import AWSCurrentFunctions from "./AWSCurrentFunctions.jsx";
 import axios from "axios";
-
 
 class App extends React.Component {
   constructor(props) {
@@ -16,6 +15,9 @@ class App extends React.Component {
       secretAccessKey: "",
       region: "",
       outputFormat: "",
+        fn_name: "",
+        runtime: undefined,
+      pageSelect: 'Gcloud',
       S3BucketName: "",
       functionName: "",
       currentFunctions: [],
@@ -33,8 +35,9 @@ class App extends React.Component {
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
-    this.setState(updateObj);
+    this.setState(updateObj, () => console.log(this.state.uploadedFunction));
   }
+
 
   getCurrRegion() {
     axios
@@ -125,17 +128,26 @@ class App extends React.Component {
 
   }
 
-  render() {
-    return (
-      <div className="mainContainer">
-        <h1>Shinobi</h1>
-        <FunctionForm code={this.state.uploadCode} />
-        <h2>AWS</h2>
-        <AWSCurrentFunctions id="AWSCurrentFunctions"
-          currentFunctions={this.state.currentFunctions}
-          currRegion={this.state.currRegion}
-        />
-        <AWSFunctionForm id="AWSFunctionForm"
+    render() {
+
+        let displayed;
+
+        if (this.state.pageSelect === 'Gcloud') {
+            displayed = <FunctionForm
+                runtime={this.state.runtime}
+                fn_name={this.state.fn_name}
+                uploadedKey={this.state.uploadedKey}
+                updateInfo={this.updateInfo}
+                code={this.state.uploadedFunction} />
+        } else if (this.state.pageSelect === 'Lambda') {
+            displayed = (<AWSCurrentFunctions id="AWSCurrentFunctions"
+                                             currentFunctions={this.state.currentFunctions}
+                                             currRegion={this.state.currRegion}
+                                             functionName={this.state.functionName}
+                                             codeHere={this.state.codeHere}
+                                             currentBuckets={this.state.currentBuckets}
+                />,
+                <AWSFunctionForm id="AWSFunctionForm"
           code={this.state.uploadedFunction}
           S3BucketName={this.state.S3BucketName}
           newBucketRegion={this.state.newBucketRegion}
@@ -144,67 +156,32 @@ class App extends React.Component {
           region={this.state.region}
           outputFormat={this.state.outputFormat}
           updateInfo={this.updateInfo}
-          functionName={this.state.functionName}
-          codeHere={this.state.codeHere}
-          currentBuckets={this.state.currentBuckets}
-        />
-      </div>
-    );
-  }
-}
+                                 functionName={this.state.functionName}
+                                 codeHere={this.state.codeHere}
+                                 currentBuckets={this.state.currentBuckets}
+      />)
+    }
 
-export default App;
-=======
-import React from "react";
-import FunctionForm from "./FunctionForm.jsx";
-import AWSFunctionForm from "./AWSFunctionForm.jsx";
-import AWSCurrentFunctions from "./AWSCurrentFunctions.jsx";
-
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      uploadedFunction: "",
-      uploadedKey: "",
-      accessKey: "",
-      secretAccessKey: "",
-      region: "",
-      outputFormat: "",
-      S3BucketName: "",
-      functionName: ""
-      fn_name: "",
-      runtime: undefined
-    };
-    this.updateInfo = this.updateInfo.bind(this);
-  }
-
-  updateInfo(property, value) {
-    let updateObj = {};
-    updateObj[property] = value;
-    this.setState(updateObj, () => console.log(this.state.runtime));
-  }
-
-  render() {
     return (
       <div className="mainContainer">
         <h1>Shinobi</h1>
-        <FunctionForm runtime={this.state.runtime} fn_name={this.state.fn_name} uploadedKey={this.state.uploadedKey} updateInfo={this.updateInfo} code={this.state.uploadedFunction} />
-        <h2>AWS</h2>
-        <AWSFunctionForm
-          code={this.state.uploadedFunction}
-          S3BucketName={this.state.S3BucketName}
-          accessKey={this.state.accessKey}
-          secretAccessKey={this.state.secretAccessKey}
-          region={this.state.region}
-          outputFormat={this.state.outputFormat}
-          updateInfo={this.updateInfo}
-          functionName={this.state.functionName}
-        />
-        <AWSCurrentFunctions />
+        <MicroList/>
+        <div className='radio'>
+          <label>
+            <input onChange={() => this.updateInfo('pageSelect', 'Gcloud')} type="radio"
+                   value="Gcloud" checked={this.state.pageSelect === 'Gcloud'}/>
+            Gcloud
+          </label>
+          <label>
+            <input onChange={() => this.updateInfo('pageSelect', 'Lambda')} type="radio"
+                   value="Lambda" checked={this.state.pageSelect === 'Lambda'}/>
+            Lambda
+          </label>
+        </div>
+        {displayed}
       </div>
     );
   }
 }
 
 export default App;
->>>>>>> 5181ee8d3bb3d18a89cd6600136ba89043a617aa

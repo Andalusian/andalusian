@@ -110,24 +110,7 @@ const AWSFunctionForm = props => {
         />
         <button onClick={() => configureAWS()}>Save Configuration</button>
       </pre>
-<<<<<<< HEAD
-=======
       <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
->>>>>>> 5181ee8d3bb3d18a89cd6600136ba89043a617aa
-      <input
-        type="text"
-        name="functionName"
-        placeholder="Function Name"
-        onChange={e => props.updateInfo(e.target.name, e.target.value)}
-      />
-      <select>
-        <option value="node8">Node 8</option>
-        <option value="node10">Node 10</option>
-        <option value="python37">Python 3.7</option>
-        <option value="go111">Go 1.11</option>
-        <option value="go113">Go 1.13</option>
-      </select>
-      <MyDropzone updateInfo={props.updateInfo} />
       <h4>My AWS Buckets</h4>
       <select id="bucketsDropdown" name="S3BucketName" onChange={e => props.updateInfo(e.target.name, e.target.value)}>
         {props.currentBuckets}
