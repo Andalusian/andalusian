@@ -15,8 +15,8 @@ class App extends React.Component {
       secretAccessKey: "",
       region: "",
       outputFormat: "",
-        fn_name: "",
-        runtime: undefined,
+      fn_name: "",
+      runtime: undefined,
       pageSelect: 'Gcloud',
       S3BucketName: "",
       functionName: "",
@@ -128,26 +128,26 @@ class App extends React.Component {
 
   }
 
-    render() {
+  render() {
 
-        let displayed;
+    let displayed;
 
-        if (this.state.pageSelect === 'Gcloud') {
-            displayed = <FunctionForm
-                runtime={this.state.runtime}
-                fn_name={this.state.fn_name}
-                uploadedKey={this.state.uploadedKey}
-                updateInfo={this.updateInfo}
-                code={this.state.uploadedFunction} />
-        } else if (this.state.pageSelect === 'Lambda') {
-            displayed = (<AWSCurrentFunctions id="AWSCurrentFunctions"
-                                             currentFunctions={this.state.currentFunctions}
-                                             currRegion={this.state.currRegion}
-                                             functionName={this.state.functionName}
-                                             codeHere={this.state.codeHere}
-                                             currentBuckets={this.state.currentBuckets}
-                />,
-                <AWSFunctionForm id="AWSFunctionForm"
+    if (this.state.pageSelect === 'Gcloud') {
+      displayed = <FunctionForm
+        runtime={this.state.runtime}
+        fn_name={this.state.fn_name}
+        uploadedKey={this.state.uploadedKey}
+        updateInfo={this.updateInfo}
+        code={this.state.uploadedFunction} />
+    } else if (this.state.pageSelect === 'Lambda') {
+      displayed = (<AWSCurrentFunctions id="AWSCurrentFunctions"
+        currentFunctions={this.state.currentFunctions}
+        currRegion={this.state.currRegion}
+        functionName={this.state.functionName}
+      // codeHere={this.state.codeHere}
+      // currentBuckets={this.state.currentBuckets}
+      /> ,
+        <AWSFunctionForm id="AWSFunctionForm"
           code={this.state.uploadedFunction}
           S3BucketName={this.state.S3BucketName}
           newBucketRegion={this.state.newBucketRegion}
@@ -156,25 +156,25 @@ class App extends React.Component {
           region={this.state.region}
           outputFormat={this.state.outputFormat}
           updateInfo={this.updateInfo}
-                                 functionName={this.state.functionName}
-                                 codeHere={this.state.codeHere}
-                                 currentBuckets={this.state.currentBuckets}
-      />)
+          functionName={this.state.functionName}
+          codeHere={this.state.codeHere}
+          currentBuckets={this.state.currentBuckets}
+        />)
     }
 
     return (
       <div className="mainContainer">
         <h1>Shinobi</h1>
-        <MicroList/>
+        <MicroList />
         <div className='radio'>
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Gcloud')} type="radio"
-                   value="Gcloud" checked={this.state.pageSelect === 'Gcloud'}/>
+              value="Gcloud" checked={this.state.pageSelect === 'Gcloud'} />
             Gcloud
           </label>
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Lambda')} type="radio"
-                   value="Lambda" checked={this.state.pageSelect === 'Lambda'}/>
+              value="Lambda" checked={this.state.pageSelect === 'Lambda'} />
             Lambda
           </label>
         </div>
