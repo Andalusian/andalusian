@@ -11,7 +11,7 @@ const userSchema = new Schema({
   password: { type: String, required: true},
   googleKey: String,
   cryptoIV: String,
-  awsAccessKey: String,
+  awsawsAccessKey: String,
   awsSecret: String,
 });
 

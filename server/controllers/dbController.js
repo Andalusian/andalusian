@@ -24,7 +24,7 @@ dbController.hashPassword = (req, res, next) => {
 }
 
 dbController.createUser = (req, res, next) => {
-  console.log("within createUser controller");
+  console.log('within dbController.createUser');
   const { username, password } = res.locals.userInfo;
   User.create({ username, password }, function (err, response) {
     if (err) {
@@ -37,37 +37,71 @@ dbController.createUser = (req, res, next) => {
   });
 }
 
-dbController.encrypt = (req, res, next) => {
-  console.log('within dbController.encrypt');
-  const { googleKey } = req.body;
-
-  const iv = crypto.randomBytes(8).toString('hex');
-  let cipher = crypto.createCipheriv('aes-256-cbc', cryptoKey, iv);
-  let encrypted = cipher.update(googleKey, 'utf-8', 'hex');
-  encrypted += cipher.final('hex');
-
-  res.locals.userData = { googleKey: encrypted, cryptoIV: iv };
-
-  console.log('encrypted: ' + encrypted);
-
-  return next();
+dbController.verifyUser = (req, res, next) => {
+  console.log('within dbController.verifyUser');
+  const { username, password } = req.body;
+  User.findOne({ username }, function (err, response) {
+    if (err) {
+      console.log(`Error in dbController.verifyUser: ${err}`);
+      return next(err);
+    } else if (response === null) {
+      console.log(`User ${username} not found in database`);
+      return next();
+    } else {
+      bcrypt.compare(password, response.password, function (error, compareResult) {
+        if (error) {
+          console.log(`Error in dbController.verifyUser bcrypt.compare: ${error}`);
+          return next(err);
+        } else if (!compareResult) {
+          console.log(`Password for ${username} does not match database`);
+          return next();
+        } else {
+          res.locals.userData = response;
+          return next();
+        }
+      });
+    }
+  });
 }
 
 dbController.decrypt = (req, res, next) => {
-  const { userData } = res.locals;
-  const { googleKey, cryptoIV } = userData;
-  let decipher = crypto.createDecipheriv('aes-256-cbc', cryptoKey, iv);
-  let decrypted = decipher.update(encrypted, 'hex', 'utf-8');
+  const { googleKey, cryptoIV } = res.locals.userData;
+  let decipher = crypto.createDecipheriv('aes-256-cbc', cryptoKey, cryptoIV);
+  let decrypted = decipher.update(googleKey, 'hex', 'utf-8');
   decrypted += decipher.final('utf-8');
 
-  console.log('decrpyted: ' + decrypted);
+  res.locals.userData.googleKey = decrypted;
   return next();
 }
 
-dbController.storeGoogleKey = (req, res, next) => {
+dbController.encryptKey = (req, res, next) => {
+  console.log('within dbController.encrypt');
+  // const { keyObject } = req.body; 
+
+  const { key } = req.body;
+
+  const iv = crypto.randomBytes(8).toString('hex');
+  let cipher = crypto.createCipheriv('aes-256-cbc', cryptoKey, iv);
+  let encrypted = cipher.update(key, 'utf-8', 'hex');
+  encrypted += cipher.final('hex');
+
+  res.locals.userData = { key: encrypted, cryptoIV: iv };
+
+  return next();
+}
+
+dbController.storeKey = (req, res, next) => {
   const { username } = req.body;
-  const { userData } = res.locals;
-  const { googleKey, cryptoIV } = userData;
+  const { googleKey, cryptoIV } = res.locals.userData;
+  // User.findOne({ username }, function(err, response) {
+  //   if (err) {
+  //     console.log(`Error in dbController.storeGoogleKey findOne: ${err}`);
+  //     return next(err);
+  //   } else {
+  //     res.locals.userData.keys = [...response.keys];
+  //     res.locals.userData.keys.push([keyName, googleKey, cryptoIV]);
+  //   }
+  // });
   User.findOneAndUpdate({ username }, { googleKey, cryptoIV }, function (err, response) {
     if (err) {
       console.log(`Error in dbController.storeGoogleKey: ${err}`);

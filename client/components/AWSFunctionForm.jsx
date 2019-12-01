@@ -17,17 +17,17 @@ const AWSFunctionForm = props => {
 
   function configure() {
     // WE NEED TO GRAB THESE FROM THE INPUT FORM
-    let accessKey = props.accessKey;
-    let secretAccessKey = props.secretAccessKey;
-    let region = props.region;
-    let outputFormat = props.outputFormat;
+    let awsAccessKey = props.awsAccessKey;
+    let awsSecretAccessKey = props.awsSecretAccessKey;
+    let awsRegion = props.awsRegion;
+    let awsOutputFormat = props.awsOutputFormat;
     // RUN THESE IN THE COMMAND LINE TO CONFIGURE AWS
     let configureCommand1 = `aws2 configure`;
     // ANSWER PROMPS USING THESE;
-    let configureCommand2 = accessKey;
-    let configureCommand3 = secretAccessKey;
-    let configureCommand4 = region;
-    let configureCommand5 = outputFormat;
+    let configureCommand2 = awsAccessKey;
+    let configureCommand3 = awsSecretAccessKey;
+    let configureCommand4 = awsRegion;
+    let configureCommand5 = awsOutputFormat;
   }
 
   function AWSDeploy() {
@@ -58,25 +58,25 @@ const AWSFunctionForm = props => {
         <h4>Configuration</h4>
         <input
           type="text"
-          name="accessKey"
+          name="awsAccessKey"
           placeholder="Access key ID"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <input
           type="text"
-          name="secretAccessKey"
+          name="awsSecretAccessKey"
           placeholder="Secret access key"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <input
           type="text"
-          name="region"
-          placeholder="Region"
+          name="awsRegion"
+          placeholder="awsRegion"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <input
           type="text"
-          name="outputFormat"
+          name="awsOutputFormat"
           placeholder="Output Format"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />

@@ -9,26 +9,31 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      uploadedFunction: "",
-      uploadedKey: "",
-      S3BucketName: "",
-      accessKey: "",
-      secretAccessKey: "",
-      region: "",
-      outputFormat: "",
+      // shinobi
       username: '',
       password: '',
+      // google
+      googleKey: '',
+      runtime: undefined,
+      // aws
+      awsAccessKey: '',
+      awsSecretAccessKey: '',
+      S3BucketName: '',
+      awsRegion: '',
+      awsOutputFormat: '',
+      // both
+      functionName: '',
+      uploadedFunction: '',
+      // render states
       isLogin: false,
       isSignup: false,
-      fn_name: "",
-      runtime: undefined,
     };
     
     this.updateInfo = this.updateInfo.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignup = this.handleSignup.bind(this);
     this.handleToggleSignup = this.handleToggleSignup.bind(this);
-    this.handleSubmitGoogleKey = this.handleSubmitGoogleKey.bind(this);
+    this.handleSubmitKey = this.handleSubmitKey.bind(this);
   }
 
   updateInfo(property, value) {
@@ -37,7 +42,10 @@ class App extends React.Component {
     this.setState(updateObj);
   }
 
-  handleLogin() {}
+  handleLogin() {
+    axios.post('/db/getUserInfo', { username: this.state.username, password: this.state.password })
+      .then(response => console.log(response.data.userData))
+  }
 
   handleSignup() {
     axios.post('/db/createNewUser', { username: this.state.username, password: this.state.password })
@@ -49,8 +57,22 @@ class App extends React.Component {
       });
   }
 
-  handleSubmitGoogleKey() {
-    axios.post('/db/storeGoogleKey', { username: this.state.username, googleKey: this.state.uploadedKey });
+  handleSubmitKey(keyType) {
+    // const keyObject = {
+    //   username: this.state.username,
+    //   keyType: keyType,
+    // }
+    // switch (keyType) {
+    //   case googleKey:
+    //     keyObject.key = this.state.googleKey;
+    //     break;
+    //   case awsKey:
+    //     keyObject.key = this.state.awsSecretAccessKey;
+    //     keyObject.awsAccessKey = this.state.awsAccessKey;
+    //     break;
+    // }
+    // axios.post('/db/storeKey', keyObject);
+    axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
   }
 
   handleToggleSignup() {
@@ -79,16 +101,16 @@ class App extends React.Component {
         )}
         <FunctionForm
           updateInfo={this.updateInfo}
-          submitGoogleKey={this.handleSubmitGoogleKey}
+          submitKey={this.handleSubmitKey}
           code={this.state.uploadedFunction}
         />
         <AWSFunctionForm
           code={this.state.uploadedFunction}
           S3BucketName={this.state.S3BucketName}
-          accessKey={this.state.accessKey}
-          secretAccessKey={this.state.secretAccessKey}
-          region={this.state.region}
-          outputFormat={this.state.outputFormat}
+          awsAccessKey={this.state.awsAccessKey}
+          awsSecretAccessKey={this.state.awsSecretAccessKey}
+          awsRegion={this.state.awsRegion}
+          awsOutputFormat={this.state.awsOutputFormat}
           fileName={this.state.fileName}
           updateInfo={this.updateInfo}
         />
