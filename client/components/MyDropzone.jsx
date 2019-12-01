@@ -1,5 +1,5 @@
-import React, {useCallback, useState} from 'react'
-import {useDropzone} from 'react-dropzone'
+import React, { useCallback, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
 
 function MyDropzone(props) {
     const [tempUploadedFunction, setTempUploadedFunction] = useState("");
@@ -21,24 +21,24 @@ function MyDropzone(props) {
         })
 
     }, [])
-    const {getRootProps, getInputProps} = useDropzone({onDrop})
+    const { getRootProps, getInputProps } = useDropzone({ onDrop })
 
 
     return (
         <div>
-        <div id="dropz" {...getRootProps()}>
-            <div id="drop1" className="dropzone">
-            <input name="uploadedFunction" {...getInputProps()} />
-            <p>Upload your Function</p>
+            <div id="dropz" {...getRootProps()}>
+                <div id="drop1" className="dropzone">
+                    <input name="uploadedFunction" {...getInputProps()} />
+                    <p>Upload your Function</p>
+                </div>
+                <div className="dropzone" >
+                    <input name="uploadedKey" {...getInputProps()} />
+                    <p>Upload your Key File</p>
+                </div>
             </div>
-            <div className="dropzone" >
-                <input name="uploadedKey" {...getInputProps()} />
-                <p>Upload your Key File</p>
-            </div>
-        </div>
             <pre>
-          <textarea id="codeHere" defaultValue={tempUploadedFunction} placeholder="<code here />" spellCheck="false" rows="25"></textarea>
-        </pre>
+                <textarea id="codeHere" defaultValue={tempUploadedFunction} placeholder="<code here />" spellCheck="false" rows="25" onChange={e => props.updateInfo(e.target.id, e.target.value)}></textarea>
+            </pre>
         </div>
     )
 }
