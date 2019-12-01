@@ -140,26 +140,27 @@ class App extends React.Component {
                 updateInfo={this.updateInfo}
                 code={this.state.uploadedFunction} />
         } else if (this.state.pageSelect === 'Lambda') {
-            displayed = (<AWSCurrentFunctions id="AWSCurrentFunctions"
-                                             currentFunctions={this.state.currentFunctions}
-                                             currRegion={this.state.currRegion}
-                                             functionName={this.state.functionName}
-                                             codeHere={this.state.codeHere}
-                                             currentBuckets={this.state.currentBuckets}
-                />,
+            displayed = (<React.Fragment><AWSCurrentFunctions
+                id="AWSCurrentFunctions"
+                currentFunctions={this.state.currentFunctions}
+                currRegion={this.state.currRegion}
+                functionName={this.state.functionName}
+                codeHere={this.state.codeHere}
+                currentBuckets={this.state.currentBuckets}
+                />
                 <AWSFunctionForm id="AWSFunctionForm"
-          code={this.state.uploadedFunction}
-          S3BucketName={this.state.S3BucketName}
-          newBucketRegion={this.state.newBucketRegion}
-          accessKey={this.state.accessKey}
-          secretAccessKey={this.state.secretAccessKey}
-          region={this.state.region}
-          outputFormat={this.state.outputFormat}
-          updateInfo={this.updateInfo}
+                code={this.state.uploadedFunction}
+                S3BucketName={this.state.S3BucketName}
+                newBucketRegion={this.state.newBucketRegion}
+                accessKey={this.state.accessKey}
+                secretAccessKey={this.state.secretAccessKey}
+                region={this.state.region}
+                outputFormat={this.state.outputFormat}
+                updateInfo={this.updateInfo}
                                  functionName={this.state.functionName}
                                  codeHere={this.state.codeHere}
                                  currentBuckets={this.state.currentBuckets}
-      />)
+      /></React.Fragment>)
     }
 
     return (
@@ -170,12 +171,12 @@ class App extends React.Component {
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Gcloud')} type="radio"
                    value="Gcloud" checked={this.state.pageSelect === 'Gcloud'}/>
-            Gcloud
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png"/>
           </label>
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Lambda')} type="radio"
                    value="Lambda" checked={this.state.pageSelect === 'Lambda'}/>
-            Lambda
+            <img src="https://git.teknik.io/POTM/Mirror-script.module.lambdascrapers/raw/commit/25b20d0adb8afa6d29eba3a0167046cb2e21ea94/icon.png" />
           </label>
         </div>
         {displayed}
