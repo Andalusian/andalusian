@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const bodyParser = require('body-parser');
 
 // SERVER CONFIG
 const app = express();
@@ -8,6 +9,9 @@ const PORT = 3000;
 // BODY PARSING (EXPRESS' BUILT IN PARSER)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // SERVING THE BUILD FILE
 app.use('/build', express.static(path.join(__dirname, '../build')));
