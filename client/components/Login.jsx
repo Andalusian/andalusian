@@ -17,7 +17,7 @@ const Login = (props) => {
         placeholder="Password"
         onChange={e => props.updateInfo(e.target.name, e.target.value)}
       />
-      <button onClick={props.handleLogin}>Log In</button>
+      <button type="button" onClick={props.handleLogin}>Log In</button>
       <div className="toggleSignup" onClick={props.handleToggleSignup}>
         Sign Up
       </div>
