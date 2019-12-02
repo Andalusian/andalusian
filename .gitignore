@@ -2,7 +2,5 @@ node_modules
 .idea/
 config.js
 credentials.json
-<<<<<<< HEAD
-=======
-
->>>>>>> 8af28bb2aa3787ecebc0584cd337c8fed2782e19
+build
+/server/platforms

@@ -5,6 +5,7 @@ const axios = require('axios')
 const GoogleFunctionForm = (props) => {
     return (
       <React.Fragment>
+          <h2>GCloud</h2>
         <input name="functionName" onChange={(e) => props.updateInfo(e.target.name, e.target.value)} type="text" name="functionName" placeholder="Function Name" />
         <select onChange={(e) => props.updateInfo('runtime', e.target.value)}>
           <option value='1'>Runtime</option>
