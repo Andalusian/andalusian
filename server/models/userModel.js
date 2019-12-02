@@ -9,10 +9,12 @@ mongoose.connect(mongo_uri, { useNewUrlParser: true, useUnifiedTopology: true, u
 const userSchema = new Schema({
   username: { type: String, required: true, unique: true},
   password: { type: String, required: true},
-  googleKey: String,
-  cryptoIV: String,
-  awsAccessKey: String,
-  awsSecret: String,
+  keys: [{
+    keyType: String,
+    encryptedKey: String,
+    cryptoIV: String,
+    awsAcessKey: String,
+  }],
 });
 
 module.exports = mongoose.model('User', userSchema, 'users');

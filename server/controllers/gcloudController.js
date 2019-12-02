@@ -7,7 +7,7 @@ const gcloudController = {};
 gcloudController.authUser = (req, res, next) => {
   // const { key_file } = req.body;
   // fs.writeFileSync(path.join(__dirname, '../platforms/gcloud/keyfile.json'), JSON.stringify(keyfile));
-  // exec(`gcloud functions deploy ${fn_name} --runtime ${runtime} --trigger-http --quiet`);
+  // exec(`gcloud functions deploy ${functionName} --runtime ${runtime} --trigger-http --quiet`);
   next();
 }
 
