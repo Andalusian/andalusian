@@ -1,18 +1,51 @@
 import React from "react";
 import MyDropzone from "./MyDropzone.jsx";
+import axios from "axios";
 
 const AWSFunctionForm = props => {
-  initialSetUp();
+  function configureAWS() {
+    console.log("in aws component configure");
+    axios
+      .post("/aws/configureAWS", {
+        accessKey: props.accessKey,
+        secretAccessKey: props.secretAccessKey,
+        region: props.region,
+        outputFormat: props.outputFormat
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
-  function initialSetUp() {
-    // RUN THE TWO COMMANDS BELOW IN TERMINAL
-    // TO INSTALL AWS CLI
-    let initialSetUpCommand1 = `curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-macos.zip" -o "awscliv2.zip"`; //
-    let initialSetUpCommand2 = `unzip awscliv2.zip`; //
-    let initialSetUpCommand3 = `sudo ./aws/install`;
-    // TO INSTALL AWS SAM
-    let initialSetUpCommand4 = `brew tap aws/tap`;
-    let initialSetUpCommand5 = `brew install aws-sam-cli`;
+
+  function configureTemp() {
+    axios
+      .post("/aws/configureTemp", {
+        functionName: props.functionName,
+        codeHere: props.codeHere
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  function packageSAM() {
+      axios
+          .post("/aws/packageSAM", {
+              S3BucketName: props.S3BucketName,
+          })
+          .then((response) => {
+              console.log(response);
+          })
+          .catch((error) => {
+              console.log(error);
+          });
   }
 
   function configure() {
@@ -31,16 +64,34 @@ const AWSFunctionForm = props => {
   }
 
   function AWSDeploy() {
-    let bucketName = props.S3BucketName; // WE NEED TO GRAB THIS FROM THE INPUT FORM
-    // RUN THE TWO COMMANDS BELOW IN TERMINAL
-    let bucketNameCommand1 = `sam package \
-    --template-file template.yml \
-    --output-template-file package.yml \
-    --s3-bucket ${bucketName}`; //
-    let bucketNameCommand2 = `sam deploy \
-    --template-file package.yml \
-    --stack-name my-date-time-app \
-    --capabilities CAPABILITY_IAM`;
+    axios
+      .post("/aws/deploy", {
+        functionName: props.functionName,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  function createBucket() {
+    let S3BucketInput = document.getElementById("S3BucketInput");
+    S3BucketInput.value = "";
+    let newBucketRegion = document.getElementById("newBucketRegion");
+    newBucketRegion.value = "";
+
+    axios.post("/aws/createBucket", {
+      S3BucketName: props.S3BucketName,
+      newBucketRegion: props.newBucketRegion
+    })
+      .then(data => {
+        console.log(data)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   return (
@@ -80,23 +131,35 @@ const AWSFunctionForm = props => {
           placeholder="Output Format"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
-        <button onClick={configure()}>Save Configuration</button>
-        <h4>SAM Template</h4>
-        <textarea rows="10" spellCheck="false">
-          AWSTemplateFormatVersion: "2010-09-09" // Transform:
-          AWS::Serverless-2016-10-31 // Resources: // ENTER_FILE_NAME: // Type:
-          AWS::Serverless::Function // Properties: // Handler:
-          ENTER_FILE_NAME.handler // Runtime: nodejs8.10
-        </textarea>
+        <button onClick={() => configureAWS()}>Save Configuration</button>
       </pre>
+      <input onChange={(e) => props.updateInfo('fn_name', e.target.value)} type="text" name="functionName" placeholder="Function Name" />
       <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
-      <input
-        type="text"
-        name="S3BucketName"
-        placeholder="S3 Bucket Name"
-        onChange={e => props.updateInfo(e)}
-      />
-      <button onClick={AWSDeploy()}>Deploy on AWS</button>
+      <h4>My AWS Buckets</h4>
+      <select id="bucketsDropdown" name="S3BucketName" onChange={e => props.updateInfo(e.target.name, e.target.value)}>
+        {props.currentBuckets}
+      </select>
+      <div>
+        <input
+          id="S3BucketInput"
+          type="text"
+          name="S3BucketName"
+          placeholder="New S3 Bucket Name"
+          onChange={e => props.updateInfo(e.target.name, e.target.value)}
+        />
+        <input
+          id="newBucketRegion"
+          type="text"
+          name="newBucketRegion"
+          placeholder="New S3 Bucket Region"
+          onChange={e => props.updateInfo(e.target.name, e.target.value)}
+        />
+        <button onClick={() => createBucket()}>Create New S3 Bucket</button>
+      </div>
+      <button onClick={() => configureTemp()}>Configure Template</button>
+      <button onClick={() => packageSAM()}>Package AWS SAM</button>
+      <button onClick={() => AWSDeploy()}>Deploy on AWS</button>
+
     </React.Fragment>
   );
 };

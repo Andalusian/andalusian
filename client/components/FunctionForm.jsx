@@ -2,7 +2,7 @@ import React from 'react';
 import MyDropzone from "./MyDropzone.jsx";
 const axios = require('axios')
 
-const FunctionForm = (props) => {
+const GoogleFunctionForm = (props) => {
     return (
       <React.Fragment>
         <input name="functionName" onChange={(e) => props.updateInfo(e.target.name, e.target.value)} type="text" name="functionName" placeholder="Function Name" />
@@ -28,4 +28,4 @@ const FunctionForm = (props) => {
     );
 };
 
-export default FunctionForm;
+export default GoogleFunctionForm;
