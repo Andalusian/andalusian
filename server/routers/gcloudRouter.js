@@ -7,7 +7,7 @@ router.put('/auth', gcloudController.authUser, (req, res) => {
 });
 
 router.put('/deploy', gcloudController.deploy, (req, res) => {
-  res.sendStatus(200);
+  res.status(200).json(res.locals.endpoint);
 });
 
 module.exports = router;
