@@ -1,5 +1,5 @@
 import React from "react";
-import FunctionForm from "./FunctionForm.jsx";
+import GoogleFunctionForm from "./GoogleFunctionForm.jsx";
 import AWSFunctionForm from "./AWSFunctionForm.jsx";
 import MicroList from "./MicroList.jsx"
 import AWSCurrentFunctions from "./AWSCurrentFunctions.jsx";
@@ -48,7 +48,7 @@ class App extends React.Component {
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
-    this.setState(updateObj, () => console.log(this.state.uploadedFunction));
+    this.setState(updateObj);
   }
 
 
@@ -67,7 +67,7 @@ class App extends React.Component {
 
 
   handleLogin() {
-    axios.post('/db/getUserInfo', { username: this.state.username, password: this.state.password })
+    axios.post('/db/login', { username: this.state.username, password: this.state.password })
       .then(response => console.log(response.data.userData))
   }
 
@@ -82,21 +82,21 @@ class App extends React.Component {
   }
 
   handleSubmitKey(keyType) {
-    // const keyObject = {
-    //   username: this.state.username,
-    //   keyType: keyType,
-    // }
-    // switch (keyType) {
-    //   case googleKey:
-    //     keyObject.key = this.state.googleKey;
-    //     break;
-    //   case awsKey:
-    //     keyObject.key = this.state.awsSecretAccessKey;
-    //     keyObject.awsAccessKey = this.state.awsAccessKey;
-    //     break;
-    // }
-    // axios.post('/db/storeKey', keyObject);
-    axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
+    const keyObject = {
+      username: this.state.username,
+      keyType: keyType,
+    }
+    switch (keyType) {
+      case 'googleKey':
+        keyObject.key = this.state.googleKey;
+        break;
+      case 'awsKey':
+        keyObject.key = this.state.awsSecretAccessKey;
+        keyObject.awsAccessKey = this.state.awsAccessKey;
+        break;
+    }
+    axios.post('/db/storeKey', keyObject);
+    // axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
   }
 
   handleToggleSignup() {
@@ -166,14 +166,12 @@ class App extends React.Component {
       });
   }
 
-
   componentWillMount() {
     this.listFunctions();
     this.listBuckets();
-    this.getCurrRegion();
+    //   this.getCurrRegion();
   }
   componentDidUpdate() {
-
   }
 
   render() {
@@ -181,7 +179,7 @@ class App extends React.Component {
     let displayed;
 
     if (this.state.pageSelect === 'Gcloud') {
-      displayed = <FunctionForm
+      displayed = <GoogleFunctionForm
         submitKey={this.handleSubmitKey}
         runtime={this.state.runtime}
         functionName={this.state.functionName}
