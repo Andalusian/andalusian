@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const bodyParser = require('body-parser');
 
 // SERVER CONFIG
 const app = express();
@@ -8,6 +9,9 @@ const PORT = 3000;
 // BODY PARSING (EXPRESS' BUILT IN PARSER)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // SERVING THE BUILD FILE
 app.use('/build', express.static(path.join(__dirname, '../build')));
@@ -21,6 +25,7 @@ app.get('/', (req, res) => {
 const gcloudRouter = require('./routers/gcloudRouter');
 const awsRouter = require('./routers/awsRouter');
 const azureRouter = require('./routers/azureRouter');
+const dbRouter = require('./routers/dbRouter');
 // GCLOUD
 app.use('/gcloud', gcloudRouter);
 
@@ -29,6 +34,9 @@ app.use('/aws', awsRouter);
 
 // AZURE
 app.use('/azure', azureRouter);
+
+// DATABASE
+app.use('/db', dbRouter);
 
 // 404 NOT FOUND HANDLER
 app.use('*', (req, res) => {
