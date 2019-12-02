@@ -36,16 +36,31 @@ const AWSFunctionForm = props => {
   }
 
   function packageSAM() {
-    axios
-      .post("/aws/packageSAM", {
-        S3BucketName: props.S3BucketName,
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      axios
+          .post("/aws/packageSAM", {
+              S3BucketName: props.S3BucketName,
+          })
+          .then((response) => {
+              console.log(response);
+          })
+          .catch((error) => {
+              console.log(error);
+          });
+  }
+
+  function configure() {
+    // WE NEED TO GRAB THESE FROM THE INPUT FORM
+    let awsAccessKey = props.awsAccessKey;
+    let awsSecretAccessKey = props.awsSecretAccessKey;
+    let awsRegion = props.awsRegion;
+    let awsOutputFormat = props.awsOutputFormat;
+    // RUN THESE IN THE COMMAND LINE TO CONFIGURE AWS
+    let configureCommand1 = `aws2 configure`;
+    // ANSWER PROMPS USING THESE;
+    let configureCommand2 = awsAccessKey;
+    let configureCommand3 = awsSecretAccessKey;
+    let configureCommand4 = awsRegion;
+    let configureCommand5 = awsOutputFormat;
   }
 
   function AWSDeploy() {
@@ -81,30 +96,38 @@ const AWSFunctionForm = props => {
 
   return (
     <React.Fragment>
-
+      <h2>AWS</h2>
+      <input type="text" name="functionName" placeholder="Function Name" />
+      <select>
+        <option value="node8">Node 8</option>
+        <option value="node10">Node 10</option>
+        <option value="python37">Python 3.7</option>
+        <option value="go111">Go 1.11</option>
+        <option value="go113">Go 1.13</option>
+      </select>
       <pre>
         <h4>Configuration</h4>
         <input
           type="text"
-          name="accessKey"
+          name="awsAccessKey"
           placeholder="Access key ID"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <input
           type="text"
-          name="secretAccessKey"
+          name="awsSecretAccessKey"
           placeholder="Secret access key"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <input
           type="text"
-          name="region"
-          placeholder="Region"
+          name="awsRegion"
+          placeholder="awsRegion"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <input
           type="text"
-          name="outputFormat"
+          name="awsOutputFormat"
           placeholder="Output Format"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />

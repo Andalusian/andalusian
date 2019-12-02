@@ -4,32 +4,45 @@ import AWSFunctionForm from "./AWSFunctionForm.jsx";
 import MicroList from "./MicroList.jsx"
 import AWSCurrentFunctions from "./AWSCurrentFunctions.jsx";
 import axios from "axios";
+import Login from './Login.jsx';
+import Signup from "./Signup.jsx";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      uploadedFunction: "",
-      uploadedKey: "",
-      accessKey: "",
-      secretAccessKey: "",
-      region: "",
-      outputFormat: "",
-      fn_name: "",
+      // shinobi
+      username: '',
+      password: '',
+      // google
+      googleKey: '',
       runtime: undefined,
-      pageSelect: 'Gcloud',
-      S3BucketName: "",
-      functionName: "",
-      currentFunctions: [],
-      codeHere: "",
-      currentBuckets: [],
-      currRegion: "",
-      newBucketRegion: ""
+      // aws
+      awsAccessKey: '',
+          newBucketRegion: "",
+          currRegion: "",
+          currentBuckets: [],
+          codeHere: "",
+          currentFunctions: [],
+      awsSecretAccessKey: '',
+      S3BucketName: '',
+      awsRegion: '',
+      awsOutputFormat: '',
+      // both
+          pageSelect: 'Gcloud',
+          functionName: '',
+      uploadedFunction: '',
+      // render states
+      isLogin: false,
+      isSignup: false,
     };
 
     this.updateInfo = this.updateInfo.bind(this);
     this.getFuncInfo = this.getFuncInfo.bind(this);
-    // this.deleteBucket = this.deleteBucket.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
+    this.handleSignup = this.handleSignup.bind(this);
+    this.handleToggleSignup = this.handleToggleSignup.bind(this);
+    this.handleSubmitKey = this.handleSubmitKey.bind(this);
   }
 
   updateInfo(property, value) {
@@ -40,16 +53,56 @@ class App extends React.Component {
 
 
   getCurrRegion() {
-    axios
-      .get("/aws/getCurrRegion", {
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(data => {
-        this.setState({ currRegion: data.data })
-      })
-      .catch(function (error) {
-        console.log(error);
+      axios
+          .get("/aws/getCurrRegion", {
+              headers: {'Content-Type': 'application/json'}
+          })
+          .then(data => {
+              this.setState({currRegion: data.data})
+          })
+          .catch(function (error) {
+              console.log(error);
+          });
+  }
+
+
+  handleLogin() {
+    axios.post('/db/getUserInfo', { username: this.state.username, password: this.state.password })
+      .then(response => console.log(response.data.userData))
+  }
+
+  handleSignup() {
+    axios.post('/db/createNewUser', { username: this.state.username, password: this.state.password })
+      .then(() => {
+        this.setState({
+          isLogin: true,
+          isSignup: false,
+        });
       });
+  }
+
+  handleSubmitKey(keyType) {
+    // const keyObject = {
+    //   username: this.state.username,
+    //   keyType: keyType,
+    // }
+    // switch (keyType) {
+    //   case googleKey:
+    //     keyObject.key = this.state.googleKey;
+    //     break;
+    //   case awsKey:
+    //     keyObject.key = this.state.awsSecretAccessKey;
+    //     keyObject.awsAccessKey = this.state.awsAccessKey;
+    //     break;
+    // }
+    // axios.post('/db/storeKey', keyObject);
+    axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
+  }
+
+  handleToggleSignup() {
+    this.setState(prevState => ({
+      isSignup: !prevState.isSignup
+    }));
   }
 
   listFunctions() {
@@ -128,45 +181,60 @@ class App extends React.Component {
 
   }
 
-  render() {
+    render() {
 
-    let displayed;
+        let displayed;
 
-    if (this.state.pageSelect === 'Gcloud') {
-      displayed = <FunctionForm
-        runtime={this.state.runtime}
-        fn_name={this.state.fn_name}
-        uploadedKey={this.state.uploadedKey}
-        updateInfo={this.updateInfo}
-        code={this.state.uploadedFunction} />
-    } else if (this.state.pageSelect === 'Lambda') {
-      displayed = (<React.Fragment><AWSCurrentFunctions
-        id="AWSCurrentFunctions"
-        currentFunctions={this.state.currentFunctions}
-        currRegion={this.state.currRegion}
-        functionName={this.state.functionName}
-        codeHere={this.state.codeHere}
-        currentBuckets={this.state.currentBuckets}
-      />
-        <AWSFunctionForm id="AWSFunctionForm"
-          code={this.state.uploadedFunction}
-          S3BucketName={this.state.S3BucketName}
-          newBucketRegion={this.state.newBucketRegion}
-          accessKey={this.state.accessKey}
-          secretAccessKey={this.state.secretAccessKey}
-          region={this.state.region}
-          outputFormat={this.state.outputFormat}
-          updateInfo={this.updateInfo}
-          functionName={this.state.functionName}
-          codeHere={this.state.codeHere}
-          currentBuckets={this.state.currentBuckets}
-        /></React.Fragment>)
+        if (this.state.pageSelect === 'Gcloud') {
+            displayed = <FunctionForm
+                submitKey={this.handleSubmitKey}
+                runtime={this.state.runtime}
+                functionName={this.state.functionName}
+                googleKey={this.state.googleKey}
+                updateInfo={this.updateInfo}
+                code={this.state.uploadedFunction} />
+        } else if (this.state.pageSelect === 'Lambda') {
+            displayed = (<React.Fragment><AWSCurrentFunctions
+                id="AWSCurrentFunctions"
+                currentFunctions={this.state.currentFunctions}
+                currRegion={this.state.currRegion}
+                functionName={this.state.functionName}
+                codeHere={this.state.codeHere}
+                currentBuckets={this.state.currentBuckets}
+                />
+                <AWSFunctionForm id="AWSFunctionForm"
+                code={this.state.uploadedFunction}
+                S3BucketName={this.state.S3BucketName}
+                newBucketRegion={this.state.newBucketRegion}
+                                 awsAccessKey={this.state.awsAccessKey}
+                                 awsSecretAccessKey={this.state.awsSecretAccessKey}
+                                 awsRegion={this.state.awsRegion}
+                                 awsOutputFormat={this.state.awsOutputFormat}
+                updateInfo={this.updateInfo}
+                                 functionName={this.state.functionName}
+                                 codeHere={this.state.codeHere}
+                                 currentBuckets={this.state.currentBuckets}
+      /></React.Fragment>)
     }
 
     return (
       <div className="mainContainer">
         <h1>Shinobi</h1>
-        <MicroList />
+          {!this.state.isLogin && !this.state.isSignup && (
+              <Login
+                  updateInfo={this.updateInfo}
+                  handleLogin={this.handleLogin}
+                  handleToggleSignup={this.handleToggleSignup}
+              />
+          )}
+          {this.state.isSignup && (
+              <Signup
+                  updateInfo={this.updateInfo}
+                  handleSignup={this.handleSignup}
+                  handleToggleSignup={this.handleToggleSignup}
+              />
+          )}
+        <MicroList/>
         <div className='radio'>
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Gcloud')} type="radio"
