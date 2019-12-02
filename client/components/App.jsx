@@ -1,5 +1,5 @@
 import React from "react";
-import GoogleFunctionForm from "./FunctionForm.jsx";
+import GoogleFunctionForm from "./GoogleFunctionForm.jsx";
 import AWSFunctionForm from "./AWSFunctionForm.jsx";
 import MicroList from "./MicroList.jsx"
 import AWSCurrentFunctions from "./AWSCurrentFunctions.jsx";
@@ -19,18 +19,18 @@ class App extends React.Component {
       runtime: undefined,
       // aws
       awsAccessKey: '',
-          newBucketRegion: "",
-          currRegion: "",
-          currentBuckets: [],
-          codeHere: "",
-          currentFunctions: [],
+      newBucketRegion: "",
+      currRegion: "",
+      currentBuckets: [],
+      codeHere: "",
+      currentFunctions: [],
       awsSecretAccessKey: '',
       S3BucketName: '',
       awsRegion: '',
       awsOutputFormat: '',
       // both
-          pageSelect: 'Gcloud',
-          functionName: '',
+      pageSelect: 'Gcloud',
+      functionName: '',
       uploadedFunction: '',
       // render states
       isLogin: false,
@@ -48,21 +48,21 @@ class App extends React.Component {
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
-    this.setState(updateObj, () => console.log(this.state.uploadedFunction));
+    this.setState(updateObj);
   }
 
 
   getCurrRegion() {
-      axios
-          .get("/aws/getCurrRegion", {
-              headers: {'Content-Type': 'application/json'}
-          })
-          .then(data => {
-              this.setState({currRegion: data.data})
-          })
-          .catch(function (error) {
-              console.log(error);
-          });
+    axios
+      .get("/aws/getCurrRegion", {
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(data => {
+        this.setState({ currRegion: data.data })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
 
@@ -179,9 +179,9 @@ class App extends React.Component {
     console.log("this.state.S3BucketName --->", this.state.S3BucketName)
   }
 
-    render() {
+  render() {
 
-        let displayed;
+    let displayed;
 
         if (this.state.pageSelect === 'Gcloud') {
             displayed = <GoogleFunctionForm
@@ -218,21 +218,21 @@ class App extends React.Component {
     return (
       <div className="mainContainer">
         <h1>Shinobi</h1>
-          {!this.state.isLogin && !this.state.isSignup && (
-              <Login
-                  updateInfo={this.updateInfo}
-                  handleLogin={this.handleLogin}
-                  handleToggleSignup={this.handleToggleSignup}
-              />
-          )}
-          {this.state.isSignup && (
-              <Signup
-                  updateInfo={this.updateInfo}
-                  handleSignup={this.handleSignup}
-                  handleToggleSignup={this.handleToggleSignup}
-              />
-          )}
-        <MicroList/>
+        {!this.state.isLogin && !this.state.isSignup && (
+          <Login
+            updateInfo={this.updateInfo}
+            handleLogin={this.handleLogin}
+            handleToggleSignup={this.handleToggleSignup}
+          />
+        )}
+        {this.state.isSignup && (
+          <Signup
+            updateInfo={this.updateInfo}
+            handleSignup={this.handleSignup}
+            handleToggleSignup={this.handleToggleSignup}
+          />
+        )}
+        <MicroList />
         <div className='radio'>
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Gcloud')} type="radio"
