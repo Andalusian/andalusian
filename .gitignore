@@ -2,4 +2,5 @@ node_modules
 .idea/
 config.js
 credentials.json
-
+build
+/server/platforms
