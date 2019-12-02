@@ -84,7 +84,7 @@ dbController.decrypt = (req, res, next) => {
     }
 
     if (decryptedKeyObject.keyType === 'awsKey') {
-      awsAccessKey: decryptedKeyObject.awsAccessKey;
+      awsAccessKey: key.awsAccessKey;
     }
 
     decryptedKeys.push(decryptedKeyObject);

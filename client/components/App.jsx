@@ -19,20 +19,20 @@ class App extends React.Component {
       runtime: undefined,
       // aws
       awsAccessKey: '',
+      awsSecretAccessKey: '',
+      S3BucketName: '',
       newBucketRegion: "",
       currRegion: "",
       currentBuckets: [],
       codeHere: "",
       currentFunctions: [],
-      awsSecretAccessKey: '',
-      S3BucketName: '',
       awsRegion: '',
       awsOutputFormat: '',
-      // both
-      pageSelect: 'Gcloud',
+      // both platforms
       functionName: '',
       uploadedFunction: '',
       // render states
+      pageSelect: 'Gcloud',
       isLogin: false,
       isSignup: false,
     };
@@ -51,7 +51,6 @@ class App extends React.Component {
     this.setState(updateObj);
   }
 
-
   getCurrRegion() {
     axios
       .get("/aws/getCurrRegion", {
@@ -65,10 +64,21 @@ class App extends React.Component {
       });
   }
 
-
   handleLogin() {
     axios.post('/db/login', { username: this.state.username, password: this.state.password })
-      .then(response => console.log(response.data.userData))
+      .then(response => {
+        const updateStateObject = {
+          isLogin: true,
+        };
+        response.data.userData.keys.forEach(updateKey => {
+          updateStateObject[updateKey.keyType] = updateKey.key;
+          if (updateKey === 'awsSecretAccessKey') {
+            updateStateObject.awsAccessKey = key.awsAccessKey;
+          }
+        });
+
+        this.setState(updateStateObject);
+      });
   }
 
   handleSignup() {
@@ -90,13 +100,17 @@ class App extends React.Component {
       case 'googleKey':
         keyObject.key = this.state.googleKey;
         break;
-      case 'awsKey':
+      case 'awsSecretAccessKey':
         keyObject.key = this.state.awsSecretAccessKey;
         keyObject.awsAccessKey = this.state.awsAccessKey;
         break;
     }
-    axios.post('/db/storeKey', keyObject);
-    // axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
+    axios.post('/gcloud/auth', { key_file: this.state.googleKey })
+      .then(response => { 
+        if (response.status === 200) {
+          axios.post('/db/storeKey', keyObject)
+        }
+      });
   }
 
   handleToggleSignup() {
@@ -170,13 +184,9 @@ class App extends React.Component {
       });
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.listFunctions();
     this.listBuckets();
-  //   this.getCurrRegion();
-  }
-  componentDidUpdate() {
-    console.log("this.state.S3BucketName --->", this.state.S3BucketName)
   }
 
   render() {
