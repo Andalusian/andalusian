@@ -41,7 +41,9 @@ router.post("/createBucket", awsController.createBucket, (req, res) => {
 router.post("/createFunction", awsController.createFunction, (req, res) => {
   return res.status(200);
 })
-// router.post("/deleteBucket", awsController.deleteBucket, (req, res) => {
-//   return res.status(200).send(res.locals.buckets);
-// })
+
+router.post("/deleteFunc", awsController.deleteFunc, (req, res) => {
+  return res.status(200);
+})
+
 module.exports = router;

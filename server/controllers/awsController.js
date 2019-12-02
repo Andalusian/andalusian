@@ -1,6 +1,8 @@
 const fs = require("fs");
 const { exec } = require("child_process");
 var AWS = require("aws-sdk");
+const lambda = new AWS.Lambda();
+const s3 = new AWS.S3();
 
 const awsController = {};
 
@@ -85,7 +87,7 @@ awsController.deploy = (req, res, next) => {
 
 awsController.createFunction = (req, res, next) => {
   AWS.config.loadFromPath("./credentials.json")
-  const lambda = new AWS.Lambda();
+  // const lambda = new AWS.Lambda();
   var params = {
     Code: {
       S3Bucket: `${req.body.S3BucketName}`,
@@ -114,15 +116,28 @@ awsController.listFunctions = (req, res, next) => {
       console.log("err: ", err)
       return
     }
-    console.log("data: ", data)
     res.locals.func = data;
+    return next();
+  });
+}
+
+awsController.deleteFunc = (req, res, next) => {
+  AWS.config.loadFromPath("./credentials.json")
+  const lambda = new AWS.Lambda();
+  const params = { FunctionName: `${req.body.funcName}` }
+  lambda.deleteFunction(params, (err, data) => {
+    if (err) {
+      console.log("err: ", err)
+      return
+    }
+    res.locals.funcInfo = data;
     return next();
   });
 }
 
 awsController.allBuckets = (req, res, next) => {
   AWS.config.loadFromPath("./credentials.json")
-  const s3 = new AWS.S3();
+  // const s3 = new AWS.S3();
   const params = {}
   s3.listBuckets(params, (err, data) => {
     if (err) {
@@ -164,17 +179,18 @@ awsController.getFuncInfo = (req, res, next) => {
 }
 
 awsController.createBucket = (req, res, next) => {
-  exec(
-    `aws2 s3api create-bucket --bucket ${req.body.S3BucketName} --region ${req.body.newBucketRegion} --create-bucket-configuration LocationConstraint=${req.body.newBucketRegion}`,
-    (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return;
-      }
-      console.error(`createBucket stderr: ${stderr}`);
-      return next();
+  AWS.config.loadFromPath("./credentials.json")
+  // const s3 = new AWS.S3();
+  var params = {
+    Bucket: `${req.body.S3BucketName}`,
+    CreateBucketConfiguration: {
+      LocationConstraint: `${req.body.newBucketRegion}`
     }
-  );
+  };
+  s3.createBucket(params, function (err, data) {
+    if (err) console.log(err, err.stack);
+    else console.log(data);
+  })
 }
 
 
