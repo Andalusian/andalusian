@@ -30,7 +30,6 @@ class App extends React.Component {
       awsRuntime: '',
       awsRole: '',
       awsAccountID: '',
-      // awsOutputFormat: '',
       // both
       pageSelect: 'Gcloud',
       functionName: '',
@@ -46,6 +45,8 @@ class App extends React.Component {
     this.handleSignup = this.handleSignup.bind(this);
     this.handleToggleSignup = this.handleToggleSignup.bind(this);
     this.handleSubmitKey = this.handleSubmitKey.bind(this);
+    this.listFunctions = this.listFunctions.bind(this)
+    this.listBuckets = this.listBuckets.bind(this)
   }
 
   updateInfo(property, value) {
@@ -55,25 +56,24 @@ class App extends React.Component {
   }
 
 
-  getCurrRegion() {
-    axios
-      .get("/aws/getCurrRegion", {
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(data => {
-        this.setState({ currRegion: data.data })
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
+  // getCurrRegion() {
+  //   axios
+  //     .get("/aws/getCurrRegion", {
+  //       headers: { 'Content-Type': 'application/json' }
+  //     })
+  //     .then(data => {
+  //       this.setState({ currRegion: data.data })
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // }
 
   getawsAccountID() {
     axios
       .get("/aws/getawsAccountID", {
         headers: { 'Content-Type': 'application/json' }
       })
-      .then(console.log("Here"))
       .then(data => {
         this.setState({ awsAccountID: data.data.Account });
       })
@@ -140,12 +140,15 @@ class App extends React.Component {
   }
 
   getFuncInfo(funcName) {
+    console.log("in getFuncInfo")
     axios
       .post("/aws/getFuncInfo", {
         funcName
       })
-      .then(data =>
-        console.log(data.data))
+      .then(data => {
+        console.log(data.data);
+        alert(JSON.stringify(data.data))
+      })
       .catch(function (error) {
         console.log(error);
       });
@@ -161,6 +164,7 @@ class App extends React.Component {
       .catch(function (error) {
         console.log(error);
       });
+    alert("Function invoked.")
   }
 
   deleteFunc(funcName) {
@@ -168,11 +172,14 @@ class App extends React.Component {
       .post("/aws/deleteFunc", {
         funcName
       })
-      .then(data =>
-        console.log(data.data))
+      .then(data => {
+
+        console.log(data.data)
+      })
       .catch(function (error) {
         console.log(error);
       });
+    this.listFunctions() // THIS ISN'T WORKING
   }
 
   listBuckets() {
@@ -198,11 +205,10 @@ class App extends React.Component {
     this.listFunctions();
     this.listBuckets();
     this.getawsAccountID();
-    //   this.getCurrRegion();
   }
   componentDidUpdate() {
-    console.log(this.state.awsAccountID);
-    console.log(this.state.awsRole)
+    // this.listFunctions();
+    // this.listBuckets();
   }
 
   render() {
@@ -233,7 +239,6 @@ class App extends React.Component {
           awsAccessKey={this.state.awsAccessKey}
           awsSecretAccessKey={this.state.awsSecretAccessKey}
           awsRegion={this.state.awsRegion}
-          awsOutputFormat={this.state.awsOutputFormat}
           updateInfo={this.updateInfo}
           functionName={this.state.functionName}
           codeHere={this.state.codeHere}
@@ -241,6 +246,8 @@ class App extends React.Component {
           awsRuntime={this.state.awsRuntime}
           awsRole={this.state.awsRole}
           awsAccountID={this.state.awsAccountID}
+          listFunctions={this.listFunctions}
+          listBuckets={this.listBuckets}
 
         /></React.Fragment>)
     }

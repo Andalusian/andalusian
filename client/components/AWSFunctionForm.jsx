@@ -3,79 +3,97 @@ import MyDropzone from "./MyDropzone.jsx";
 import axios from "axios";
 
 const AWSFunctionForm = props => {
+
   function configureAWS() {
-    axios
-      .post("/aws/configureAWS", {
-        awsAccessKey: props.awsAccessKey,
-        awsSecretAccessKey: props.awsSecretAccessKey,
-        awsRegion: props.awsRegion,
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    let awsAccessKey = document.getElementById("awsAccessKey");
+    awsAccessKey.value = "";
+    let awsSecretAccessKey = document.getElementById("awsSecretAccessKey");
+    awsSecretAccessKey.value = "";
+    let awsRegion = document.getElementById("awsRegion");
+    awsRegion.value = "";
+    if (props.awsAccessKey && props.awsSecretAccessKey && props.awsRegion) {
+      axios
+        .post("/aws/configureAWS", {
+          awsAccessKey: props.awsAccessKey,
+          awsSecretAccessKey: props.awsSecretAccessKey,
+          awsRegion: props.awsRegion,
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      alert("Account configured.")
+      this.props.listFunctions(); // THIS ISN'T RELOADING
+    } else {
+      alert("Please fill out all 3 fields to configure")
+    }
   }
 
   function createFunction() {
-    axios
-      .post("aws/createFunction", {
-        functionName: props.functionName,
-        S3BucketName: props.S3BucketName,
-        uploadedFunction: props.uploadedFunction,
-        awsRuntime: props.awsRuntime,
-        awsRole: props.awsRole,
-        awsAccountID: props.awsAccountID
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (props.functionName && props.uploadedFunction && props.awsRuntime && props.awsRole) {
+      axios
+        .post("aws/createFunction", {
+          functionName: props.functionName,
+          S3BucketName: props.S3BucketName,
+          uploadedFunction: props.uploadedFunction,
+          awsRuntime: props.awsRuntime,
+          awsRole: props.awsRole,
+          awsAccountID: props.awsAccountID
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      // alert("Function created successfully.")
+    } else {
+      alert("Please enter Function Name, Runtime, Role, and Code to create function")
+    }
   }
 
-  function configureTemp() {
-    axios
-      .post("/aws/configureTemp", {
-        functionName: props.functionName,
-        codeHere: props.codeHere
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+  // function configureTemp() {
+  //   axios
+  //     .post("/aws/configureTemp", {
+  //       functionName: props.functionName,
+  //       codeHere: props.codeHere
+  //     })
+  //     .then((response) => {
+  //       console.log(response);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }
 
-  function packageSAM() {
-    axios
-      .post("/aws/packageSAM", {
-        S3BucketName: props.S3BucketName,
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+  // function packageSAM() {
+  //   axios
+  //     .post("/aws/packageSAM", {
+  //       S3BucketName: props.S3BucketName,
+  //     })
+  //     .then((response) => {
+  //       console.log(response);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }
 
 
-  function AWSDeploy() {
-    axios
-      .post("/aws/deploy", {
-        functionName: props.functionName,
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+  // function AWSDeploy() {
+  //   axios
+  //     .post("/aws/deploy", {
+  //       functionName: props.functionName,
+  //     })
+  //     .then((response) => {
+  //       console.log(response);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }
 
   function createBucket() {
     let S3BucketInput = document.getElementById("S3BucketInput");
@@ -101,29 +119,26 @@ const AWSFunctionForm = props => {
         <h4>Configuration</h4>
         <input
           type="text"
+          id="awsAccessKey"
           name="awsAccessKey"
           placeholder="Access key ID"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <input
           type="text"
+          id="awsSecretAccessKey"
           name="awsSecretAccessKey"
           placeholder="Secret access key"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <input
           type="text"
+          id="awsRegion"
           name="awsRegion"
           placeholder="Region"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
 
-        {/* <input
-          type="text"
-          name="awsOutputFormat"
-          placeholder="Output Format"
-          onChange={e => props.updateInfo(e.target.name, e.target.value)}
-        /> */}
         <button onClick={() => configureAWS()}>Save Configuration</button>
       </pre>
       <input onChange={(e) => props.updateInfo('functionName', e.target.value)} type="text" name="functionName" placeholder="Function Name" />
