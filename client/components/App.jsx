@@ -19,18 +19,18 @@ class App extends React.Component {
       runtime: undefined,
       // aws
       awsAccessKey: '',
-          newBucketRegion: "",
-          currRegion: "",
-          currentBuckets: [],
-          codeHere: "",
-          currentFunctions: [],
+      newBucketRegion: "",
+      currRegion: "",
+      currentBuckets: [],
+      codeHere: "",
+      currentFunctions: [],
       awsSecretAccessKey: '',
       S3BucketName: '',
       awsRegion: '',
       awsOutputFormat: '',
       // both
-          pageSelect: 'Gcloud',
-          functionName: '',
+      pageSelect: 'Gcloud',
+      functionName: '',
       uploadedFunction: '',
       // render states
       isLogin: false,
@@ -53,16 +53,16 @@ class App extends React.Component {
 
 
   getCurrRegion() {
-      axios
-          .get("/aws/getCurrRegion", {
-              headers: {'Content-Type': 'application/json'}
-          })
-          .then(data => {
-              this.setState({currRegion: data.data})
-          })
-          .catch(function (error) {
-              console.log(error);
-          });
+    axios
+      .get("/aws/getCurrRegion", {
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(data => {
+        this.setState({ currRegion: data.data })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
 
@@ -181,60 +181,60 @@ class App extends React.Component {
 
   }
 
-    render() {
+  render() {
 
-        let displayed;
+    let displayed;
 
-        if (this.state.pageSelect === 'Gcloud') {
-            displayed = <FunctionForm
-                submitKey={this.handleSubmitKey}
-                runtime={this.state.runtime}
-                functionName={this.state.functionName}
-                googleKey={this.state.googleKey}
-                updateInfo={this.updateInfo}
-                code={this.state.uploadedFunction} />
-        } else if (this.state.pageSelect === 'Lambda') {
-            displayed = (<React.Fragment><AWSCurrentFunctions
-                id="AWSCurrentFunctions"
-                currentFunctions={this.state.currentFunctions}
-                currRegion={this.state.currRegion}
-                functionName={this.state.functionName}
-                codeHere={this.state.codeHere}
-                currentBuckets={this.state.currentBuckets}
-                />
-                <AWSFunctionForm id="AWSFunctionForm"
-                code={this.state.uploadedFunction}
-                S3BucketName={this.state.S3BucketName}
-                newBucketRegion={this.state.newBucketRegion}
-                                 awsAccessKey={this.state.awsAccessKey}
-                                 awsSecretAccessKey={this.state.awsSecretAccessKey}
-                                 awsRegion={this.state.awsRegion}
-                                 awsOutputFormat={this.state.awsOutputFormat}
-                updateInfo={this.updateInfo}
-                                 functionName={this.state.functionName}
-                                 codeHere={this.state.codeHere}
-                                 currentBuckets={this.state.currentBuckets}
-      /></React.Fragment>)
+    if (this.state.pageSelect === 'Gcloud') {
+      displayed = <FunctionForm
+        submitKey={this.handleSubmitKey}
+        runtime={this.state.runtime}
+        functionName={this.state.functionName}
+        googleKey={this.state.googleKey}
+        updateInfo={this.updateInfo}
+        code={this.state.uploadedFunction} />
+    } else if (this.state.pageSelect === 'Lambda') {
+      displayed = (<React.Fragment><AWSCurrentFunctions
+        id="AWSCurrentFunctions"
+        currentFunctions={this.state.currentFunctions}
+        currRegion={this.state.currRegion}
+        functionName={this.state.functionName}
+        codeHere={this.state.codeHere}
+        currentBuckets={this.state.currentBuckets}
+      />
+        <AWSFunctionForm id="AWSFunctionForm"
+          code={this.state.uploadedFunction}
+          S3BucketName={this.state.S3BucketName}
+          newBucketRegion={this.state.newBucketRegion}
+          awsAccessKey={this.state.awsAccessKey}
+          awsSecretAccessKey={this.state.awsSecretAccessKey}
+          awsRegion={this.state.awsRegion}
+          awsOutputFormat={this.state.awsOutputFormat}
+          updateInfo={this.updateInfo}
+          functionName={this.state.functionName}
+          codeHere={this.state.codeHere}
+          currentBuckets={this.state.currentBuckets}
+        /></React.Fragment>)
     }
 
     return (
       <div className="mainContainer">
         <h1>Shinobi</h1>
-          {!this.state.isLogin && !this.state.isSignup && (
-              <Login
-                  updateInfo={this.updateInfo}
-                  handleLogin={this.handleLogin}
-                  handleToggleSignup={this.handleToggleSignup}
-              />
-          )}
-          {this.state.isSignup && (
-              <Signup
-                  updateInfo={this.updateInfo}
-                  handleSignup={this.handleSignup}
-                  handleToggleSignup={this.handleToggleSignup}
-              />
-          )}
-        <MicroList/>
+        {!this.state.isLogin && !this.state.isSignup && (
+          <Login
+            updateInfo={this.updateInfo}
+            handleLogin={this.handleLogin}
+            handleToggleSignup={this.handleToggleSignup}
+          />
+        )}
+        {this.state.isSignup && (
+          <Signup
+            updateInfo={this.updateInfo}
+            handleSignup={this.handleSignup}
+            handleToggleSignup={this.handleToggleSignup}
+          />
+        )}
+        <MicroList />
         <div className='radio'>
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Gcloud')} type="radio"
