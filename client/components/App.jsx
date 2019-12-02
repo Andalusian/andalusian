@@ -81,19 +81,6 @@ class App extends React.Component {
       });
   }
 
-  getFuncInfo(funcName) {
-    console.log("getFuncInfo")
-    axios
-      .post("/aws/getFuncInfo", {
-        funcName
-      })
-      .then(data =>
-        console.log(data.data))
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
-
   handleSubmitKey(keyType) {
     // const keyObject = {
     //   username: this.state.username,
@@ -136,6 +123,33 @@ class App extends React.Component {
       });
   }
 
+  getFuncInfo(funcName) {
+    console.log("getFuncInfo")
+    axios
+      .post("/aws/getFuncInfo", {
+        funcName
+      })
+      .then(data =>
+        console.log(data.data))
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  // deleteBucket(bucketName) {
+  //   console.log("bucketName in app ---->", bucketName)
+  //   axios
+  //     .put("/aws/deleteBucket", {
+  //       bucketName: bucketName
+  //     })
+  //     .then(function (response) {
+  //       console.log(response);
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // }
+
   listBuckets() {
     let allBuckets = [<option disabled selected value key={"a"}> -- select an option -- </option>]
     axios
@@ -146,6 +160,7 @@ class App extends React.Component {
         for (let i = 0; i < data.data.Buckets.length; i++) {
           let bucketName = data.data.Buckets[i].Name;
           allBuckets.push(<option className="myAWSBuckets" key={i} value={bucketName}>{bucketName}
+            {/* <button onClick={() => this.deleteBucket(bucketName)}>Delete Bucket</button> */}
           </option >)
         }
         this.setState({ currentBuckets: allBuckets })
@@ -162,7 +177,7 @@ class App extends React.Component {
     this.getCurrRegion();
   }
   componentDidUpdate() {
-    // console.log("this.state.S3BucketName --->", this.state.S3BucketName)
+    console.log("this.state.S3BucketName --->", this.state.S3BucketName)
 
   }
 
@@ -179,16 +194,14 @@ class App extends React.Component {
         updateInfo={this.updateInfo}
         code={this.state.uploadedFunction} />
     } else if (this.state.pageSelect === 'Lambda') {
-      displayed = (<React.Fragment>
-        <h2>AWS</h2>
-        <AWSCurrentFunctions
-          id="AWSCurrentFunctions"
-          currentFunctions={this.state.currentFunctions}
-          currRegion={this.state.currRegion}
-          functionName={this.state.functionName}
-          codeHere={this.state.codeHere}
-          currentBuckets={this.state.currentBuckets}
-        />
+      displayed = (<React.Fragment><AWSCurrentFunctions
+        id="AWSCurrentFunctions"
+        currentFunctions={this.state.currentFunctions}
+        currRegion={this.state.currRegion}
+        functionName={this.state.functionName}
+        codeHere={this.state.codeHere}
+        currentBuckets={this.state.currentBuckets}
+      />
         <AWSFunctionForm id="AWSFunctionForm"
           code={this.state.uploadedFunction}
           S3BucketName={this.state.S3BucketName}
@@ -207,7 +220,6 @@ class App extends React.Component {
     return (
       <div className="mainContainer">
         <h1>Shinobi</h1>
-
         {!this.state.isLogin && !this.state.isSignup && (
           <Login
             updateInfo={this.updateInfo}
@@ -222,7 +234,6 @@ class App extends React.Component {
             handleToggleSignup={this.handleToggleSignup}
           />
         )}
-
         <MicroList />
         <div className='radio'>
           <label>
