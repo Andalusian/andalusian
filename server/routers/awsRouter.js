@@ -46,4 +46,13 @@ router.post("/deleteFunc", awsController.deleteFunc, (req, res) => {
   return res.status(200);
 })
 
+router.post("/invokeFunc", awsController.invokeFunc, (req, res) => {
+  return res.status(200);
+})
+
+router.get("/getawsAccountID", awsController.getawsAccountID, (req, res) => {
+  return res.status(200).send(res.locals.awsAccountID);
+})
+
+
 module.exports = router;

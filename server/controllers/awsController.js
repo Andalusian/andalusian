@@ -1,6 +1,6 @@
 const fs = require("fs");
 const { exec } = require("child_process");
-var AWS = require("aws-sdk");
+const AWS = require("aws-sdk");
 const lambda = new AWS.Lambda();
 const s3 = new AWS.S3();
 
@@ -8,7 +8,7 @@ const awsController = {};
 
 awsController.configureAWS = (req, res, next) => {
   exec(
-    `echo '{ "accessKeyId": ${req.body.accessKey}, "secretAccessKey": ${req.body.secretAccessKey}, "region": ${req.body.region} }'  >> credentials.json`,
+    `echo '{ "accessKeyId": "${req.body.awsAccessKey}", "secretAccessKey": "${req.body.awsSecretAccessKey}", "region": "${req.body.awsRegion}" }'  >> credentials.json`,
     (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
@@ -86,24 +86,43 @@ awsController.deploy = (req, res, next) => {
 };
 
 awsController.createFunction = (req, res, next) => {
-  AWS.config.loadFromPath("./credentials.json")
-  // const lambda = new AWS.Lambda();
-  var params = {
-    Code: {
-      S3Bucket: `${req.body.S3BucketName}`,
-      S3Key: 'blahblahblahblahblahblahblah',
-      S3ObjectVersion: 'blahblahblahblahblahblahblah',
-      ZipFile: Buffer.from('...')
-    },
-    FunctionName: `${req.body.functionName}`,
-    Handler: `${req.body.functionName}`.handler,
-    Role: "arn:aws:iam::466253788069:role/ADMINPOTATO",
-    Runtime: "nodejs"
-  };
-  lambda.createFunction(params, function (err, data) {
-    if (err) console.log(err, err.stack);
-    else console.log(data);
-  })
+  AWS.config.loadFromPath("./credentials.json");
+  const lambda = new AWS.Lambda();
+  exec(
+    `echo "${req.body.uploadedFunction}" >> ${req.body.functionName}.js`,
+    (error, stdout, stderr) => {
+      exec(`zip function.zip ${req.body.functionName}.js`, (error, stdout, stderr) => {
+        const params = {
+          "Code": {
+            // "S3Bucket": `${req.body.S3BucketName}`,
+            // "S3Key": "",
+            // "S3ObjectVersion": "",
+            "ZipFile": fs.readFileSync("function.zip")
+          },
+          "FunctionName": `${req.body.functionName}`,
+          "Handler": `${req.body.functionName}` + ".handler",
+          "Role": "arn:aws:iam::" + `${req.body.awsAccountID}` + `${req.body.awsRole}`,
+          "Runtime": `${req.body.awsRuntime}`
+        };
+        console.log(params);
+        lambda.createFunction(params, (err, data) => {
+          if (err) console.log(err, err.stack);
+          else {
+            console.log("WHATTTT -->", data);
+            return next();
+          }
+
+        })
+      })
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      console.log(`createFunction stdout: ${stdout}`);
+      console.error(`createFunction stderr: ${stderr}`);
+      // return next();
+    }
+  );
 }
 // REMINDER TO SELF - SET UP TO DELETE THE FOLDER AFTER THE PROCESS IS COMPLETED
 
@@ -112,6 +131,20 @@ awsController.listFunctions = (req, res, next) => {
   const lambda = new AWS.Lambda();
   const params = {}
   lambda.listFunctions(params, (err, data) => {
+    if (err) {
+      console.log("err: ", err)
+      return
+    }
+    res.locals.func = data;
+    return next();
+  });
+}
+
+awsController.invokeFunc = (req, res, next) => {
+  AWS.config.loadFromPath("./credentials.json")
+  const lambda = new AWS.Lambda();
+  const params = { FunctionName: `${req.body.funcName}` }
+  lambda.invoke(params, (err, data) => {
     if (err) {
       console.log("err: ", err)
       return
@@ -130,14 +163,13 @@ awsController.deleteFunc = (req, res, next) => {
       console.log("err: ", err)
       return
     }
-    res.locals.funcInfo = data;
     return next();
   });
 }
 
 awsController.allBuckets = (req, res, next) => {
   AWS.config.loadFromPath("./credentials.json")
-  // const s3 = new AWS.S3();
+  const s3 = new AWS.S3();
   const params = {}
   s3.listBuckets(params, (err, data) => {
     if (err) {
@@ -181,8 +213,8 @@ awsController.getFuncInfo = (req, res, next) => {
 awsController.createBucket = (req, res, next) => {
   AWS.config.loadFromPath("./credentials.json")
   // const s3 = new AWS.S3();
-  var params = {
-    Bucket: `${req.body.S3BucketName}`,
+  const params = {
+    Bucket: `${req.body.S3BucketName} `,
     CreateBucketConfiguration: {
       LocationConstraint: `${req.body.newBucketRegion}`
     }
@@ -193,7 +225,20 @@ awsController.createBucket = (req, res, next) => {
   })
 }
 
+awsController.getawsAccountID = (req, res, next) => {
+  AWS.config.loadFromPath("./credentials.json")
+  const sts = new AWS.STS();
+  const params = {
+  };
+  sts.getCallerIdentity(params, function (err, data) {
+    if (err) console.log(err, err.stack);
+    else {
+      res.locals.awsAccountID = data;
+      return next();
 
+    }
+  })
+}
 
 
 module.exports = awsController;

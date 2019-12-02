@@ -27,7 +27,10 @@ class App extends React.Component {
       awsSecretAccessKey: '',
       S3BucketName: '',
       awsRegion: '',
-      awsOutputFormat: '',
+      awsRuntime: '',
+      awsRole: '',
+      awsAccountID: '',
+      // awsOutputFormat: '',
       // both
       pageSelect: 'Gcloud',
       functionName: '',
@@ -65,6 +68,19 @@ class App extends React.Component {
       });
   }
 
+  getawsAccountID() {
+    axios
+      .get("/aws/getawsAccountID", {
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(console.log("Here"))
+      .then(data => {
+        this.setState({ awsAccountID: data.data.Account });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 
   handleLogin() {
     axios.post('/db/login', { username: this.state.username, password: this.state.password })
@@ -114,7 +130,7 @@ class App extends React.Component {
       .then(data => {
         for (let i = 0; i < data.data.Functions.length; i++) {
           let funcName = data.data.Functions[i].FunctionName;
-          allFuncArray.push(<div className="myAWSFuncs" key={i}>{funcName} <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>)
+          allFuncArray.push(<div className="myAWSFuncs" key={i}>{funcName} <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.invokeFunc(funcName)}>Invoke</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>)
         }
         this.setState({ currentFunctions: allFuncArray })
       })
@@ -126,6 +142,18 @@ class App extends React.Component {
   getFuncInfo(funcName) {
     axios
       .post("/aws/getFuncInfo", {
+        funcName
+      })
+      .then(data =>
+        console.log(data.data))
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  invokeFunc(funcName) {
+    axios
+      .post("/aws/invokeFunc", {
         funcName
       })
       .then(data =>
@@ -148,7 +176,7 @@ class App extends React.Component {
   }
 
   listBuckets() {
-    let allBuckets = [<option disabled selected value key={"a"}> -- select an option -- </option>]
+    let allBuckets = [<option defaultValue={"a"}> -- select an option -- </option>]
     axios
       .get("/aws/allBuckets", {
         headers: { 'Content-Type': 'application/json' }
@@ -169,9 +197,12 @@ class App extends React.Component {
   componentWillMount() {
     this.listFunctions();
     this.listBuckets();
+    this.getawsAccountID();
     //   this.getCurrRegion();
   }
   componentDidUpdate() {
+    console.log(this.state.awsAccountID);
+    console.log(this.state.awsRole)
   }
 
   render() {
@@ -185,7 +216,7 @@ class App extends React.Component {
         functionName={this.state.functionName}
         googleKey={this.state.googleKey}
         updateInfo={this.updateInfo}
-        code={this.state.uploadedFunction} />
+        uploadedFunction={this.state.uploadedFunction} />
     } else if (this.state.pageSelect === 'Lambda') {
       displayed = (<React.Fragment><AWSCurrentFunctions
         id="AWSCurrentFunctions"
@@ -196,7 +227,7 @@ class App extends React.Component {
         currentBuckets={this.state.currentBuckets}
       />
         <AWSFunctionForm id="AWSFunctionForm"
-          code={this.state.uploadedFunction}
+          uploadedFunction={this.state.uploadedFunction}
           S3BucketName={this.state.S3BucketName}
           newBucketRegion={this.state.newBucketRegion}
           awsAccessKey={this.state.awsAccessKey}
@@ -207,6 +238,10 @@ class App extends React.Component {
           functionName={this.state.functionName}
           codeHere={this.state.codeHere}
           currentBuckets={this.state.currentBuckets}
+          awsRuntime={this.state.awsRuntime}
+          awsRole={this.state.awsRole}
+          awsAccountID={this.state.awsAccountID}
+
         /></React.Fragment>)
     }
 
