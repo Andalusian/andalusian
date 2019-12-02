@@ -56,7 +56,10 @@ dbController.verifyUser = (req, res, next) => {
           console.log(`Password for ${username} does not match database`);
           return next();
         } else {
-          res.locals.userData = response;
+          res.locals.userData = {
+            username: response.username,
+            keys: response.keys,
+          };
           return next();
         }
       });
@@ -65,19 +68,36 @@ dbController.verifyUser = (req, res, next) => {
 }
 
 dbController.decrypt = (req, res, next) => {
-  const { googleKey, cryptoIV } = res.locals.userData;
-  let decipher = crypto.createDecipheriv('aes-256-cbc', cryptoKey, cryptoIV);
-  let decrypted = decipher.update(googleKey, 'hex', 'utf-8');
-  decrypted += decipher.final('utf-8');
+  console.log('within dbController.decrypt');
+  const { keys } = res.locals.userData;
+  const decryptedKeys = [];
 
-  res.locals.userData.googleKey = decrypted;
+  keys.forEach(key => {
+    const { encryptedKey, cryptoIV } = key;
+    let decipher = crypto.createDecipheriv('aes-256-cbc', cryptoKey, cryptoIV);
+    let decrypted = decipher.update(encryptedKey, 'hex', 'utf-8');
+    decrypted += decipher.final('utf-8');
+
+    const decryptedKeyObject = {
+      keyType: key.keyType,
+      key: decrypted,
+    }
+
+    if (decryptedKeyObject.keyType === 'awsKey') {
+      awsAccessKey: decryptedKeyObject.awsAccessKey;
+    }
+
+    decryptedKeys.push(decryptedKeyObject);
+  });
+
+  res.locals.userData.keys = decryptedKeys; 
+  // console.log(res.locals.userData.decryptedKeys);
+
   return next();
 }
 
 dbController.encryptKey = (req, res, next) => {
   console.log('within dbController.encrypt');
-  // const { keyObject } = req.body; 
-
   const { key } = req.body;
 
   const iv = crypto.randomBytes(8).toString('hex');
@@ -85,26 +105,28 @@ dbController.encryptKey = (req, res, next) => {
   let encrypted = cipher.update(key, 'utf-8', 'hex');
   encrypted += cipher.final('hex');
 
-  res.locals.userData = { key: encrypted, cryptoIV: iv };
+  res.locals.encryptedKeyPair = { encryptedKey: encrypted, cryptoIV: iv };
 
   return next();
 }
 
 dbController.storeKey = (req, res, next) => {
+  console.log('within dbController.storeKey');
   const { username } = req.body;
-  const { googleKey, cryptoIV } = res.locals.userData;
-  // User.findOne({ username }, function(err, response) {
-  //   if (err) {
-  //     console.log(`Error in dbController.storeGoogleKey findOne: ${err}`);
-  //     return next(err);
-  //   } else {
-  //     res.locals.userData.keys = [...response.keys];
-  //     res.locals.userData.keys.push([keyName, googleKey, cryptoIV]);
-  //   }
-  // });
-  User.findOneAndUpdate({ username }, { googleKey, cryptoIV }, function (err, response) {
+  const { encryptedKey, cryptoIV } = res.locals.encryptedKeyPair;
+  const encryptedKeyObject = {
+    keyType: req.body.keyType,
+    encryptedKey,
+    cryptoIV,
+  };
+
+  if (encryptedKeyObject.keyType === 'awsKey') {
+    encryptedKeyObject.awsAccessKey = req.body.awsAccessKey;
+  }
+
+  User.findOneAndUpdate({ username }, { $push: { keys: encryptedKeyObject } }, function (err, response) {
     if (err) {
-      console.log(`Error in dbController.storeGoogleKey: ${err}`);
+      console.log(`Error in dbController.storeencryptedKey: ${err}`);
       return next(err);
     } else {
       console.log(`Added encrypted key to ${username} in database`);
