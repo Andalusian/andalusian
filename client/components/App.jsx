@@ -220,7 +220,6 @@ class App extends React.Component {
     return (
       <div className="mainContainer">
         <h1>Shinobi</h1>
-
           {!this.state.isLogin && !this.state.isSignup && (
               <Login
                   updateInfo={this.updateInfo}
@@ -235,17 +234,16 @@ class App extends React.Component {
                   handleToggleSignup={this.handleToggleSignup}
               />
           )}
-
         <MicroList/>
         <div className='radio'>
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Gcloud')} type="radio"
-                   value="Gcloud" checked={this.state.pageSelect === 'Gcloud'}/>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png"/>
+              value="Gcloud" checked={this.state.pageSelect === 'Gcloud'} />
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png" />
           </label>
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Lambda')} type="radio"
-                   value="Lambda" checked={this.state.pageSelect === 'Lambda'}/>
+              value="Lambda" checked={this.state.pageSelect === 'Lambda'} />
             <img src="https://git.teknik.io/POTM/Mirror-script.module.lambdascrapers/raw/commit/25b20d0adb8afa6d29eba3a0167046cb2e21ea94/icon.png" />
           </label>
         </div>
