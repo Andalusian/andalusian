@@ -148,7 +148,9 @@ class App extends React.Component {
       })
       .then(data => {
         console.log(data.data);
-        alert(JSON.stringify(data.data))
+        alert(`State: ${data.data.Configuration.State} 
+        \nRuntime: ${data.data.Configuration.Runtime} 
+        \nLast Modified: ${(new Date (Date.parse(data.data.Configuration.LastModified))).toLocaleString('en-US', {timeZone: 'America/Los_Angeles'})}`)
       })
       .catch(function (error) {
         console.log(error);
@@ -202,14 +204,10 @@ class App extends React.Component {
       });
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.listFunctions();
     this.listBuckets();
     this.getawsAccountID();
-  }
-  componentDidUpdate() {
-    // this.listFunctions();
-    // this.listBuckets();
   }
 
   render() {
