@@ -95,7 +95,8 @@ class App extends React.Component {
         keyObject.awsAccessKey = this.state.awsAccessKey;
         break;
     }
-    axios.post('/db/storeKey', keyObject);
+    axios.post('/gcloud/auth', {key_file: this.state.googleKey})
+        .then(response => {if (response.status === 200) axios.post('/db/storeKey', keyObject)});
     // axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
   }
 
