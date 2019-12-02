@@ -179,14 +179,16 @@ class App extends React.Component {
         updateInfo={this.updateInfo}
         code={this.state.uploadedFunction} />
     } else if (this.state.pageSelect === 'Lambda') {
-      displayed = (<React.Fragment><AWSCurrentFunctions
-        id="AWSCurrentFunctions"
-        currentFunctions={this.state.currentFunctions}
-        currRegion={this.state.currRegion}
-        functionName={this.state.functionName}
-        codeHere={this.state.codeHere}
-        currentBuckets={this.state.currentBuckets}
-      />
+      displayed = (<React.Fragment>
+        <h2>AWS</h2>
+        <AWSCurrentFunctions
+          id="AWSCurrentFunctions"
+          currentFunctions={this.state.currentFunctions}
+          currRegion={this.state.currRegion}
+          functionName={this.state.functionName}
+          codeHere={this.state.codeHere}
+          currentBuckets={this.state.currentBuckets}
+        />
         <AWSFunctionForm id="AWSFunctionForm"
           code={this.state.uploadedFunction}
           S3BucketName={this.state.S3BucketName}

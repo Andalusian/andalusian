@@ -89,12 +89,12 @@ awsController.createFunction = (req, res, next) => {
   var params = {
     Code: {
       S3Bucket: `${req.body.S3BucketName}`,
-      S3Key: 'STRING_VALUE',
-      S3ObjectVersion: 'STRING_VALUE',
+      S3Key: 'blahblahblahblahblahblahblah',
+      S3ObjectVersion: 'blahblahblahblahblahblahblah',
       ZipFile: Buffer.from('...')
     },
     FunctionName: `${req.body.functionName}`,
-    Handler: "MyFunctionTalya.handler", // is of the form of the name of your source file and then name of your function handler
+    Handler: `${req.body.functionName}`.handler,
     Role: "arn:aws:iam::466253788069:role/ADMINPOTATO",
     Runtime: "nodejs"
   };
