@@ -1,5 +1,5 @@
 import React from "react";
-import FunctionForm from "./FunctionForm.jsx";
+import GoogleFunctionForm from "./GoogleFunctionForm.jsx";
 import AWSFunctionForm from "./AWSFunctionForm.jsx";
 import MicroList from "./MicroList.jsx"
 import AWSCurrentFunctions from "./AWSCurrentFunctions.jsx";
@@ -19,18 +19,18 @@ class App extends React.Component {
       runtime: undefined,
       // aws
       awsAccessKey: '',
-          newBucketRegion: "",
-          currRegion: "",
-          currentBuckets: [],
-          codeHere: "",
-          currentFunctions: [],
+      newBucketRegion: "",
+      currRegion: "",
+      currentBuckets: [],
+      codeHere: "",
+      currentFunctions: [],
       awsSecretAccessKey: '',
       S3BucketName: '',
       awsRegion: '',
       awsOutputFormat: '',
       // both
-          pageSelect: 'Gcloud',
-          functionName: '',
+      pageSelect: 'Gcloud',
+      functionName: '',
       uploadedFunction: '',
       // render states
       isLogin: false,
@@ -48,26 +48,26 @@ class App extends React.Component {
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
-    this.setState(updateObj, () => console.log(this.state.uploadedFunction));
+    this.setState(updateObj);
   }
 
 
   getCurrRegion() {
-      axios
-          .get("/aws/getCurrRegion", {
-              headers: {'Content-Type': 'application/json'}
-          })
-          .then(data => {
-              this.setState({currRegion: data.data})
-          })
-          .catch(function (error) {
-              console.log(error);
-          });
+    axios
+      .get("/aws/getCurrRegion", {
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(data => {
+        this.setState({ currRegion: data.data })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
 
   handleLogin() {
-    axios.post('/db/getUserInfo', { username: this.state.username, password: this.state.password })
+    axios.post('/db/login', { username: this.state.username, password: this.state.password })
       .then(response => console.log(response.data.userData))
   }
 
@@ -82,21 +82,21 @@ class App extends React.Component {
   }
 
   handleSubmitKey(keyType) {
-    // const keyObject = {
-    //   username: this.state.username,
-    //   keyType: keyType,
-    // }
-    // switch (keyType) {
-    //   case googleKey:
-    //     keyObject.key = this.state.googleKey;
-    //     break;
-    //   case awsKey:
-    //     keyObject.key = this.state.awsSecretAccessKey;
-    //     keyObject.awsAccessKey = this.state.awsAccessKey;
-    //     break;
-    // }
-    // axios.post('/db/storeKey', keyObject);
-    axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
+    const keyObject = {
+      username: this.state.username,
+      keyType: keyType,
+    }
+    switch (keyType) {
+      case 'googleKey':
+        keyObject.key = this.state.googleKey;
+        break;
+      case 'awsKey':
+        keyObject.key = this.state.awsSecretAccessKey;
+        keyObject.awsAccessKey = this.state.awsAccessKey;
+        break;
+    }
+    axios.post('/db/storeKey', keyObject);
+    // axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
   }
 
   handleToggleSignup() {
@@ -170,23 +170,21 @@ class App extends React.Component {
       });
   }
 
-
   componentWillMount() {
     this.listFunctions();
     this.listBuckets();
-    this.getCurrRegion();
+  //   this.getCurrRegion();
   }
   componentDidUpdate() {
     console.log("this.state.S3BucketName --->", this.state.S3BucketName)
-
   }
 
-    render() {
+  render() {
 
-        let displayed;
+    let displayed;
 
         if (this.state.pageSelect === 'Gcloud') {
-            displayed = <FunctionForm
+            displayed = <GoogleFunctionForm
                 submitKey={this.handleSubmitKey}
                 runtime={this.state.runtime}
                 functionName={this.state.functionName}
@@ -220,32 +218,30 @@ class App extends React.Component {
     return (
       <div className="mainContainer">
         <h1>Shinobi</h1>
-
-          {!this.state.isLogin && !this.state.isSignup && (
-              <Login
-                  updateInfo={this.updateInfo}
-                  handleLogin={this.handleLogin}
-                  handleToggleSignup={this.handleToggleSignup}
-              />
-          )}
-          {this.state.isSignup && (
-              <Signup
-                  updateInfo={this.updateInfo}
-                  handleSignup={this.handleSignup}
-                  handleToggleSignup={this.handleToggleSignup}
-              />
-          )}
-
-        <MicroList/>
+        {!this.state.isLogin && !this.state.isSignup && (
+          <Login
+            updateInfo={this.updateInfo}
+            handleLogin={this.handleLogin}
+            handleToggleSignup={this.handleToggleSignup}
+          />
+        )}
+        {this.state.isSignup && (
+          <Signup
+            updateInfo={this.updateInfo}
+            handleSignup={this.handleSignup}
+            handleToggleSignup={this.handleToggleSignup}
+          />
+        )}
+        <MicroList />
         <div className='radio'>
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Gcloud')} type="radio"
-                   value="Gcloud" checked={this.state.pageSelect === 'Gcloud'}/>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png"/>
+              value="Gcloud" checked={this.state.pageSelect === 'Gcloud'} />
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png" />
           </label>
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Lambda')} type="radio"
-                   value="Lambda" checked={this.state.pageSelect === 'Lambda'}/>
+              value="Lambda" checked={this.state.pageSelect === 'Lambda'} />
             <img src="https://git.teknik.io/POTM/Mirror-script.module.lambdascrapers/raw/commit/25b20d0adb8afa6d29eba3a0167046cb2e21ea94/icon.png" />
           </label>
         </div>

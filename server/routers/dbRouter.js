@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const dbController = require('../controllers/dbController');
 
-router.post('/getUserInfo', dbController.verifyUser, dbController.decrypt, (req, res) => {
+router.post('/login', dbController.verifyUser, dbController.decrypt, (req, res) => {
   res.status(200).json({ userData: res.locals.userData });
 });
 
