@@ -3,4 +3,4 @@ node_modules
 config.js
 credentials.json
 build
-server/platforms
+/server/platforms
