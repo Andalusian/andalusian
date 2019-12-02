@@ -38,6 +38,9 @@ router.post("/createBucket", awsController.createBucket, (req, res) => {
   return res.status(200);
 })
 
+router.post("/createFunction", awsController.createFunction, (req, res) => {
+  return res.status(200);
+})
 // router.post("/deleteBucket", awsController.deleteBucket, (req, res) => {
 //   return res.status(200).send(res.locals.buckets);
 // })

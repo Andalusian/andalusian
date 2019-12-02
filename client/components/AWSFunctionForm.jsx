@@ -4,13 +4,11 @@ import axios from "axios";
 
 const AWSFunctionForm = props => {
   function configureAWS() {
-    console.log("in aws component configure");
     axios
       .post("/aws/configureAWS", {
         accessKey: props.accessKey,
         secretAccessKey: props.secretAccessKey,
         region: props.region,
-        outputFormat: props.outputFormat
       })
       .then((response) => {
         console.log(response);
@@ -20,6 +18,19 @@ const AWSFunctionForm = props => {
       });
   }
 
+  function createFunction() {
+    axios
+      .post("aws/createFunction", {
+        functionName: props.functionName,
+        S3BucketName: props.S3BucketName
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   function configureTemp() {
     axios
@@ -36,16 +47,16 @@ const AWSFunctionForm = props => {
   }
 
   function packageSAM() {
-      axios
-          .post("/aws/packageSAM", {
-              S3BucketName: props.S3BucketName,
-          })
-          .then((response) => {
-              console.log(response);
-          })
-          .catch((error) => {
-              console.log(error);
-          });
+    axios
+      .post("/aws/packageSAM", {
+        S3BucketName: props.S3BucketName,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   function configure() {
@@ -96,15 +107,6 @@ const AWSFunctionForm = props => {
 
   return (
     <React.Fragment>
-      <h2>AWS</h2>
-      <input type="text" name="functionName" placeholder="Function Name" />
-      <select>
-        <option value="node8">Node 8</option>
-        <option value="node10">Node 10</option>
-        <option value="python37">Python 3.7</option>
-        <option value="go111">Go 1.11</option>
-        <option value="go113">Go 1.13</option>
-      </select>
       <pre>
         <h4>Configuration</h4>
         <input
@@ -133,8 +135,16 @@ const AWSFunctionForm = props => {
         />
         <button onClick={() => configureAWS()}>Save Configuration</button>
       </pre>
-      <input onChange={(e) => props.updateInfo('fn_name', e.target.value)} type="text" name="functionName" placeholder="Function Name" />
+      <input onChange={(e) => props.updateInfo('functionName', e.target.value)} type="text" name="functionName" placeholder="Function Name" />
+      <select>
+        <option value="node8">Node 8</option>
+        <option value="node10">Node 10</option>
+        <option value="python37">Python 3.7</option>
+        <option value="go111">Go 1.11</option>
+        <option value="go113">Go 1.13</option>
+      </select>
       <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
+      <button onClick={() => createFunction()}>Create Function</button>
       <h4>My AWS Buckets</h4>
       <select id="bucketsDropdown" name="S3BucketName" onChange={e => props.updateInfo(e.target.name, e.target.value)}>
         {props.currentBuckets}
