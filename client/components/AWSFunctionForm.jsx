@@ -139,7 +139,10 @@ const AWSFunctionForm = props => {
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
 
-        <button onClick={() => configureAWS()}>Save Configuration</button>
+        <button onClick={() => {
+          props.submitKey('awsSecretAccessKey');
+          configureAWS();
+        }}>Save Configuration</button>
       </pre>
       <input onChange={(e) => props.updateInfo('functionName', e.target.value)} type="text" name="functionName" placeholder="Function Name" />
       <select name="awsRuntime" onChange={e => props.updateInfo(e.target.name, e.target.value)} >
