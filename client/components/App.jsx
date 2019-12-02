@@ -43,7 +43,7 @@ class App extends React.Component {
   }
 
   handleLogin() {
-    axios.post('/db/getUserInfo', { username: this.state.username, password: this.state.password })
+    axios.post('/db/login', { username: this.state.username, password: this.state.password })
       .then(response => console.log(response.data.userData))
   }
 
@@ -58,21 +58,21 @@ class App extends React.Component {
   }
 
   handleSubmitKey(keyType) {
-    // const keyObject = {
-    //   username: this.state.username,
-    //   keyType: keyType,
-    // }
-    // switch (keyType) {
-    //   case googleKey:
-    //     keyObject.key = this.state.googleKey;
-    //     break;
-    //   case awsKey:
-    //     keyObject.key = this.state.awsSecretAccessKey;
-    //     keyObject.awsAccessKey = this.state.awsAccessKey;
-    //     break;
-    // }
-    // axios.post('/db/storeKey', keyObject);
-    axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
+    const keyObject = {
+      username: this.state.username,
+      keyType: keyType,
+    }
+    switch (keyType) {
+      case 'googleKey':
+        keyObject.key = this.state.googleKey;
+        break;
+      case 'awsKey':
+        keyObject.key = this.state.awsSecretAccessKey;
+        keyObject.awsAccessKey = this.state.awsAccessKey;
+        break;
+    }
+    axios.post('/db/storeKey', keyObject);
+    // axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
   }
 
   handleToggleSignup() {
@@ -111,7 +111,6 @@ class App extends React.Component {
           awsSecretAccessKey={this.state.awsSecretAccessKey}
           awsRegion={this.state.awsRegion}
           awsOutputFormat={this.state.awsOutputFormat}
-          fileName={this.state.fileName}
           updateInfo={this.updateInfo}
         />
       </div>
