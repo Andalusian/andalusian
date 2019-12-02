@@ -52,6 +52,20 @@ class App extends React.Component {
       });
   }
 
+  getFuncInfo(funcName) {
+    console.log("getFuncInfo")
+    axios
+      .post("/aws/getFuncInfo", {
+        funcName
+      })
+      .then(data =>
+        console.log(data.data))
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+
   listFunctions() {
     let allFuncArray = []
     axios
@@ -70,33 +84,6 @@ class App extends React.Component {
       });
   }
 
-  getFuncInfo(funcName) {
-    console.log("getFuncInfo")
-    axios
-      .post("/aws/getFuncInfo", {
-        funcName
-      })
-      .then(data =>
-        console.log(data.data))
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
-
-  // deleteBucket(bucketName) {
-  //   console.log("bucketName in app ---->", bucketName)
-  //   axios
-  //     .put("/aws/deleteBucket", {
-  //       bucketName: bucketName
-  //     })
-  //     .then(function (response) {
-  //       console.log(response);
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // }
-
   listBuckets() {
     let allBuckets = [<option disabled selected value key={"a"}> -- select an option -- </option>]
     axios
@@ -107,7 +94,6 @@ class App extends React.Component {
         for (let i = 0; i < data.data.Buckets.length; i++) {
           let bucketName = data.data.Buckets[i].Name;
           allBuckets.push(<option className="myAWSBuckets" key={i} value={bucketName}>{bucketName}
-            {/* <button onClick={() => this.deleteBucket(bucketName)}>Delete Bucket</button> */}
           </option >)
         }
         this.setState({ currentBuckets: allBuckets })
@@ -124,7 +110,7 @@ class App extends React.Component {
     this.getCurrRegion();
   }
   componentDidUpdate() {
-    console.log("this.state.S3BucketName --->", this.state.S3BucketName)
+    // console.log("this.state.S3BucketName --->", this.state.S3BucketName)
 
   }
 

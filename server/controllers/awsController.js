@@ -1,53 +1,22 @@
 const fs = require("fs");
 const { exec } = require("child_process");
+var AWS = require("aws-sdk");
 
 const awsController = {};
 
-// FROM TALYA TO SCOTT: CALLBACK HELL BEGINS..
 awsController.configureAWS = (req, res, next) => {
   exec(
-    `aws2 configure set aws_access_key_id ${req.body.accessKey}`,
+    `echo '{ "accessKeyId": ${req.body.accessKey}, "secretAccessKey": ${req.body.secretAccessKey}, "region": ${req.body.region} }'  >> credentials.json`,
     (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
         return;
       }
-      //   console.log(`stdout: ${stdout}`);
-      //   console.error(`stderr: ${stderr}`);
+      console.log(`configureAWS stdout: ${stdout}`);
+      console.error(`configureAWS stderr: ${stderr}`);
     }
   );
-
-  exec(
-    `aws2 configure set aws_secret_access_key ${req.body.secretAccessKey}`,
-    (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return;
-      }
-    }
-  );
-
-  exec(
-    `aws2 configure set region ${req.body.region}`,
-    (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return;
-      }
-    }
-  );
-
-  exec(
-    `aws2 configure set output ${req.body.outputFormat}`,
-    (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return;
-      }
-    }
-  );
-  return next();
-};
+}
 
 awsController.configureTemp = (req, res, next) => {
   exec(
@@ -67,8 +36,8 @@ Resources:
             console.error(`exec error: ${error}`);
             return;
           }
-          console.log(`stdout: ${stdout}`);
-          console.error(`stderr: ${stderr}`);
+          console.log(`configureTemp stdout: ${stdout}`);
+          console.error(`configureTemp stderr: ${stderr}`);
           return next();
         })
     })
@@ -84,8 +53,8 @@ awsController.packageSAM = (req, res, next) => {
         console.error(`exec error: ${error}`);
         return;
       }
-      console.log(`stdout: ${stdout}`);
-      console.error(`stderr: ${stderr}`);
+      console.log(`packageSAM stdout: ${stdout}`);
+      console.error(`packageSAM stderr: ${stderr}`);
       return next();
     })
   // IT TOOK ABOUT 2-3 MINUTES TO PACKAGE
@@ -102,8 +71,8 @@ awsController.deploy = (req, res, next) => {
             console.error(`exec error: ${error}`);
             return;
           }
-          console.log(`stdout: ${stdout}`);
-          console.error(`stderr: ${stderr}`);
+          console.log(`deploy stdout: ${stdout}`);
+          console.error(`deploy stderr: ${stderr}`);
           return next();
         })
     }
@@ -114,36 +83,55 @@ awsController.deploy = (req, res, next) => {
   // https://us-west-2.console.aws.amazon.com/lambda/home
 };
 
+awsController.createFunction = (req, res, next) => {
+  AWS.config.loadFromPath("./credentials.json")
+  const lambda = new AWS.Lambda();
+  var params = {
+    Code: {
+      S3Bucket: `${req.body.S3BucketName}`,
+      S3Key: 'STRING_VALUE',
+      S3ObjectVersion: 'STRING_VALUE',
+      ZipFile: Buffer.from('...')
+    },
+    FunctionName: `${req.body.functionName}`,
+    Handler: "MyFunctionTalya.handler", // is of the form of the name of your source file and then name of your function handler
+    Role: "arn:aws:iam::466253788069:role/ADMINPOTATO",
+    Runtime: "nodejs"
+  };
+  lambda.createFunction(params, function (err, data) {
+    if (err) console.log(err, err.stack);
+    else console.log(data);
+  })
+}
 // REMINDER TO SELF - SET UP TO DELETE THE FOLDER AFTER THE PROCESS IS COMPLETED
 
 awsController.listFunctions = (req, res, next) => {
-  exec(
-    `aws2 lambda list-functions`,
-    (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return;
-      }
-      res.locals.func = stdout;
-      console.error(`stderr: ${stderr}`);
-      return next();
+  AWS.config.loadFromPath("./credentials.json")
+  const lambda = new AWS.Lambda();
+  const params = {}
+  lambda.listFunctions(params, (err, data) => {
+    if (err) {
+      console.log("err: ", err)
+      return
     }
-  );
+    console.log("data: ", data)
+    res.locals.func = data;
+    return next();
+  });
 }
 
 awsController.allBuckets = (req, res, next) => {
-  exec(
-    `aws2 s3api list-buckets`,
-    (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return;
-      }
-      res.locals.buckets = stdout;
-      console.error(`stderr: ${stderr}`);
-      return next();
+  AWS.config.loadFromPath("./credentials.json")
+  const s3 = new AWS.S3();
+  const params = {}
+  s3.listBuckets(params, (err, data) => {
+    if (err) {
+      console.log("err: ", err)
+      return
     }
-  );
+    res.locals.buckets = data;
+    return next();
+  });
 }
 
 awsController.getCurrRegion = (req, res, next) => {
@@ -155,25 +143,24 @@ awsController.getCurrRegion = (req, res, next) => {
         return;
       }
       res.locals.region = stdout;
-      console.error(`stderr: ${stderr}`);
+      console.error(`getCurrRegion stderr: ${stderr}`);
       return next();
     }
   );
 }
 
 awsController.getFuncInfo = (req, res, next) => {
-  exec(
-    `aws2 lambda get-function --function-name ${req.body.funcName}`,
-    (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return;
-      }
-      res.locals.funcInfo = stdout;
-      console.error(`stderr: ${stderr}`);
-      return next();
+  AWS.config.loadFromPath("./credentials.json")
+  const lambda = new AWS.Lambda();
+  const params = { FunctionName: `${req.body.funcName}` }
+  lambda.getFunction(params, (err, data) => {
+    if (err) {
+      console.log("err: ", err)
+      return
     }
-  );
+    res.locals.funcInfo = data;
+    return next();
+  });
 }
 
 awsController.createBucket = (req, res, next) => {
@@ -184,29 +171,13 @@ awsController.createBucket = (req, res, next) => {
         console.error(`exec error: ${error}`);
         return;
       }
-      console.error(`stderr: ${stderr}`);
+      console.error(`createBucket stderr: ${stderr}`);
       return next();
     }
   );
 }
 
 
-// awsController.deleteBucket = (req, res, next) => {
-//   console.log("controller body --->", req.body)
-//   exec(
-//     `aws2 s3api delete-bucket --bucket ${req.body}`,
-//     (error, stdout, stderr) => {
-//       if (error) {
-//         console.error(`exec error: ${error}`);
-//         return;
-//       }
-//       res.locals.buckets = stdout;
-//       console.log("MY RES ----> ", res.locals.buckets)
-//       console.error(`stderr: ${stderr}`);
-//       return next();
-//     }
-//   );
-// }
 
 
 module.exports = awsController;
