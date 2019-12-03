@@ -1,9 +1,12 @@
 import React from "react";
-import axios from 'axios';
-import FunctionForm from "./FunctionForm.jsx";
+import GoogleFunctionForm from "./GoogleFunctionForm.jsx";
 import AWSFunctionForm from "./AWSFunctionForm.jsx";
+import MicroList from "./MicroList.jsx"
+import AWSCurrentFunctions from "./AWSCurrentFunctions.jsx";
+import axios from "axios";
 import Login from './Login.jsx';
 import Signup from "./Signup.jsx";
+import DockerSetup from "./DockerSetup.jsx";
 
 class App extends React.Component {
   constructor(props) {
@@ -19,21 +22,39 @@ class App extends React.Component {
       awsAccessKey: '',
       awsSecretAccessKey: '',
       S3BucketName: '',
+      newBucketRegion: "",
+      currRegion: "",
+      currentBuckets: [],
+      codeHere: "",
+      currentFunctions: [],
       awsRegion: '',
-      awsOutputFormat: '',
+      awsRuntime: '',
+      awsRole: '',
+      awsAccountID: '',
+      // docker
+      runtimeEnv: '',
+      workDir: '',
+      runtimeCom: '',
+      exposePort: '',
+      com: '',
       // both
+      pageSelect: 'Gcloud',
       functionName: '',
       uploadedFunction: '',
       // render states
+      pageSelect: 'Gcloud',
       isLogin: false,
       isSignup: false,
     };
-    
+
     this.updateInfo = this.updateInfo.bind(this);
+    this.getFuncInfo = this.getFuncInfo.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignup = this.handleSignup.bind(this);
     this.handleToggleSignup = this.handleToggleSignup.bind(this);
     this.handleSubmitKey = this.handleSubmitKey.bind(this);
+    this.listFunctions = this.listFunctions.bind(this)
+    this.listBuckets = this.listBuckets.bind(this)
   }
 
   updateInfo(property, value) {
@@ -42,15 +63,40 @@ class App extends React.Component {
     this.setState(updateObj);
   }
 
+  getawsAccountID() {
+    axios
+      .get("/aws/getawsAccountID", {
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(data => {
+        this.setState({ awsAccountID: data.data.Account });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
   handleLogin() {
     axios.post('/db/login', { username: this.state.username, password: this.state.password })
-      .then(response => console.log(response.data.userData))
+      .then(response => {
+        const updateStateObject = {
+          isLogin: true,
+        };
+        response.data.userData.keys.forEach(updateKey => {
+          updateStateObject[updateKey.keyType] = updateKey.key;
+          if (updateKey === 'awsSecretAccessKey') {
+            updateStateObject.awsAccessKey = key.awsAccessKey;
+          }
+        });
+
+        this.setState(updateStateObject, () => console.log(this.state));
+      });
   }
 
   handleSignup() {
     axios.post('/db/createNewUser', { username: this.state.username, password: this.state.password })
       .then(() => {
-        this.setState({ 
+        this.setState({
           isLogin: true,
           isSignup: false,
         });
@@ -65,14 +111,19 @@ class App extends React.Component {
     switch (keyType) {
       case 'googleKey':
         keyObject.key = this.state.googleKey;
+        axios.post('/gcloud/auth', { key_file: this.state.googleKey })
+          .then(response => {
+            if (response.status === 200) {
+              axios.post('/db/storeKey', keyObject)
+            }
+          });
         break;
-      case 'awsKey':
+      case 'awsSecretAccessKey':
         keyObject.key = this.state.awsSecretAccessKey;
         keyObject.awsAccessKey = this.state.awsAccessKey;
+        axios.post('/db/storeKey', keyObject)
         break;
     }
-    axios.post('/db/storeKey', keyObject);
-    // axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
   }
 
   handleToggleSignup() {
@@ -81,7 +132,145 @@ class App extends React.Component {
     }));
   }
 
+  listFunctions() {
+    let allFuncArray = []
+    axios
+      .get("/aws/listFunctions", {
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(data => {
+        for (let i = 0; i < data.data.Functions.length; i++) {
+          let funcName = data.data.Functions[i].FunctionName;
+          allFuncArray.push(<div className="myAWSFuncs" key={i}>{funcName} <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.invokeFunc(funcName)}>Invoke</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>)
+        }
+        this.setState({ currentFunctions: allFuncArray })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  getFuncInfo(funcName) {
+    console.log("in getFuncInfo")
+    axios
+      .post("/aws/getFuncInfo", {
+        funcName
+      })
+      .then(data => {
+        console.log(data.data);
+        alert(JSON.stringify(data.data))
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  invokeFunc(funcName) {
+    axios
+      .post("/aws/invokeFunc", {
+        funcName
+      })
+      .then(data =>
+        console.log(data.data))
+      .catch(function (error) {
+        console.log(error);
+      });
+    alert("Function invoked.")
+  }
+
+  deleteFunc(funcName) {
+    axios
+      .post("/aws/deleteFunc", {
+        funcName
+      })
+      .then(data => {
+
+        console.log(data.data)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    this.listFunctions() // THIS ISN'T WORKING
+  }
+
+  listBuckets() {
+    let allBuckets = [<option defaultValue={"a"}> -- select an option -- </option>]
+    axios
+      .get("/aws/allBuckets", {
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(data => {
+        for (let i = 0; i < data.data.Buckets.length; i++) {
+          let bucketName = data.data.Buckets[i].Name;
+          allBuckets.push(<option className="myAWSBuckets" key={i} value={bucketName}>{bucketName}
+          </option >)
+        }
+        this.setState({ currentBuckets: allBuckets })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  componentDidMount() {
+    // this.listFunctions();
+    // this.listBuckets();
+    // this.getawsAccountID();
+  }
+
   render() {
+
+    let displayed;
+
+    if (this.state.pageSelect === 'Gcloud') {
+      displayed = <GoogleFunctionForm
+        submitKey={this.handleSubmitKey}
+        runtime={this.state.runtime}
+        functionName={this.state.functionName}
+        googleKey={this.state.googleKey}
+        updateInfo={this.updateInfo}
+        uploadedFunction={this.state.uploadedFunction} />
+    } else if (this.state.pageSelect === 'Lambda') {
+      displayed = (<React.Fragment><AWSCurrentFunctions
+        id="AWSCurrentFunctions"
+        currentFunctions={this.state.currentFunctions}
+        currRegion={this.state.currRegion}
+        functionName={this.state.functionName}
+        codeHere={this.state.codeHere}
+        currentBuckets={this.state.currentBuckets}
+      />
+        <AWSFunctionForm id="AWSFunctionForm"
+          submitKey={this.handleSubmitKey}
+          uploadedFunction={this.state.uploadedFunction}
+          S3BucketName={this.state.S3BucketName}
+          newBucketRegion={this.state.newBucketRegion}
+          awsAccessKey={this.state.awsAccessKey}
+          awsSecretAccessKey={this.state.awsSecretAccessKey}
+          awsRegion={this.state.awsRegion}
+          updateInfo={this.updateInfo}
+          functionName={this.state.functionName}
+          codeHere={this.state.codeHere}
+          currentBuckets={this.state.currentBuckets}
+          awsRuntime={this.state.awsRuntime}
+          awsRole={this.state.awsRole}
+          awsAccountID={this.state.awsAccountID}
+          listFunctions={this.listFunctions}
+          listBuckets={this.listBuckets}
+
+        /></React.Fragment>)
+    } else if (this.state.pageSelect === 'Docker') {
+      displayed = (<React.Fragment><DockerSetup id="DockerSetup"
+        code={this.state.uploadedFunction}
+        runtimeEnv={this.state.runtimeEnv}
+        workDir={this.state.workDir}
+        runtimeCom={this.state.runtimeCom}
+        exposePort={this.state.exposePort}
+        com={this.state.com}
+        updateInfo={this.updateInfo}
+        functionName={this.state.functionName}
+      ></DockerSetup></React.Fragment>)
+    }
+
     return (
       <div className="mainContainer">
         <h1>Shinobi</h1>
@@ -99,20 +288,25 @@ class App extends React.Component {
             handleToggleSignup={this.handleToggleSignup}
           />
         )}
-        <FunctionForm
-          updateInfo={this.updateInfo}
-          submitKey={this.handleSubmitKey}
-          code={this.state.uploadedFunction}
-        />
-        <AWSFunctionForm
-          code={this.state.uploadedFunction}
-          S3BucketName={this.state.S3BucketName}
-          awsAccessKey={this.state.awsAccessKey}
-          awsSecretAccessKey={this.state.awsSecretAccessKey}
-          awsRegion={this.state.awsRegion}
-          awsOutputFormat={this.state.awsOutputFormat}
-          updateInfo={this.updateInfo}
-        />
+        <MicroList />
+        <div className='radio'>
+          <label>
+            <input onChange={() => this.updateInfo('pageSelect', 'Gcloud')} type="radio"
+              value="Gcloud" checked={this.state.pageSelect === 'Gcloud'} />
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png" />
+          </label>
+          <label>
+            <input onChange={() => this.updateInfo('pageSelect', 'Lambda')} type="radio"
+              value="Lambda" checked={this.state.pageSelect === 'Lambda'} />
+            <img src="https://git.teknik.io/POTM/Mirror-script.module.lambdascrapers/raw/commit/25b20d0adb8afa6d29eba3a0167046cb2e21ea94/icon.png" />
+          </label>
+          <label>
+            <input onChange={() => this.updateInfo('pageSelect', 'Docker')} type="radio"
+              value="Docker" checked={this.state.pageSelect === 'Docker'} />
+            <img src="https://cdn.iconscout.com/icon/free/png-256/docker-7-569438.png" />
+          </label>
+        </div>
+        {displayed}
       </div>
     );
   }

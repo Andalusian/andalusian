@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>style.scss</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../../doc-style.css" />
+  <script src="../../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../../";
+    var thisFile = "client/stylesheets/style.scss";
+    var defaultSidebar = true;
+  </script>
+  <script src="../../doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>style.scss</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="scss">* {
+  &amp;:focus {
+    <span class="hljs-attribute">outline</span>: none;
+    <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#ddd</span>;
+  }
+}
+<span class="hljs-selector-tag">body</span>, <span class="hljs-selector-tag">html</span> {
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#d4d4d4</span>;
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">0</span>;
+  <span class="hljs-attribute">font-family</span>: sans-serif;
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">16px</span>;
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#333</span>;
+  <span class="hljs-attribute">display</span>: flex;
+  <span class="hljs-attribute">justify-content</span>: center;
+  <span class="hljs-attribute">box-sizing</span>: border-box;
+}
+<span class="hljs-selector-tag">input</span>, <span class="hljs-selector-tag">textarea</span>, <span class="hljs-selector-class">.dropzone</span>, <span class="hljs-selector-class">.microList</span> {
+  <span class="hljs-attribute">display</span>: block;
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#f7f7f7</span>;
+  <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#eee</span>;
+  <span class="hljs-attribute">padding</span>: .<span class="hljs-number">5em</span> <span class="hljs-number">1em</span>;
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">10px</span> <span class="hljs-number">0</span>;
+  <span class="hljs-attribute">font-family</span>: monospace;
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">1rem</span>;
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">2px</span>;
+  &amp;::placeholder {
+    color: <span class="hljs-number">#bbb</span>;
+  }
+}
+<span class="hljs-selector-tag">textarea</span> {
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">93%</span>;
+}
+<span class="hljs-selector-tag">input</span><span class="hljs-selector-attr">[name="functionName"]</span> {
+  <span class="hljs-attribute">display</span>: inline-block;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">65%</span>;
+}
+<span class="hljs-selector-class">.coupledInputs</span> {
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>;
+}
+<span class="hljs-selector-class">.toggleSignup</span> {
+  <span class="hljs-attribute">display</span>: inline-block;
+  <span class="hljs-attribute">margin-left</span>: <span class="hljs-number">1rem</span>;
+  &amp;:hover {
+    <span class="hljs-attribute">cursor</span>: pointer;
+  }
+}
+<span class="hljs-selector-tag">select</span> {
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#f7f7f7</span>;
+  <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#eee</span>;
+  <span class="hljs-attribute">padding</span>: .<span class="hljs-number">5em</span> <span class="hljs-number">1em</span>;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">25%</span>;
+  <span class="hljs-attribute">margin-left</span>: <span class="hljs-number">10px</span>;
+  <span class="hljs-attribute">font-family</span>: monospace;
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">9pt</span>;
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">2px</span>;
+}
+<span class="hljs-selector-tag">option</span> {
+  &amp;:hover {
+    <span class="hljs-attribute">background</span>: purple;
+  }
+}
+<span class="hljs-selector-class">.mainContainer</span> {
+  <span class="hljs-attribute">background</span>: white;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">700px</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">1rem</span>;
+  <span class="hljs-attribute">text-align</span>: left;
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">3rem</span> <span class="hljs-number">0</span>;
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">3px</span>;
+  <span class="hljs-selector-tag">h1</span> {
+    <span class="hljs-attribute">text-align</span>: center;
+  }
+}
+<span class="hljs-selector-tag">button</span> {
+  <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#ddd</span>;
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">2px</span>;
+  <span class="hljs-attribute">background</span>: <span class="hljs-number">#eee</span>;
+  <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">10px</span>;
+  <span class="hljs-attribute">padding</span>: <span class="hljs-number">1em</span> <span class="hljs-number">3em</span>;
+  <span class="hljs-attribute">transition</span>: .<span class="hljs-number">25s</span> ease all;
+  &amp;:hover {
+    <span class="hljs-attribute">background</span>: <span class="hljs-number">#8fcc52</span>;
+  }
+}
+
+<span class="hljs-selector-id">#dropz</span> {
+  <span class="hljs-attribute">display</span>: flex;
+  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">9pt</span>;
+  <span class="hljs-attribute">justify-content</span>: space-around;
+  &amp;:focus {
+    <span class="hljs-attribute">outline</span>: <span class="hljs-number">0</span>;
+  }
+}
+
+<span class="hljs-selector-id">#drop1</span> {
+  <span class="hljs-attribute">margin-right</span>: <span class="hljs-number">5px</span>;
+}
+
+<span class="hljs-selector-class">.dropzone</span> {
+  <span class="hljs-attribute">transition</span>: .<span class="hljs-number">25s</span> ease all;
+  &amp;:hover {
+    <span class="hljs-attribute">background</span>: <span class="hljs-number">#8fcc52</span>;
+  }
+  <span class="hljs-attribute">border-style</span>: dashed;
+  <span class="hljs-attribute">border-color</span>: <span class="hljs-number">#3b3a39</span>;
+  &amp;:focus {
+    <span class="hljs-attribute">outline</span>: <span class="hljs-number">0</span>;
+  }
+}
+
+<span class="hljs-selector-class">.functionName</span> {
+  <span class="hljs-attribute">margin-bottom</span>: <span class="hljs-number">15px</span>;
+}
+
+<span class="hljs-selector-class">.radio</span> {
+  <span class="hljs-attribute">display</span>: flex;
+  <span class="hljs-attribute">justify-content</span>: flex-start;
+}
+<span class="hljs-selector-id">#bucketsDropdown</span> {
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">300px</span> <span class="hljs-meta">!important</span>;
+}
+
+<span class="hljs-selector-attr">[type=radio]</span> {
+  <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0</span>;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">0</span>;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">0</span>
+}
+
+[type=radio] + img {
+  cursor: pointer;
+}
+
+<span class="hljs-selector-attr">[type=radio]</span>:checked + <span class="hljs-selector-tag">img</span> {
+  <span class="hljs-attribute">outline</span>: <span class="hljs-number">3px</span> solid <span class="hljs-number">#70234d</span>
+}
+
+img {
+  margin-right: <span class="hljs-number">10px</span>;
+  <span class="hljs-attribute">margin-bottom</span>: <span class="hljs-number">10px</span>;
+  <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">10px</span>;
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">25px</span>;
+  <span class="hljs-attribute">width</span>: <span class="hljs-number">25px</span>;
+}
+
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>
