@@ -1,5 +1,6 @@
 import React from "react";
 import MyDropzone from "./MyDropzone.jsx";
+import FileDropzone from "./FileDropzone.jsx"
 import axios from "axios";
 
 // const exec = require('child_process').exec;
@@ -40,6 +41,13 @@ const DockerSetup = props => {
         .catch((error) => {
             console.log(error);
         })
+    }
+
+    function buildImage() {
+        axios
+        .post('/docker/buildImage', {})
+        .then((response) => {console.log(response);})
+        .catch((error) => {console.log(error);})
     }
 
     function deployDocker() {
@@ -98,9 +106,11 @@ const DockerSetup = props => {
                 <div>
                 <input onChange={(e) => props.updateInfo('functionName', e.target.value)} type="text" name="functionName" placeholder="Function Name" />
                 <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
+                <FileDropzone uploadedFiles={props.uploadedFiles} updateInfo={props.updateInfo}/>
                 <button onClick={() => funcSetup()}>Set Function</button>
+                <button onClick={() => buildImage()}>Build Image</button>
                 </div>
-                <button onClick={() => deployDocker()}>Deploy</button>
+                <button onClick={() => deployDocker()}>Containerize</button>
             </pre>
         </React.Fragment>
     )
