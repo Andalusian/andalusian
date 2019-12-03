@@ -84,7 +84,7 @@ dbController.decrypt = (req, res, next) => {
     }
 
     if (decryptedKeyObject.keyType === 'awsKey') {
-      awsAccessKey: decryptedKeyObject.awsAccessKey;
+      awsAccessKey: key.awsAccessKey;
     }
 
     decryptedKeys.push(decryptedKeyObject);
@@ -120,11 +120,19 @@ dbController.storeKey = (req, res, next) => {
     cryptoIV,
   };
 
-  if (encryptedKeyObject.keyType === 'awsKey') {
+  if (encryptedKeyObject.keyType === 'awsSecretAccessKey') {
+    console.log('encryptedKeyObject');
+    console.log(req.body);
     encryptedKeyObject.awsAccessKey = req.body.awsAccessKey;
+    console.log(encryptedKeyObject)
   }
 
+  console.log('---------------------');
+  console.log(encryptedKeyObject);
+
   User.findOneAndUpdate({ username }, { $push: { keys: encryptedKeyObject } }, function (err, response) {
+    console.log('******************');
+    console.log(encryptedKeyObject);
     if (err) {
       console.log(`Error in dbController.storeencryptedKey: ${err}`);
       return next(err);

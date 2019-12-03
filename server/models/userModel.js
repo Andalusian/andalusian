@@ -18,7 +18,7 @@ const userSchema =
         keyType: String,
         encryptedKey: String,
         cryptoIV: String,
-        awsAcessKey: String,
+        awsAccessKey: String,
       }],
     });
   // }
