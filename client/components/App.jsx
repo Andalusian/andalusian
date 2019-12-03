@@ -47,6 +47,7 @@ class App extends React.Component {
     this.handleSubmitKey = this.handleSubmitKey.bind(this);
     this.listFunctions = this.listFunctions.bind(this)
     this.listBuckets = this.listBuckets.bind(this)
+    this.createFunction = this.createFunction.bind(this)
   }
 
   updateInfo(property, value) {
@@ -54,20 +55,6 @@ class App extends React.Component {
     updateObj[property] = value;
     this.setState(updateObj);
   }
-
-
-  // getCurrRegion() {
-  //   axios
-  //     .get("/aws/getCurrRegion", {
-  //       headers: { 'Content-Type': 'application/json' }
-  //     })
-  //     .then(data => {
-  //       this.setState({ currRegion: data.data })
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // }
 
   getawsAccountID() {
     axios
@@ -130,7 +117,9 @@ class App extends React.Component {
       .then(data => {
         for (let i = 0; i < data.data.Functions.length; i++) {
           let funcName = data.data.Functions[i].FunctionName;
-          allFuncArray.push(<div className="myAWSFuncs" key={i}>{funcName} <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.invokeFunc(funcName)}>Invoke</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>)
+          allFuncArray.push(<div className="myAWSFuncs" key={i}>{funcName} <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>)
+
+          //APPEND!
         }
         this.setState({ currentFunctions: allFuncArray })
       })
@@ -139,15 +128,25 @@ class App extends React.Component {
       });
   }
 
+  loadCode(funcName) {
+    axios
+      .post("/aws/loadCode", {
+        funcName
+      })
+      .then(data => {
+        console.log(data)
+      })
+      .catch(error => console.log(error))
+  }
+
   getFuncInfo(funcName) {
-    console.log("in getFuncInfo")
     axios
       .post("/aws/getFuncInfo", {
         funcName
       })
       .then(data => {
-        console.log(data.data);
-        alert(JSON.stringify(data.data))
+        console.log(data.data.Configuration);
+        alert(JSON.stringify(data.data.Configuration))
       })
       .catch(function (error) {
         console.log(error);
@@ -201,7 +200,30 @@ class App extends React.Component {
       });
   }
 
-  componentWillMount() {
+  createFunction() {
+    if (this.state.functionName && this.state.uploadedFunction && this.state.awsRuntime && this.state.awsRole) {
+      axios
+        .post("aws/createFunction", {
+          functionName: this.state.functionName,
+          S3BucketName: this.state.S3BucketName,
+          uploadedFunction: this.state.uploadedFunction,
+          awsRuntime: this.state.awsRuntime,
+          awsRole: this.state.awsRole,
+          awsAccountID: this.state.awsAccountID
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      alert("Function created.")
+      this.listFunctions();
+    } else {
+      alert("Please enter Function Name, Runtime, Role, and Code to create function")
+    }
+  }
+  componentDidMount() {
     this.listFunctions();
     this.listBuckets();
     this.getawsAccountID();
@@ -248,6 +270,7 @@ class App extends React.Component {
           awsAccountID={this.state.awsAccountID}
           listFunctions={this.listFunctions}
           listBuckets={this.listBuckets}
+          createFunction={this.createFunction}
 
         /></React.Fragment>)
     }

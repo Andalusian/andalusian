@@ -25,74 +25,34 @@ const AWSFunctionForm = props => {
           console.log(error);
         });
       alert("Account configured.")
-      this.props.listFunctions(); // THIS ISN'T RELOADING
+      props.listFunctions();
     } else {
       alert("Please fill out all 3 fields to configure")
     }
   }
 
-  function createFunction() {
-    if (props.functionName && props.uploadedFunction && props.awsRuntime && props.awsRole) {
-      axios
-        .post("aws/createFunction", {
-          functionName: props.functionName,
-          S3BucketName: props.S3BucketName,
-          uploadedFunction: props.uploadedFunction,
-          awsRuntime: props.awsRuntime,
-          awsRole: props.awsRole,
-          awsAccountID: props.awsAccountID
-        })
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      // alert("Function created successfully.")
-    } else {
-      alert("Please enter Function Name, Runtime, Role, and Code to create function")
-    }
-  }
-
-  // function configureTemp() {
-  //   axios
-  //     .post("/aws/configureTemp", {
-  //       functionName: props.functionName,
-  //       codeHere: props.codeHere
-  //     })
-  //     .then((response) => {
-  //       console.log(response);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }
-
-  // function packageSAM() {
-  //   axios
-  //     .post("/aws/packageSAM", {
-  //       S3BucketName: props.S3BucketName,
-  //     })
-  //     .then((response) => {
-  //       console.log(response);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }
-
-
-  // function AWSDeploy() {
-  //   axios
-  //     .post("/aws/deploy", {
-  //       functionName: props.functionName,
-  //     })
-  //     .then((response) => {
-  //       console.log(response);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
+  // function createFunction() {
+  //   if (props.functionName && props.uploadedFunction && props.awsRuntime && props.awsRole) {
+  //     axios
+  //       .post("aws/createFunction", {
+  //         functionName: props.functionName,
+  //         S3BucketName: props.S3BucketName,
+  //         uploadedFunction: props.uploadedFunction,
+  //         awsRuntime: props.awsRuntime,
+  //         awsRole: props.awsRole,
+  //         awsAccountID: props.awsAccountID
+  //       })
+  //       .then((response) => {
+  //         console.log(response);
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //       });
+  //     alert("Function created.")
+  //     props.listFunctions();
+  //   } else {
+  //     alert("Please enter Function Name, Runtime, Role, and Code to create function")
+  //   }
   // }
 
   function createBucket() {
@@ -162,7 +122,7 @@ const AWSFunctionForm = props => {
       />
 
       <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
-      <button onClick={() => createFunction()}>Create Function</button>
+      <button onClick={() => props.createFunction()}>Create Function</button>
 
       <h4>My AWS S3 Buckets</h4>
       <select id="bucketsDropdown" name="S3BucketName" onChange={e => props.updateInfo(e.target.name, e.target.value)}>
@@ -185,10 +145,6 @@ const AWSFunctionForm = props => {
         />
         <button onClick={() => createBucket()}>Create New S3 Bucket</button>
       </div>
-
-      {/* <button onClick={() => configureTemp()}>Configure Template</button>
-      <button onClick={() => packageSAM()}>Package AWS SAM</button>
-      <button onClick={() => AWSDeploy()}>Deploy on AWS</button> */}
 
     </React.Fragment>
   );

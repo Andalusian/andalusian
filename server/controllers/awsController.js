@@ -1,130 +1,57 @@
+'use strict';
+
 const fs = require("fs");
 const { exec } = require("child_process");
 const AWS = require("aws-sdk");
 const lambda = new AWS.Lambda();
 const s3 = new AWS.S3();
+const request = require('superagent');
+const admZip = require('adm-zip');
 
 const awsController = {};
 
 awsController.configureAWS = (req, res, next) => {
-  
-  exec(`rm credentials.json`, (error, stdout, stderr) => {
-    exec(
-      `echo '{ "accessKeyId": "${req.body.awsAccessKey}", "secretAccessKey": "${req.body.awsSecretAccessKey}", "region": "${req.body.awsRegion}" }'  >> credentials.json`,
-      (error, stdout, stderr) => {
-        if (error) {
-          console.error(`exec error: ${error}`);
-          return;
-        }
-        console.log(`configureAWS stdout: ${stdout}`);
-        console.error(`configureAWS stderr: ${stderr}`);
-      }
-    );
-  })
+  fs.unlinkSync('./credentials.json');
+  let data = `{ "accessKeyId": ${JSON.stringify(req.body.awsAccessKey)}, "secretAccessKey": ${JSON.stringify(req.body.awsSecretAccessKey)} , "region": ${JSON.stringify(req.body.awsRegion)}  }`;
+  fs.writeFile('credentials.json', data, (err) => {
+    if (err) throw err
+  });
 }
-
-// awsController.configureTemp = (req, res, next) => {
-//   exec(
-//     `echo 'AWSTemplateFormatVersion: "2010-09-09"
-// Transform: AWS::Serverless-2016-10-31  \n
-// Resources:
-//     ${req.body.functionName}:
-//       Type: AWS::Serverless::Function
-//       Properties:
-//         Handler: ${req.body.functionName}.handler
-//         Runtime: nodejs8.10' >> template.yml`,
-//     (error, stdout, stderr) => {
-//       exec(
-//         `echo "${req.body.codeHere}" >> ${req.body.functionName}.js`,
-//         (error, stdout, stderr) => {
-//           if (error) {
-//             console.error(`exec error: ${error}`);
-//             return;
-//           }
-//           console.log(`configureTemp stdout: ${stdout}`);
-//           console.error(`configureTemp stderr: ${stderr}`);
-//           return next();
-//         })
-//     })
-// }
-
-// awsController.packageSAM = (req, res, next) => {
-
-//   console.log("in packageSAM cont")
-//   exec(
-//     `sam package --template-file template.yml --output-template-file package.yml --s3-bucket ${req.body.S3BucketName}`,
-//     (error, stdout, stderr) => {
-//       if (error) {
-//         console.error(`exec error: ${error}`);
-//         return;
-//       }
-//       console.log(`packageSAM stdout: ${stdout}`);
-//       console.error(`packageSAM stderr: ${stderr}`);
-//       return next();
-//     })
-//   // IT TOOK ABOUT 2-3 MINUTES TO PACKAGE
-// }
-
-// awsController.deploy = (req, res, next) => {
-//   exec(
-//     `sam deploy --template-file package.yml --stack-name ${req.body.functionName} --capabilities CAPABILITY_IAM`,
-//     (error, stdout, stderr) => {
-//       exec(
-//         `rm template.yml package.yml ${req.body.functionName}.js`,
-//         (error, stdout, stderr) => {
-//           if (error) {
-//             console.error(`exec error: ${error}`);
-//             return;
-//           }
-//           console.log(`deploy stdout: ${stdout}`);
-//           console.error(`deploy stderr: ${stderr}`);
-//           return next();
-//         })
-//     }
-//   );
-
-  // IT TOOK ABOUT 2-3 MINUTES TO DEPLOY. ONCE DEPLOYED, YOU CAN SEE THE FUNCTION IN AWS CLOUDFORMATION AND LAMBDA
-  // https://us-west-2.console.aws.amazon.com/cloudformation/home
-  // https://us-west-2.console.aws.amazon.com/lambda/home
-// };
 
 awsController.createFunction = (req, res, next) => {
   AWS.config.loadFromPath("./credentials.json");
   const lambda = new AWS.Lambda();
-  exec(
-    `echo "${req.body.uploadedFunction}" >> ${req.body.functionName}.js`,
-    (error, stdout, stderr) => {
-      exec(`zip function.zip ${req.body.functionName}.js`, (error, stdout, stderr) => {
-        const params = {
-          "Code": {
-            // "S3Bucket": `${req.body.S3BucketName}`,
-            // "S3Key": "",
-            // "S3ObjectVersion": "",
-            "ZipFile": fs.readFileSync("function.zip")
-          },
-          "FunctionName": `${req.body.functionName}`,
-          "Handler": `${req.body.functionName}` + ".handler",
-          "Role": "arn:aws:iam::" + `${req.body.awsAccountID}` + `${req.body.awsRole}`,
-          "Runtime": `${req.body.awsRuntime}`
-        };
-        console.log(params);
-        lambda.createFunction(params, (err, data) => {
-          if (err) console.log(err, err.stack);
-          else {
-            console.log("WHATTTT -->", data);
-            return next();
-          }
-
-        })
-      })
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return;
+  fs.writeFileSync(`${req.body.functionName}.js`, req.body.uploadedFunction, (err) => {
+    if (err) throw err
+  })
+  exec(`zip function.zip ${req.body.functionName}.js`, (error, stdout, stderr) => {
+    const params = {
+      "Code": {
+        // "S3Bucket": `${req.body.S3BucketName}`,
+        // "S3Key": "",
+        // "S3ObjectVersion": "",
+        "ZipFile": fs.readFileSync("function.zip")
+      },
+      "FunctionName": `${req.body.functionName}`,
+      "Handler": `${req.body.functionName}` + ".handler",
+      "Role": "arn:aws:iam::" + `${req.body.awsAccountID}` + `${req.body.awsRole}`,
+      "Runtime": `${req.body.awsRuntime}`
+    };
+    console.log(params);
+    lambda.createFunction(params, (err, data) => {
+      if (err) console.log(err, err.stack);
+      else {
+        console.log("WHATTTT -->", data);
+        return next();
       }
-      console.log(`createFunction stdout: ${stdout}`);
-      console.error(`createFunction stderr: ${stderr}`);
+    })
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return;
     }
-  );
+    console.log(`createFunction stdout: ${stdout}`);
+    console.error(`createFunction stderr: ${stderr}`);
+  })
 }
 // REMINDER TO SELF - SET UP TO DELETE THE FOLDER AFTER THE PROCESS IS COMPLETED
 
@@ -183,20 +110,42 @@ awsController.allBuckets = (req, res, next) => {
   });
 }
 
-// awsController.getCurrRegion = (req, res, next) => {
-//   exec(
-//     `aws2 configure get region`,
-//     (error, stdout, stderr) => {
-//       if (error) {
-//         console.error(`exec error: ${error}`);
-//         return;
-//       }
-//       res.locals.region = stdout;
-//       console.error(`getCurrRegion stderr: ${stderr}`);
-//       return next();
-//     }
-//   );
-// }
+awsController.loadCode = (req, res, next) => {
+  AWS.config.loadFromPath("./credentials.json");
+  const lambda = new AWS.Lambda();
+  const params = { FunctionName: `${req.body.funcName}` }
+  lambda.getFunction(params, (err, data) => {
+    console.log("data.Code.Location ---->", data.Code.Location)
+    const href = data.Code.Location;
+    const zipFile = 'aster.zip';
+    const extractEntryTo = `${zipFile}-master/`;
+    const outputDir = `./${zipFile}-master/`;
+    request
+      .get(href)
+      .on('error', function (error) {
+        console.log(error);
+      })
+      .pipe(fs.createWriteStream(zipFile))
+      // .then(data => console.log("DATATDATAT", data))
+      .on('finish', function () {
+
+        const zip = new admZip(zipFile);
+        zip.extractEntryTo(extractEntryTo, outputDir, false, true);
+
+      });
+    if (err) {
+      console.log("err: ", err)
+      return
+    }
+    res.locals.funcCode = data.Code.Location;
+    console.log("data.Code.Location ---->", data.Code.Location)
+    exec(`open '${data.Code.Location}'`, (error, stdout, stderr) => {
+      exec(`~`, (error, stdout, stderr) => { })
+    })
+    return next();
+  }
+  )
+}
 
 awsController.getFuncInfo = (req, res, next) => {
   AWS.config.loadFromPath("./credentials.json")
