@@ -6,6 +6,7 @@ import AWSCurrentFunctions from "./AWSCurrentFunctions.jsx";
 import axios from "axios";
 import Login from './Login.jsx';
 import Signup from "./Signup.jsx";
+import DockerSetup from "./DockerSetup.jsx";
 
 class App extends React.Component {
   constructor(props) {
@@ -30,12 +31,19 @@ class App extends React.Component {
       awsRuntime: '',
       awsRole: '',
       awsAccountID: '',
+      // docker
+      dockerUsername: '',
+      dockerPassword: '',
+      runtimeEnv: '',
+      workDir: '',
+      runtimeCom: '',
+      exposePort: '',
+      com: '',
       // both
       pageSelect: 'Gcloud',
       functionName: '',
       uploadedFunction: '',
       // render states
-      pageSelect: 'Gcloud',
       isLogin: false,
       isSignup: false,
     };
@@ -77,8 +85,8 @@ class App extends React.Component {
         };
         response.data.userData.keys.forEach(updateKey => {
           updateStateObject[updateKey.keyType] = updateKey.key;
-          if (updateKey === 'awsSecretAccessKey') {
-            updateStateObject.awsAccessKey = key.awsAccessKey;
+          if (updateKey.keyType === 'awsSecretAccessKey') {
+            updateStateObject.awsAccessKey = updateKey.awsAccessKey;
           }
         });
 
@@ -107,16 +115,25 @@ class App extends React.Component {
         axios.post('/gcloud/auth', { key_file: this.state.googleKey })
           .then(response => {
             if (response.status === 200) {
-              axios.post('/db/storeKey', keyObject)
+              axios.post('/db/storeKey', keyObject);
             }
           });
         break;
       case 'awsSecretAccessKey':
         keyObject.key = this.state.awsSecretAccessKey;
         keyObject.awsAccessKey = this.state.awsAccessKey;
-        axios.post('/db/storeKey', keyObject)
+        axios.post('/db/storeKey', keyObject);
+        break;
+      case 'dockerPassword':
+        keyObject.key = this.state.dockerPassword;
+        keyObject.dockerUsername = this.state.dockerUsername;
+        axios.post('/db/storeKey', keyObject);
         break;
     }
+    axios.post('/gcloud/auth', {key_file: this.state.googleKey})
+        .then(response => {if (response.status === 200) axios.post('/db/storeKey', keyObject)});
+    // axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
+
   }
 
   handleToggleSignup() {
@@ -151,7 +168,9 @@ class App extends React.Component {
       })
       .then(data => {
         console.log(data.data);
-        alert(JSON.stringify(data.data))
+        alert(`State: ${data.data.Configuration.State} 
+        \nRuntime: ${data.data.Configuration.Runtime} 
+        \nLast Modified: ${(new Date (Date.parse(data.data.Configuration.LastModified))).toLocaleString('en-US', {timeZone: 'America/Los_Angeles'})}`)
       })
       .catch(function (error) {
         console.log(error);
@@ -251,6 +270,18 @@ class App extends React.Component {
           listBuckets={this.listBuckets}
 
         /></React.Fragment>)
+    } else if (this.state.pageSelect === 'Docker') {
+      displayed = (<React.Fragment><DockerSetup id="DockerSetup"
+        code={this.state.uploadedFunction}
+        runtimeEnv={this.state.runtimeEnv}
+        workDir={this.state.workDir}
+        runtimeCom={this.state.runtimeCom}
+        exposePort={this.state.exposePort}
+        com={this.state.com}
+        updateInfo={this.updateInfo}
+        submitKey={this.submitKey}
+        functionName={this.state.functionName}
+      ></DockerSetup></React.Fragment>)
     }
 
     return (
@@ -281,6 +312,11 @@ class App extends React.Component {
             <input onChange={() => this.updateInfo('pageSelect', 'Lambda')} type="radio"
               value="Lambda" checked={this.state.pageSelect === 'Lambda'} />
             <img src="https://git.teknik.io/POTM/Mirror-script.module.lambdascrapers/raw/commit/25b20d0adb8afa6d29eba3a0167046cb2e21ea94/icon.png" />
+          </label>
+          <label>
+            <input onChange={() => this.updateInfo('pageSelect', 'Docker')} type="radio"
+              value="Docker" checked={this.state.pageSelect === 'Docker'} />
+            <img src="https://cdn.iconscout.com/icon/free/png-256/docker-7-569438.png" />
           </label>
         </div>
         {displayed}

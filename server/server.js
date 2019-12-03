@@ -26,11 +26,15 @@ const gcloudRouter = require('./routers/gcloudRouter');
 const awsRouter = require('./routers/awsRouter');
 const azureRouter = require('./routers/azureRouter');
 const dbRouter = require('./routers/dbRouter');
+const dockerRouter = require('./routers/dockerRouter');
 // GCLOUD
 app.use('/gcloud', gcloudRouter);
 
 // AWS
 app.use('/aws', awsRouter);
+
+// DOCKER
+app.use('/docker', dockerRouter);
 
 // AZURE
 app.use('/azure', azureRouter);

@@ -7,20 +7,11 @@ const s3 = new AWS.S3();
 const awsController = {};
 
 awsController.configureAWS = (req, res, next) => {
-  
-  exec(`rm credentials.json`, (error, stdout, stderr) => {
-    exec(
-      `echo '{ "accessKeyId": "${req.body.awsAccessKey}", "secretAccessKey": "${req.body.awsSecretAccessKey}", "region": "${req.body.awsRegion}" }'  >> credentials.json`,
-      (error, stdout, stderr) => {
-        if (error) {
-          console.error(`exec error: ${error}`);
-          return;
-        }
-        console.log(`configureAWS stdout: ${stdout}`);
-        console.error(`configureAWS stderr: ${stderr}`);
-      }
-    );
-  })
+  fs.unlinkSync('./credentials.json');
+  let data = `{ "accessKeyId": ${JSON.stringify(req.body.awsAccessKey)}, "secretAccessKey": ${JSON.stringify(req.body.awsSecretAccessKey)} , "region": ${JSON.stringify(req.body.awsRegion)}  }`;
+  fs.writeFile('credentials.json', data, (err) => {
+    if (err) throw err
+  });
 }
 
 // awsController.configureTemp = (req, res, next) => {

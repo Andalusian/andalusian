@@ -1,5 +1,6 @@
 import React from "react";
 import MyDropzone from "./MyDropzone.jsx";
+import AWSCredentials from './AWSCredentials.jsx';
 import axios from "axios";
 
 const AWSFunctionForm = props => {
@@ -117,20 +118,7 @@ const AWSFunctionForm = props => {
     <React.Fragment>
       <pre>
         <h4>Configuration</h4>
-        <input
-          type="text"
-          id="awsAccessKey"
-          name="awsAccessKey"
-          placeholder="Access key ID"
-          onChange={e => props.updateInfo(e.target.name, e.target.value)}
-        />
-        <input
-          type="text"
-          id="awsSecretAccessKey"
-          name="awsSecretAccessKey"
-          placeholder="Secret access key"
-          onChange={e => props.updateInfo(e.target.name, e.target.value)}
-        />
+        <AWSCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} />
         <input
           type="text"
           id="awsRegion"
@@ -139,10 +127,7 @@ const AWSFunctionForm = props => {
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
 
-        <button onClick={() => {
-          props.submitKey('awsSecretAccessKey');
-          configureAWS();
-        }}>Save Configuration</button>
+        <button onClick={() => {configureAWS()}}>Save Configuration</button>
       </pre>
       <input onChange={(e) => props.updateInfo('functionName', e.target.value)} type="text" name="functionName" placeholder="Function Name" />
       <select name="awsRuntime" onChange={e => props.updateInfo(e.target.name, e.target.value)} >
