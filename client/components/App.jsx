@@ -6,6 +6,7 @@ import AWSCurrentFunctions from "./AWSCurrentFunctions.jsx";
 import axios from "axios";
 import Login from './Login.jsx';
 import Signup from "./Signup.jsx";
+import DockerSetup from "./DockerSetup.jsx";
 
 class App extends React.Component {
   constructor(props) {
@@ -19,17 +20,23 @@ class App extends React.Component {
       runtime: undefined,
       // aws
       awsAccessKey: '',
+      awsSecretAccessKey: '',
+      S3BucketName: '',
       newBucketRegion: "",
       currRegion: "",
       currentBuckets: [],
       codeHere: "",
       currentFunctions: [],
-      awsSecretAccessKey: '',
-      S3BucketName: '',
       awsRegion: '',
       awsRuntime: '',
       awsRole: '',
       awsAccountID: '',
+      // docker
+      runtimeEnv: '',
+      workDir: '',
+      runtimeCom: '',
+      exposePort: '',
+      com: '',
       // both
       pageSelect: 'Gcloud',
       functionName: '',
@@ -55,20 +62,6 @@ class App extends React.Component {
     this.setState(updateObj);
   }
 
-
-  // getCurrRegion() {
-  //   axios
-  //     .get("/aws/getCurrRegion", {
-  //       headers: { 'Content-Type': 'application/json' }
-  //     })
-  //     .then(data => {
-  //       this.setState({ currRegion: data.data })
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // }
-
   getawsAccountID() {
     axios
       .get("/aws/getawsAccountID", {
@@ -84,7 +77,19 @@ class App extends React.Component {
 
   handleLogin() {
     axios.post('/db/login', { username: this.state.username, password: this.state.password })
-      .then(response => console.log(response.data.userData))
+      .then(response => {
+        const updateStateObject = {
+          isLogin: true,
+        };
+        response.data.userData.keys.forEach(updateKey => {
+          updateStateObject[updateKey.keyType] = updateKey.key;
+          if (updateKey === 'awsSecretAccessKey') {
+            updateStateObject.awsAccessKey = key.awsAccessKey;
+          }
+        });
+
+        this.setState(updateStateObject, () => console.log(this.state));
+      });
   }
 
   handleSignup() {
@@ -105,15 +110,23 @@ class App extends React.Component {
     switch (keyType) {
       case 'googleKey':
         keyObject.key = this.state.googleKey;
+        axios.post('/gcloud/auth', { key_file: this.state.googleKey })
+          .then(response => {
+            if (response.status === 200) {
+              axios.post('/db/storeKey', keyObject)
+            }
+          });
         break;
-      case 'awsKey':
+      case 'awsSecretAccessKey':
         keyObject.key = this.state.awsSecretAccessKey;
         keyObject.awsAccessKey = this.state.awsAccessKey;
+        axios.post('/db/storeKey', keyObject)
         break;
     }
     axios.post('/gcloud/auth', {key_file: this.state.googleKey})
         .then(response => {if (response.status === 200) axios.post('/db/storeKey', keyObject)});
     // axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
+
   }
 
   handleToggleSignup() {
@@ -205,9 +218,9 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.listFunctions();
-    this.listBuckets();
-    this.getawsAccountID();
+    // this.listFunctions();
+    // this.listBuckets();
+    // this.getawsAccountID();
   }
 
   render() {
@@ -232,6 +245,7 @@ class App extends React.Component {
         currentBuckets={this.state.currentBuckets}
       />
         <AWSFunctionForm id="AWSFunctionForm"
+          submitKey={this.handleSubmitKey}
           uploadedFunction={this.state.uploadedFunction}
           S3BucketName={this.state.S3BucketName}
           newBucketRegion={this.state.newBucketRegion}
@@ -249,6 +263,17 @@ class App extends React.Component {
           listBuckets={this.listBuckets}
 
         /></React.Fragment>)
+    } else if (this.state.pageSelect === 'Docker') {
+      displayed = (<React.Fragment><DockerSetup id="DockerSetup"
+        code={this.state.uploadedFunction}
+        runtimeEnv={this.state.runtimeEnv}
+        workDir={this.state.workDir}
+        runtimeCom={this.state.runtimeCom}
+        exposePort={this.state.exposePort}
+        com={this.state.com}
+        updateInfo={this.updateInfo}
+        functionName={this.state.functionName}
+      ></DockerSetup></React.Fragment>)
     }
 
     return (
@@ -279,6 +304,11 @@ class App extends React.Component {
             <input onChange={() => this.updateInfo('pageSelect', 'Lambda')} type="radio"
               value="Lambda" checked={this.state.pageSelect === 'Lambda'} />
             <img src="https://git.teknik.io/POTM/Mirror-script.module.lambdascrapers/raw/commit/25b20d0adb8afa6d29eba3a0167046cb2e21ea94/icon.png" />
+          </label>
+          <label>
+            <input onChange={() => this.updateInfo('pageSelect', 'Docker')} type="radio"
+              value="Docker" checked={this.state.pageSelect === 'Docker'} />
+            <img src="https://cdn.iconscout.com/icon/free/png-256/docker-7-569438.png" />
           </label>
         </div>
         {displayed}
