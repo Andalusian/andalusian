@@ -28,16 +28,17 @@ dockerController.funcSetup = (req, res, next) => {
     next();
 }
 
+dockerController.buildImage = (req, res, next) => {
+    exec(`cd server/platforms/docker/live; docker image build -t ${req.body.functionName} .; wait; docker image ls`,
+    ['shell'], function(err, stdout, stderr){
+       console.log(err || stdout || stderr)
+   })
+}
+
 dockerController.deployDocker = (req, res, next) => {
-    // exec(`cd server/platforms/docker/live; docker image build -t ${req.body.functionName} .; wait; docker container run --publish 3001:3001 --detach --name ${req.body.functionName}`, ['shell'], function(err, stdout, stderr){
-    //     console.log(err || stdout || stderr)
-    // })
+
     
-    exec(`cd server/platforms/docker/live; docker container ls`, ['shell'], function(err, stdout, stderr){
-        console.log(err || stdout || stderr)
-    })
-    
-    // exec(`docker container run test`, ['shell'], function(err, stdout, stderr){
+    // exec(`docker container run ${req.body.functionName}`, ['shell'], function(err, stdout, stderr){
     //         console.log(err || stdout || stderr)
     //     })
     

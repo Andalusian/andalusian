@@ -37,10 +37,12 @@ class App extends React.Component {
       runtimeCom: '',
       exposePort: '',
       com: '',
+      copy: '',
       // both
       pageSelect: 'Gcloud',
       functionName: '',
       uploadedFunction: '',
+      uploadedFiles: '',
       // render states
       pageSelect: 'Gcloud',
       isLogin: false,
@@ -268,6 +270,8 @@ class App extends React.Component {
         com={this.state.com}
         updateInfo={this.updateInfo}
         functionName={this.state.functionName}
+        copy={this.state.copy}
+        uploadedFiles={this.state.uploadedFiles}
       ></DockerSetup></React.Fragment>)
     }
 
