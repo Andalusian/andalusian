@@ -90,8 +90,7 @@ dbController.decrypt = (req, res, next) => {
     decryptedKeys.push(decryptedKeyObject);
   });
 
-  res.locals.userData.keys = decryptedKeys; 
-  console.log(res.locals.userData.keys);
+  res.locals.userData.keys = decryptedKeys;
 
   return next();
 }
@@ -121,18 +120,13 @@ dbController.storeKey = (req, res, next) => {
   };
 
   if (encryptedKeyObject.keyType === 'awsSecretAccessKey') {
-    console.log('encryptedKeyObject');
-    console.log(req.body);
     encryptedKeyObject.awsAccessKey = req.body.awsAccessKey;
-    console.log(encryptedKeyObject)
+  }
+  if (encryptedKeyObject.keyType === 'dockerPassword') {
+    encryptedKeyObject.dockerUsername = req.body.dockerUsername;
   }
 
-  console.log('---------------------');
-  console.log(encryptedKeyObject);
-
   User.findOneAndUpdate({ username }, { $push: { keys: encryptedKeyObject } }, function (err, response) {
-    console.log('******************');
-    console.log(encryptedKeyObject);
     if (err) {
       console.log(`Error in dbController.storeencryptedKey: ${err}`);
       return next(err);
