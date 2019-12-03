@@ -33,6 +33,8 @@ class App extends React.Component {
       awsRole: '',
       awsAccountID: '',
       // docker
+      dockerUsername: '',
+      dockerPassword: '',
       runtimeEnv: '',
       workDir: '',
       runtimeCom: '',
@@ -84,8 +86,8 @@ class App extends React.Component {
         };
         response.data.userData.keys.forEach(updateKey => {
           updateStateObject[updateKey.keyType] = updateKey.key;
-          if (updateKey === 'awsSecretAccessKey') {
-            updateStateObject.awsAccessKey = key.awsAccessKey;
+          if (updateKey.keyType === 'awsSecretAccessKey') {
+            updateStateObject.awsAccessKey = updateKey.awsAccessKey;
           }
         });
 
@@ -114,14 +116,19 @@ class App extends React.Component {
         axios.post('/gcloud/auth', { key_file: this.state.googleKey })
           .then(response => {
             if (response.status === 200) {
-              axios.post('/db/storeKey', keyObject)
+              axios.post('/db/storeKey', keyObject);
             }
           });
         break;
       case 'awsSecretAccessKey':
         keyObject.key = this.state.awsSecretAccessKey;
         keyObject.awsAccessKey = this.state.awsAccessKey;
-        axios.post('/db/storeKey', keyObject)
+        axios.post('/db/storeKey', keyObject);
+        break;
+      case 'dockerPassword':
+        keyObject.key = this.state.dockerPassword;
+        keyObject.dockerUsername = this.state.dockerUsername;
+        axios.post('/db/storeKey', keyObject);
         break;
     }
     axios.post('/gcloud/auth', {key_file: this.state.googleKey})
@@ -274,6 +281,7 @@ class App extends React.Component {
         exposePort={this.state.exposePort}
         com={this.state.com}
         updateInfo={this.updateInfo}
+        submitKey={this.submitKey}
         functionName={this.state.functionName}
       ></DockerSetup></React.Fragment>)
     }

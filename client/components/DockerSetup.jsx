@@ -1,5 +1,6 @@
 import React from "react";
 import MyDropzone from "./MyDropzone.jsx";
+import DockerCredentials from './DockerCredentials.jsx';
 import axios from "axios";
 
 // const exec = require('child_process').exec;
@@ -59,6 +60,7 @@ const DockerSetup = props => {
 
     return (
         <React.Fragment>
+            <DockerCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} />
             <pre>
                 <h4>Container Setup</h4>
                 <input
