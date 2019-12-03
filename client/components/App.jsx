@@ -18,6 +18,7 @@ class App extends React.Component {
       // google
       googleKey: '',
       runtime: undefined,
+      googleProject: '',
       // aws
       awsAccessKey: '',
       awsSecretAccessKey: '',
@@ -230,6 +231,7 @@ class App extends React.Component {
     if (this.state.pageSelect === 'Gcloud') {
       displayed = <GoogleFunctionForm
         submitKey={this.handleSubmitKey}
+        googleProject={this.googleProject}
         runtime={this.state.runtime}
         functionName={this.state.functionName}
         googleKey={this.state.googleKey}
