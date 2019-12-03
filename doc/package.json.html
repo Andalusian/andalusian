@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>package.json</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="doc-style.css" />
+  <script src="doc-filelist.js"></script>
+  <script>
+    var relativeDir = "";
+    var thisFile = "package.json";
+    var defaultSidebar = true;
+  </script>
+  <script src="doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>package.json</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="json">{
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"shinobi"</span>,
+  <span class="hljs-attr">"version"</span>: <span class="hljs-string">"1.0.0"</span>,
+  <span class="hljs-attr">"description"</span>: <span class="hljs-string">""</span>,
+  <span class="hljs-attr">"main"</span>: <span class="hljs-string">"index.js"</span>,
+  <span class="hljs-attr">"scripts"</span>: {
+    <span class="hljs-attr">"start"</span>: <span class="hljs-string">"node server/server.js"</span>,
+    <span class="hljs-attr">"build"</span>: <span class="hljs-string">"cross-env NODE_ENV=production webpack"</span>,
+    <span class="hljs-attr">"dev"</span>: <span class="hljs-string">"concurrently \"cross-env NODE_ENV=development webpack-dev-server --open \" \"nodemon server/server.js\""</span>,
+    <span class="hljs-attr">"test"</span>: <span class="hljs-string">"echo \"Error: no test specified\" &amp;&amp; exit 1"</span>,
+    <span class="hljs-attr">"packagezip"</span>: <span class="hljs-string">"sh package-to-zip.sh"</span>,
+    <span class="hljs-attr">"update"</span>: <span class="hljs-string">"node update.js"</span>,
+    <span class="hljs-attr">"listfunctions"</span>: <span class="hljs-string">"node listfuncyions.js"</span>,
+    <span class="hljs-attr">"listbuckets"</span>: <span class="hljs-string">"node listbuckets.js"</span>
+  },
+  <span class="hljs-attr">"repository"</span>: {
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"git"</span>,
+    <span class="hljs-attr">"url"</span>: <span class="hljs-string">"git+https://github.com/Andalusian/shinobi.git"</span>
+  },
+  <span class="hljs-attr">"author"</span>: <span class="hljs-string">""</span>,
+  <span class="hljs-attr">"license"</span>: <span class="hljs-string">"ISC"</span>,
+  <span class="hljs-attr">"bugs"</span>: {
+    <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://github.com/Andalusian/shinobi/issues"</span>
+  },
+  <span class="hljs-attr">"homepage"</span>: <span class="hljs-string">"https://github.com/Andalusian/shinobi#readme"</span>,
+  <span class="hljs-attr">"dependencies"</span>: {
+    <span class="hljs-attr">"aws-sdk"</span>: <span class="hljs-string">"^2.580.0"</span>,
+    <span class="hljs-attr">"axios"</span>: <span class="hljs-string">"^0.19.0"</span>,
+    <span class="hljs-attr">"bcrypt"</span>: <span class="hljs-string">"^3.0.7"</span>,
+    <span class="hljs-attr">"cookie-parser"</span>: <span class="hljs-string">"^1.4.4"</span>,
+    <span class="hljs-attr">"cross-env"</span>: <span class="hljs-string">"^6.0.3"</span>,
+    <span class="hljs-attr">"docker"</span>: <span class="hljs-string">"^1.0.0"</span>,
+    <span class="hljs-attr">"express"</span>: <span class="hljs-string">"^4.17.1"</span>,
+    <span class="hljs-attr">"mongoose"</span>: <span class="hljs-string">"^5.7.12"</span>,
+    <span class="hljs-attr">"node"</span>: <span class="hljs-string">"^13.1.0"</span>,
+    <span class="hljs-attr">"react"</span>: <span class="hljs-string">"^16.12.0"</span>,
+    <span class="hljs-attr">"react-dom"</span>: <span class="hljs-string">"^16.12.0"</span>,
+    <span class="hljs-attr">"react-dropzone"</span>: <span class="hljs-string">"^10.2.1"</span>
+  },
+  <span class="hljs-attr">"devDependencies"</span>: {
+    <span class="hljs-attr">"@babel/core"</span>: <span class="hljs-string">"^7.7.4"</span>,
+    <span class="hljs-attr">"@babel/preset-env"</span>: <span class="hljs-string">"^7.7.4"</span>,
+    <span class="hljs-attr">"@babel/preset-react"</span>: <span class="hljs-string">"^7.7.4"</span>,
+    <span class="hljs-attr">"babel-loader"</span>: <span class="hljs-string">"^8.0.6"</span>,
+    <span class="hljs-attr">"concurrently"</span>: <span class="hljs-string">"^5.0.0"</span>,
+    <span class="hljs-attr">"css-loader"</span>: <span class="hljs-string">"^3.2.0"</span>,
+    <span class="hljs-attr">"file-loader"</span>: <span class="hljs-string">"^5.0.2"</span>,
+    <span class="hljs-attr">"node-sass"</span>: <span class="hljs-string">"^4.13.0"</span>,
+    <span class="hljs-attr">"nodemon"</span>: <span class="hljs-string">"^2.0.1"</span>,
+    <span class="hljs-attr">"sass-loader"</span>: <span class="hljs-string">"^8.0.0"</span>,
+    <span class="hljs-attr">"style-loader"</span>: <span class="hljs-string">"^1.0.0"</span>,
+    <span class="hljs-attr">"url-loader"</span>: <span class="hljs-string">"^3.0.0"</span>,
+    <span class="hljs-attr">"webpack"</span>: <span class="hljs-string">"^4.41.2"</span>,
+    <span class="hljs-attr">"webpack-cli"</span>: <span class="hljs-string">"^3.3.10"</span>,
+    <span class="hljs-attr">"webpack-dev-server"</span>: <span class="hljs-string">"^3.9.0"</span>
+  }
+}
+
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>
