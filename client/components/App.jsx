@@ -44,7 +44,6 @@ class App extends React.Component {
       functionName: '',
       uploadedFunction: '',
       // render states
-      pageSelect: 'Gcloud',
       isLogin: false,
       isSignup: false,
     };
@@ -131,6 +130,10 @@ class App extends React.Component {
         axios.post('/db/storeKey', keyObject);
         break;
     }
+    axios.post('/gcloud/auth', {key_file: this.state.googleKey})
+        .then(response => {if (response.status === 200) axios.post('/db/storeKey', keyObject)});
+    // axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
+
   }
 
   handleToggleSignup() {
@@ -165,7 +168,9 @@ class App extends React.Component {
       })
       .then(data => {
         console.log(data.data);
-        alert(JSON.stringify(data.data))
+        alert(`State: ${data.data.Configuration.State} 
+        \nRuntime: ${data.data.Configuration.Runtime} 
+        \nLast Modified: ${(new Date (Date.parse(data.data.Configuration.LastModified))).toLocaleString('en-US', {timeZone: 'America/Los_Angeles'})}`)
       })
       .catch(function (error) {
         console.log(error);

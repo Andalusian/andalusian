@@ -18,7 +18,7 @@ const GoogleFunctionForm = (props) => {
           <option value="go113">Go 1.13</option>
         </select>
           <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
-        <button onClick={() => axios.post('/gcloud/deploy', { functionName: props.functionName, runtime: props.runtime, fn: props.code })
+        <button onClick={() => axios.post('/gcloud/deploy', {functionName: props.functionName, runtime: props.runtime, fn: props.code})
             .then(response => console.log('successfully deployed'))}
 
         >Deploy</button>
