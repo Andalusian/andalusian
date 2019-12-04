@@ -57,18 +57,21 @@ class App extends React.Component {
     this.handleSubmitKey = this.handleSubmitKey.bind(this);
     this.listFunctions = this.listFunctions.bind(this)
     this.listBuckets = this.listBuckets.bind(this)
-    this.createFunction = this.createFunction.bind(this)
+    this.createFunction = this.createFunction.bind(this);
+    this.configureAWS = this.configureAWS.bind(this)
   }
 
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
-    this.setState(updateObj, () => console.log(this.state.googleProject));
+    this.setState(updateObj);
   }
 
   getawsAccountID() {
     axios
-      .get("/aws/getawsAccountID")
+      .post("/aws/getawsAccountID", {
+        username: this.state.username
+      })
       .then(data => {
         this.setState({ awsAccountID: data.data.Account });
       })
@@ -89,9 +92,13 @@ class App extends React.Component {
             updateStateObject.awsAccessKey = updateKey.awsAccessKey;
           }
         });
-        this.setState(updateStateObject, () => console.log(this.state));
+        this.setState(updateStateObject, () => {
+          console.log(this.state);
+        });
+
       });
   }
+
   handleSignup() {
     axios.post('/db/createNewUser', { username: this.state.username, password: this.state.password })
       .then(() => {
@@ -101,6 +108,7 @@ class App extends React.Component {
         });
       });
   }
+
   handleSubmitKey(keyType) {
     const keyObject = {
       username: this.state.username,
@@ -130,7 +138,6 @@ class App extends React.Component {
     axios.post('/gcloud/auth', { key_file: this.state.googleKey })
       .then(response => { if (response.status === 200) axios.post('/db/storeKey', keyObject) });
     // axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
-
   }
 
   handleToggleSignup() {
@@ -139,12 +146,33 @@ class App extends React.Component {
     }));
   }
 
-  listFunctions() {
-    let allFuncArray = []
+  configureAWS() {
     axios
-      .get("/aws/listFunctions")
+      .post("/aws/configureAWS", {
+        awsAccessKey: this.state.awsAccessKey,
+        awsSecretAccessKey: this.state.awsSecretAccessKey,
+        awsRegion: this.state.awsRegion,
+        username: this.state.username
+      })
+      .then((response) => {
+        setTimeout(() => this.listFunctions(), 1000);
+      })
+      .catch((error) => {
+        console.log(error);
+
+      });
+  }
+
+  listFunctions() {
+    console.log("BANANDA");
+    let allFuncArray = [];
+    axios
+      .post("/aws/listFunctions", {
+        username: this.state.username
+      })
       .then(data => {
         for (let i = 0; i < data.data.Functions.length; i++) {
+          console.log("POTATO", i)
           let funcName = data.data.Functions[i].FunctionName;
           allFuncArray.push(<div className="myAWSFuncs" key={i}>{funcName} <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>)
         }
@@ -158,7 +186,8 @@ class App extends React.Component {
   loadCode(funcName) {
     axios
       .post("/aws/loadCode", {
-        funcName
+        funcName,
+        username: this.state.username
       })
       .then(data => {
         console.log(data)
@@ -170,7 +199,8 @@ class App extends React.Component {
     console.log("in getFuncInfo")
     axios
       .post("/aws/getFuncInfo", {
-        funcName
+        funcName,
+        username: this.state.username
       })
       .then(data => {
         console.log(data.data);
@@ -187,7 +217,8 @@ class App extends React.Component {
   invokeFunc(funcName) {
     axios
       .post("/aws/invokeFunc", {
-        funcName
+        funcName,
+        username: this.state.username
       })
       .then(data =>
         console.log(data.data))
@@ -200,7 +231,8 @@ class App extends React.Component {
   deleteFunc(funcName) {
     axios
       .post("/aws/deleteFunc", {
-        funcName
+        funcName,
+        username: this.state.username
       })
       .then(data => {
         this.listFunctions()
@@ -214,7 +246,7 @@ class App extends React.Component {
   listBuckets() {
     let allBuckets = [<option defaultValue={"a"}> -- select an option -- </option>]
     axios
-      .get("/aws/allBuckets")
+      .post("/aws/allBuckets", { username: this.state.username })
       .then(data => {
         for (let i = 0; i < data.data.Buckets.length; i++) {
           let bucketName = data.data.Buckets[i].Name;
@@ -229,14 +261,15 @@ class App extends React.Component {
   }
 
   createFunction() {
-    if (this.state.functionName && this.state.uploadedFunction && this.state.awsRuntime && this.state.awsRole) {
+    if (this.state.functionName && this.state.uploadedFunction && this.state.awsRuntime && this.state.awsRole && this.state.awsRegion) {
       axios
         .post("aws/createFunction", {
           functionName: this.state.functionName,
           uploadedFunction: this.state.uploadedFunction,
           awsRuntime: this.state.awsRuntime,
           awsRole: this.state.awsRole,
-          awsAccountID: this.state.awsAccountID
+          awsAccountID: this.state.awsAccountID,
+          username: this.state.username
         })
         .then((response) => {
           console.log(response);
@@ -259,13 +292,13 @@ class App extends React.Component {
       // alert("Function created.")
 
     } else {
-      alert("Please enter Function Name, Runtime, Role, and Code to create function")
+      alert("Please enter Region, Function Name, Runtime, Role, and Code to create function")
     }
   }
   componentDidMount() {
-    this.listFunctions();
-    this.listBuckets();
-    this.getawsAccountID();
+    // this.listFunctions();
+    // this.listBuckets();
+    // this.getawsAccountID();
   }
   componentDidUpdate() {
     // this.listFunctions();
@@ -313,6 +346,7 @@ class App extends React.Component {
           listFunctions={this.listFunctions}
           listBuckets={this.listBuckets}
           createFunction={this.createFunction}
+          configureAWS={this.configureAWS}
 
         /></React.Fragment>)
     } else if (this.state.pageSelect === 'Docker') {

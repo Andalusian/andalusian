@@ -8,11 +8,11 @@ router.post("/configureAWS", awsController.configureAWS, (req, res, next) => {
   res.sendStatus(200);
 });
 
-router.get("/listFunctions", awsController.listFunctions, (req, res, next) => {
+router.post("/listFunctions", awsController.listFunctions, (req, res, next) => {
   res.status(200).send(res.locals.func);
 })
 
-router.get("/allBuckets", awsController.allBuckets, (req, res, next) => {
+router.post("/allBuckets", awsController.allBuckets, (req, res, next) => {
   res.status(200).send(res.locals.buckets);
 })
 
@@ -36,7 +36,7 @@ router.post("/invokeFunc", awsController.invokeFunc, (req, res, next) => {
   res.sendStatus(200);
 })
 
-router.get("/getawsAccountID", awsController.getawsAccountID, (req, res, next) => {
+router.post("/getawsAccountID", awsController.getawsAccountID, (req, res, next) => {
   res.status(200).send(res.locals.awsAccountID);
 })
 

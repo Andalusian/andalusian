@@ -5,57 +5,6 @@ import axios from "axios";
 
 const AWSFunctionForm = props => {
 
-  function configureAWS() {
-    let awsAccessKey = document.getElementById("awsAccessKey");
-    awsAccessKey.value = "";
-    let awsSecretAccessKey = document.getElementById("awsSecretAccessKey");
-    awsSecretAccessKey.value = "";
-    let awsRegion = document.getElementById("awsRegion");
-    awsRegion.value = "";
-    // if (props.awsAccessKey && props.awsSecretAccessKey && props.awsRegion) {
-    axios
-      .post("/aws/configureAWS", {
-        awsAccessKey: props.awsAccessKey,
-        awsSecretAccessKey: props.awsSecretAccessKey,
-        awsRegion: props.awsRegion,
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    alert("Account configured.")
-    props.listFunctions();
-    // } else {
-    //   alert("Please fill out all 3 fields to configure")
-    // }
-  }
-
-  // function createFunction() {
-  //   if (props.functionName && props.uploadedFunction && props.awsRuntime && props.awsRole) {
-  //     axios
-  //       .post("aws/createFunction", {
-  //         functionName: props.functionName,
-  //         S3BucketName: props.S3BucketName,
-  //         uploadedFunction: props.uploadedFunction,
-  //         awsRuntime: props.awsRuntime,
-  //         awsRole: props.awsRole,
-  //         awsAccountID: props.awsAccountID
-  //       })
-  //       .then((response) => {
-  //         console.log(response);
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //       });
-  //     alert("Function created.")
-  //     props.listFunctions();
-  //   } else {
-  //     alert("Please enter Function Name, Runtime, Role, and Code to create function")
-  //   }
-  // }
-
   function createBucket() {
     let S3BucketInput = document.getElementById("S3BucketInput");
     S3BucketInput.value = "";
@@ -78,16 +27,17 @@ const AWSFunctionForm = props => {
     <React.Fragment>
       <pre>
         <h4>Configuration</h4>
-        <AWSCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} />
+        <AWSCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} awsAccessKey={props.awsAccessKey} awsSecretAccessKey={props.awsSecretAccessKey}/>
+        <h5>Region: </h5>
         <input
           type="text"
           id="awsRegion"
           name="awsRegion"
-          placeholder="Region"
+          placeholder={props.awsRegion}
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
 
-        <button onClick={() => {configureAWS()}}>Save Configuration</button>
+        <button onClick={() => { props.configureAWS() }}>Save Configuration</button>
       </pre>
       <input onChange={(e) => props.updateInfo('functionName', e.target.value)} type="text" name="functionName" placeholder="Function Name" />
       <select name="awsRuntime" onChange={e => props.updateInfo(e.target.name, e.target.value)} >
