@@ -66,9 +66,7 @@ class App extends React.Component {
 
   getawsAccountID() {
     axios
-      .get("/aws/getawsAccountID", {
-        headers: { 'Content-Type': 'application/json' }
-      })
+      .get("/aws/getawsAccountID")
       .then(data => {
         this.setState({ awsAccountID: data.data.Account });
       })
@@ -85,15 +83,13 @@ class App extends React.Component {
         };
         response.data.userData.keys.forEach(updateKey => {
           updateStateObject[updateKey.keyType] = updateKey.key;
-          if (updateKey === 'awsSecretAccessKey') {
-            updateStateObject.awsAccessKey = key.awsAccessKey;
+          if (updateKey.keyType === 'awsSecretAccessKey') {
+            updateStateObject.awsAccessKey = updateKey.awsAccessKey;
           }
         });
-
         this.setState(updateStateObject, () => console.log(this.state));
       });
   }
-
   handleSignup() {
     axios.post('/db/createNewUser', { username: this.state.username, password: this.state.password })
       .then(() => {
@@ -103,7 +99,6 @@ class App extends React.Component {
         });
       });
   }
-
   handleSubmitKey(keyType) {
     const keyObject = {
       username: this.state.username,
@@ -115,14 +110,19 @@ class App extends React.Component {
         axios.post('/gcloud/auth', { key_file: this.state.googleKey })
           .then(response => {
             if (response.status === 200) {
-              axios.post('/db/storeKey', keyObject)
+              axios.post('/db/storeKey', keyObject);
             }
           });
         break;
       case 'awsSecretAccessKey':
         keyObject.key = this.state.awsSecretAccessKey;
         keyObject.awsAccessKey = this.state.awsAccessKey;
-        axios.post('/db/storeKey', keyObject)
+        axios.post('/db/storeKey', keyObject);
+        break;
+      case 'dockerPassword':
+        keyObject.key = this.state.dockerPassword;
+        keyObject.dockerUsername = this.state.dockerUsername;
+        axios.post('/db/storeKey', keyObject);
         break;
     }
   }
@@ -136,17 +136,13 @@ class App extends React.Component {
   listFunctions() {
     let allFuncArray = []
     axios
-      .get("/aws/listFunctions", {
-        headers: { 'Content-Type': 'application/json' }
-      })
+      .get("/aws/listFunctions")
       .then(data => {
         for (let i = 0; i < data.data.Functions.length; i++) {
           let funcName = data.data.Functions[i].FunctionName;
           allFuncArray.push(<div className="myAWSFuncs" key={i}>{funcName} <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>)
-
-          //APPEND!
         }
-        this.setState({ currentFunctions: allFuncArray })
+        this.setState({ currentFunctions: allFuncArray });
       })
       .catch(function (error) {
         console.log(error);
@@ -165,13 +161,17 @@ class App extends React.Component {
   }
 
   getFuncInfo(funcName) {
+    console.log("in getFuncInfo")
     axios
       .post("/aws/getFuncInfo", {
         funcName
       })
       .then(data => {
-        console.log(data.data.Configuration);
-        alert(JSON.stringify(data.data.Configuration))
+        console.log(data.data);
+        alert(`State: ${data.data.Configuration.State}
+        \nRuntime: ${data.data.Configuration.Runtime}
+        \nLast Modified: ${(new Date(Date.parse(data.data.Configuration.LastModified))).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}
+        \nRole: ${data.data.Configuration.Role}`)
       })
       .catch(function (error) {
         console.log(error);
@@ -197,21 +197,18 @@ class App extends React.Component {
         funcName
       })
       .then(data => {
-
+        this.listFunctions()
         console.log(data.data)
       })
       .catch(function (error) {
         console.log(error);
       });
-    this.listFunctions() // THIS ISN'T WORKING
   }
 
   listBuckets() {
     let allBuckets = [<option defaultValue={"a"}> -- select an option -- </option>]
     axios
-      .get("/aws/allBuckets", {
-        headers: { 'Content-Type': 'application/json' }
-      })
+      .get("/aws/allBuckets")
       .then(data => {
         for (let i = 0; i < data.data.Buckets.length; i++) {
           let bucketName = data.data.Buckets[i].Name;
@@ -230,7 +227,6 @@ class App extends React.Component {
       axios
         .post("aws/createFunction", {
           functionName: this.state.functionName,
-          S3BucketName: this.state.S3BucketName,
           uploadedFunction: this.state.uploadedFunction,
           awsRuntime: this.state.awsRuntime,
           awsRole: this.state.awsRole,
@@ -238,12 +234,24 @@ class App extends React.Component {
         })
         .then((response) => {
           console.log(response);
+          this.listFunctions()
         })
         .catch((error) => {
           console.log(error);
         });
-      alert("Function created.")
-      this.listFunctions();
+      //APPEND!
+      // let myAWSFuncs = document.getElementById("currentFunctions");
+      // let newFunc = document.createElement("div");
+      // newFunc.setAttribute("class", "myAWSFuncs");
+      // // newFunc.setAttribute("key", "123");
+      // newFunc.innerHTML = `${this.state.functionName}`;
+      // myAWSFuncs.appendChild(newFunc)
+      // let getFuncInfo = document.createElement("button");
+      // getFuncInfo.setAttribute("onClick", `{() => ${this.getFuncInfo(this.state.functionName)}}`)
+      // newFunc.appendChild(getFuncInfo)
+      // (<div className="myAWSFuncs" key={i}>{funcName} <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>)
+      // alert("Function created.")
+
     } else {
       alert("Please enter Function Name, Runtime, Role, and Code to create function")
     }
@@ -330,7 +338,7 @@ class App extends React.Component {
             handleToggleSignup={this.handleToggleSignup}
           />
         )}
-        <MicroList />
+        {/* <MicroList /> */}
         <div className='radio'>
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Gcloud')} type="radio"

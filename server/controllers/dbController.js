@@ -9,7 +9,7 @@ const dbController = {};
 
 dbController.hashPassword = (req, res, next) => {
   const { username, password } = req.body;
-  bcrypt.hash(password, 10, function(err, hash) {
+  bcrypt.hash(password, 10, function (err, hash) {
     if (err) {
       console.log(`Error in dbController.bcryptify: ${err}`);
       return next(err);
@@ -83,15 +83,14 @@ dbController.decrypt = (req, res, next) => {
       key: decrypted,
     }
 
-    if (decryptedKeyObject.keyType === 'awsKey') {
-      awsAccessKey: key.awsAccessKey;
+    if (decryptedKeyObject.keyType === 'awsSecretAccessKey') {
+      decryptedKeyObject.awsAccessKey = key.awsAccessKey;
     }
 
     decryptedKeys.push(decryptedKeyObject);
   });
 
-  res.locals.userData.keys = decryptedKeys; 
-  // console.log(res.locals.userData.decryptedKeys);
+  res.locals.userData.keys = decryptedKeys;
 
   return next();
 }
@@ -121,18 +120,13 @@ dbController.storeKey = (req, res, next) => {
   };
 
   if (encryptedKeyObject.keyType === 'awsSecretAccessKey') {
-    console.log('encryptedKeyObject');
-    console.log(req.body);
     encryptedKeyObject.awsAccessKey = req.body.awsAccessKey;
-    console.log(encryptedKeyObject)
+  }
+  if (encryptedKeyObject.keyType === 'dockerPassword') {
+    encryptedKeyObject.dockerUsername = req.body.dockerUsername;
   }
 
-  console.log('---------------------');
-  console.log(encryptedKeyObject);
-
   User.findOneAndUpdate({ username }, { $push: { keys: encryptedKeyObject } }, function (err, response) {
-    console.log('******************');
-    console.log(encryptedKeyObject);
     if (err) {
       console.log(`Error in dbController.storeencryptedKey: ${err}`);
       return next(err);

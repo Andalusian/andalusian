@@ -11,24 +11,24 @@ const AWSFunctionForm = props => {
     awsSecretAccessKey.value = "";
     let awsRegion = document.getElementById("awsRegion");
     awsRegion.value = "";
-    if (props.awsAccessKey && props.awsSecretAccessKey && props.awsRegion) {
-      axios
-        .post("/aws/configureAWS", {
-          awsAccessKey: props.awsAccessKey,
-          awsSecretAccessKey: props.awsSecretAccessKey,
-          awsRegion: props.awsRegion,
-        })
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      alert("Account configured.")
-      props.listFunctions();
-    } else {
-      alert("Please fill out all 3 fields to configure")
-    }
+    // if (props.awsAccessKey && props.awsSecretAccessKey && props.awsRegion) {
+    axios
+      .post("/aws/configureAWS", {
+        awsAccessKey: props.awsAccessKey,
+        awsSecretAccessKey: props.awsSecretAccessKey,
+        awsRegion: props.awsRegion,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    alert("Account configured.")
+    props.listFunctions();
+    // } else {
+    //   alert("Please fill out all 3 fields to configure")
+    // }
   }
 
   // function createFunction() {

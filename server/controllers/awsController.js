@@ -11,7 +11,6 @@ const admZip = require('adm-zip');
 const awsController = {};
 
 awsController.configureAWS = (req, res, next) => {
-  fs.unlinkSync('./credentials.json');
   let data = `{ "accessKeyId": ${JSON.stringify(req.body.awsAccessKey)}, "secretAccessKey": ${JSON.stringify(req.body.awsSecretAccessKey)} , "region": ${JSON.stringify(req.body.awsRegion)}  }`;
   fs.writeFile('credentials.json', data, (err) => {
     if (err) throw err
@@ -110,42 +109,42 @@ awsController.allBuckets = (req, res, next) => {
   });
 }
 
-awsController.loadCode = (req, res, next) => {
-  AWS.config.loadFromPath("./credentials.json");
-  const lambda = new AWS.Lambda();
-  const params = { FunctionName: `${req.body.funcName}` }
-  lambda.getFunction(params, (err, data) => {
-    console.log("data.Code.Location ---->", data.Code.Location)
-    const href = data.Code.Location;
-    const zipFile = 'aster.zip';
-    const extractEntryTo = `${zipFile}-master/`;
-    const outputDir = `./${zipFile}-master/`;
-    request
-      .get(href)
-      .on('error', function (error) {
-        console.log(error);
-      })
-      .pipe(fs.createWriteStream(zipFile))
-      // .then(data => console.log("DATATDATAT", data))
-      .on('finish', function () {
+// awsController.loadCode = (req, res, next) => {
+//   AWS.config.loadFromPath("./credentials.json");
+//   const lambda = new AWS.Lambda();
+//   const params = { FunctionName: `${req.body.funcName}` }
+//   lambda.getFunction(params, (err, data) => {
+//     console.log("data.Code.Location ---->", data.Code.Location)
+//     const href = data.Code.Location;
+//     const zipFile = 'aster.zip';
+//     const extractEntryTo = `${zipFile}-master/`;
+//     const outputDir = `./${zipFile}-master/`;
+//     request
+//       .get(href)
+//       .on('error', function (error) {
+//         console.log(error);
+//       })
+//       .pipe(fs.createWriteStream(zipFile))
+//       // .then(data => console.log("DATATDATAT", data))
+//       .on('finish', function () {
 
-        const zip = new admZip(zipFile);
-        zip.extractEntryTo(extractEntryTo, outputDir, false, true);
+//         const zip = new admZip(zipFile);
+//         zip.extractEntryTo(extractEntryTo, outputDir, false, true);
 
-      });
-    if (err) {
-      console.log("err: ", err)
-      return
-    }
-    res.locals.funcCode = data.Code.Location;
-    console.log("data.Code.Location ---->", data.Code.Location)
-    exec(`open '${data.Code.Location}'`, (error, stdout, stderr) => {
-      exec(`~`, (error, stdout, stderr) => { })
-    })
-    return next();
-  }
-  )
-}
+//       });
+//     if (err) {
+//       console.log("err: ", err)
+//       return
+//     }
+//     res.locals.funcCode = data.Code.Location;
+//     console.log("data.Code.Location ---->", data.Code.Location)
+//     exec(`open '${data.Code.Location}'`, (error, stdout, stderr) => {
+//       exec(`~`, (error, stdout, stderr) => { })
+//     })
+//     return next();
+//   }
+//   )
+// }
 
 awsController.getFuncInfo = (req, res, next) => {
   AWS.config.loadFromPath("./credentials.json")

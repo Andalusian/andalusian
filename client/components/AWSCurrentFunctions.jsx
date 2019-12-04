@@ -8,7 +8,7 @@ const AWSCurrentFunctions = props => {
             {/* <h3>My Current Region:</h3>
             {props.currRegion} */}
             <h3>My AWS Lambda Functions</h3>
-            <div>
+            <div id="currentFunctions">
                 {props.currentFunctions}
             </div>
         </React.Fragment >
