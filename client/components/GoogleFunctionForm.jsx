@@ -10,8 +10,12 @@ const GoogleFunctionForm = (props) => {
       <h2>GCloud</h2>
       <GoogleCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} />
       <div className="googleInfo">
+        <hr></hr>
+        <h4>Create Function</h4>
+
         <input id="googleProject" name="googleProject" onChange={(e) => props.updateInfo(e.target.name, e.target.value)} type="text" placeholder="Project Name" />
-        <input name="functionName" onChange={(e) => props.updateInfo(e.target.name, e.target.value)} type="text" placeholder="Function Name" />        <select onChange={(e) => props.updateInfo('runtime', e.target.value)}>
+        <input id="functionName" name="functionName" onChange={(e) => props.updateInfo(e.target.name, e.target.value)} type="text" placeholder="Function Name" />
+        <select id="gcRuntime" onChange={(e) => props.updateInfo('runtime', e.target.value)}>
           <option value='1'>Runtime</option>
           <option value="nodejs8">Node 8</option>
           <option value="nodejs10">Node 10</option>

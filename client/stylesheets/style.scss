@@ -24,6 +24,7 @@ input, textarea, .dropzone, .microList {
   font-family: monospace;
   font-size: 1rem;
   border-radius: 2px;
+  padding: 5px;
   &::placeholder {
     color: #bbb;
   }
@@ -31,10 +32,10 @@ input, textarea, .dropzone, .microList {
 textarea {
   width: 93%;
 }
-input[name="functionName"] {
-  display: inline-block;
-  width: 65%;
-}
+// input[name="functionName"] {
+//   display: inline-block;
+//   width: 65%;
+// }
 .saveButton {
   display: block;
 }
@@ -81,7 +82,7 @@ button {
   margin-top: 10px;
   padding: .5em 1em;
   transition: .25s ease all;
-  margin-left: 5px;
+  margin-left: 0;
   &:hover {
     background: #8fcc52;
   }
@@ -135,7 +136,8 @@ button {
 }
 
 [type=radio]:checked + img {
-  outline: 3px solid #70234d
+  outline: 1px solid #70234d;
+  padding: 1px;
 }
 
 img {
@@ -149,14 +151,69 @@ img {
 #currentFunctions {
   text-align: right;
   position: relative;
-  right: 100px
+  right: 100px;
+  margin-bottom: 20px;
 }
 
-.googleInfo {
-  display: flex;
-  justify-content: space-around;
-}
+// .googleInfo {
+//   display: flex;
+//   justify-content: space-around;
+// }
 
 #googleProject {
   margin-right: 5px;
+}
+
+
+h5 {
+  display: inline-block;
+  margin-top: 2px;
+  margin-right: 5px;
+  margin-bottom: 0;
+  line-height: 15px;
+  font-size: 14px;
+  color: rgb(83, 83, 83)
+}
+
+#awsRegion, #awsAccessKey, #awsSecretAccessKey, #functionName, #awsRole {
+  display: inline-block;
+  margin-bottom: 1px;
+  width: 200px;
+  margin-right: 5px;
+}
+
+#awsRegion, #awsAccessKey, #awsSecretAccessKey {
+
+}
+
+#regionBtn, #credentialsBtn, #createFuncBtn, #createBucketBtn {
+align-items: flex-end;
+margin-left: 0;
+}
+
+#awsRuntime, #googleProject, #functionName, #gcRuntime  {
+  display: block;
+  margin-left: 0;
+  margin-top: 5px
+}
+
+h4 {
+  margin: 5px 0;
+  font-family: monospace;
+}
+
+#functionName, #googleProject {
+  width: 200px;
+}
+
+#awsRuntime {
+  width: 200px
+}
+
+#bucketsDropdown {
+  margin-left: 0;
+}
+
+hr {
+  margin: 20px 0;
 }

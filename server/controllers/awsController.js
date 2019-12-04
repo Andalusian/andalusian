@@ -1,5 +1,3 @@
-'use strict';
-
 const fs = require("fs");
 const { exec } = require("child_process");
 const AWS = require("aws-sdk");
@@ -11,27 +9,25 @@ const admZip = require('adm-zip');
 const awsController = {};
 
 awsController.configureAWS = (req, res, next) => {
-  if (!fs.existsSync(`${req.body.username}`)) {
-    fs.mkdirSync(`${req.body.username}`)
-  }
   let data = `{ "accessKeyId": ${JSON.stringify(req.body.awsAccessKey)}, "secretAccessKey": ${JSON.stringify(req.body.awsSecretAccessKey)} , "region": ${JSON.stringify(req.body.awsRegion)}  }`;
   fs.writeFileSync(`${req.body.username}/credentials.json`, data, (err) => {
-    if (err) { return next(err) }
+    if (err) { console.log(err) }
   });
   return next();
 }
 
 awsController.createFunction = (req, res, next) => {
+  console.log("in awsController.createFunction BACKEND")
   AWS.config.loadFromPath(`${req.body.username}/credentials.json`);
   const lambda = new AWS.Lambda();
-  fs.writeFileSync(`${req.body.functionName}.js`, req.body.uploadedFunction)
-  exec(`zip function.zip ${req.body.functionName}.js`, (error, stdout, stderr) => {
+  fs.writeFileSync(`${req.body.username}/${req.body.functionName}.js`, req.body.uploadedFunction)
+  exec(`zip ${req.body.username}/${req.body.functionName}.zip ${req.body.username}/${req.body.functionName}.js`, (error, stdout, stderr) => {
     const params = {
       "Code": {
         // "S3Bucket": `${req.body.S3BucketName}`,
         // "S3Key": "",
         // "S3ObjectVersion": "",
-        "ZipFile": fs.readFileSync("function.zip")
+        "ZipFile": fs.readFileSync(`${req.body.username}/${req.body.functionName}.zip`)
       },
       "FunctionName": `${req.body.functionName}`,
       "Handler": `${req.body.functionName}` + ".handler",
@@ -39,19 +35,18 @@ awsController.createFunction = (req, res, next) => {
       "Runtime": `${req.body.awsRuntime}`
     };
     console.log(params);
-    lambda.createFunction(params, (err, data, next) => {
+    lambda.createFunction(params, (err, data) => {
       if (err) {
         console.log(err, err.stack);
-        return next(err)
+        return (err)
       }
       else {
         console.log("WHATTTT -->", data);
-        return next();
       }
     })
     if (error) {
       console.error(`exec error: ${error}`);
-      return next(error)
+      return (error)
     }
     console.log(`createFunction stdout: ${stdout}`);
     console.error(`createFunction stderr: ${stderr}`);
@@ -60,7 +55,7 @@ awsController.createFunction = (req, res, next) => {
 }
 // REMINDER TO SELF - SET UP TO DELETE THE FOLDER AFTER THE PROCESS IS COMPLETED
 
-awsController.listFunctions = async (req, res, next) => {
+awsController.listFunctions = (req, res, next) => {
 
   AWS.config.loadFromPath(`${req.body.username}/credentials.json`, function (err, data) {
     if (err) {
@@ -69,6 +64,9 @@ awsController.listFunctions = async (req, res, next) => {
       console.log('flop');
     }
   });
+  // let config = new AWS.Config({
+  //   accessKeyId: 'AKIAJITZPATODVCYQLPQ', secretAccessKey: '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', region: 'us-east-1'
+  // });
   console.log("in awsController.listFunctions")
   const lambda = new AWS.Lambda();
   const params = {}
@@ -79,7 +77,6 @@ awsController.listFunctions = async (req, res, next) => {
       return (err)
     } else {
       res.locals.func = data;
-      console.log("DATA ---->", data)
     }
     return next();
   });
@@ -89,10 +86,10 @@ awsController.invokeFunc = (req, res, next) => {
   AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
   const lambda = new AWS.Lambda();
   const params = { FunctionName: `${req.body.funcName}` }
-  lambda.invoke(params, (err, data, next) => {
+  lambda.invoke(params, (err, data) => {
     if (err) {
       console.log("err: ", err)
-      return next(err)
+      return (err)
     }
     res.locals.func = data;
     return next();
@@ -100,26 +97,28 @@ awsController.invokeFunc = (req, res, next) => {
 }
 
 awsController.deleteFunc = (req, res, next) => {
+  console.log("awsController.deleteFunc REQ BODY --->", req.body)
   AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
   const lambda = new AWS.Lambda();
   const params = { FunctionName: `${req.body.funcName}` }
-  lambda.deleteFunction(params, (err, data, next) => {
+  lambda.deleteFunction(params, (err, data) => {
     if (err) {
       console.log("err: ", err)
-      return next(err)
+      return (err)
     }
     return next();
   });
 }
 
 awsController.allBuckets = (req, res, next) => {
+  console.log("awsController.allBuckets REQ BODY --->", req.body)
   AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
   const s3 = new AWS.S3();
   const params = {}
-  s3.listBuckets(params, (err, data, next) => {
+  s3.listBuckets(params, (err, data) => {
     if (err) {
       console.log("err: ", err)
-      return next(err)
+      return (err)
     }
     res.locals.buckets = data;
     return next();
@@ -167,10 +166,10 @@ awsController.getFuncInfo = (req, res, next) => {
   AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
   const lambda = new AWS.Lambda();
   const params = { FunctionName: `${req.body.funcName}` }
-  lambda.getFunction(params, (err, data, next) => {
+  lambda.getFunction(params, (err, data) => {
     if (err) {
       console.log("err: ", err)
-      return next(err);
+      next(err);
     }
     res.locals.funcInfo = data;
     return next();
@@ -178,18 +177,21 @@ awsController.getFuncInfo = (req, res, next) => {
 }
 
 awsController.createBucket = (req, res, next) => {
+  console.log("in BACKEND awsController.createBucket")
+  console.log(req.body)
   AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
-  // const s3 = new AWS.S3();
+  const s3 = new AWS.S3();
   const params = {
     Bucket: `${req.body.S3BucketName} `,
     CreateBucketConfiguration: {
       LocationConstraint: `${req.body.newBucketRegion}`
     }
   };
-  s3.createBucket(params, function (err, data, next) {
+  console.log("PARAMS -----> ", params)
+  s3.createBucket(params, function (err, data) {
     if (err) {
       console.log(err, err.stack);
-      return next(err)
+      return (err)
     }
     else {
       console.log(data);
@@ -206,7 +208,7 @@ awsController.getawsAccountID = (req, res, next) => {
   sts.getCallerIdentity(params, function (err, data) {
     if (err) {
       console.log(err, err.stack);
-      return next(err)
+      return (err)
     }
     else {
       res.locals.awsAccountID = data;

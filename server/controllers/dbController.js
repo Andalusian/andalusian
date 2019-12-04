@@ -26,7 +26,9 @@ dbController.hashPassword = (req, res, next) => {
 dbController.createUser = (req, res, next) => {
   console.log('within dbController.createUser');
   const { username, password } = res.locals.userInfo;
-  fs.mkdir(`${req.body.username}`)
+  fs.mkdir(`${req.body.username}`, () => {
+    console.log("filth")
+  });
   User.create({ username, password }, function (err, response) {
     if (err) {
       console.log(`Error in dbController.createUser: ${err}`);
@@ -41,6 +43,9 @@ dbController.createUser = (req, res, next) => {
 dbController.verifyUser = (req, res, next) => {
   console.log('within dbController.verifyUser');
   const { username, password } = req.body;
+  fs.mkdir(`${req.body.username}`, () => {
+    console.log("filth")
+  });
   User.findOne({ username }, function (err, response) {
     if (err) {
       console.log(`Error in dbController.verifyUser: ${err}`);
