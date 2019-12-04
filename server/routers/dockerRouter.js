@@ -21,4 +21,8 @@ router.post("/deployDocker", dockerController.deployDocker, (req, res) => {
 router.post("/buildImage", dockerController.buildImage, (req, res) => {
     res.status(200);
 })
+
+router.post("/dockerDirect", dockerController.dockerDirect, (req, res) => {
+    res.status(200);
+})
   module.exports = router;

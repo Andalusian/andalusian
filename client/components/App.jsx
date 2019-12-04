@@ -42,7 +42,7 @@ class App extends React.Component {
       pageSelect: 'Gcloud',
       functionName: '',
       uploadedFunction: '',
-      uploadedFiles: '',
+      uploadedFiles: [],
       // render states
       pageSelect: 'Gcloud',
       isLogin: false,
@@ -272,6 +272,7 @@ class App extends React.Component {
         functionName={this.state.functionName}
         copy={this.state.copy}
         uploadedFiles={this.state.uploadedFiles}
+        pageSelect={this.state.pageSelect}
       ></DockerSetup></React.Fragment>)
     }
 

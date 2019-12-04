@@ -35,6 +35,13 @@ dockerController.buildImage = (req, res, next) => {
    })
 }
 
+dockerController.dockerDirect = (req, res, next) => {
+    let files = req.body.files;
+    for(let i = 0; i < files.length; i++){
+    exec(`cd server/platforms/docker/live; touch ${files[i].path}`, ['shell'], function(err, stdout, stderr){
+    console.log(err || stdout || stderr)
+})}     
+}
 dockerController.deployDocker = (req, res, next) => {
 
     
