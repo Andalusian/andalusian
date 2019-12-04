@@ -97,7 +97,6 @@ class App extends React.Component {
         this.setState(updateStateObject, () => {
           console.log(this.state);
         });
-
       });
   }
 
@@ -157,7 +156,7 @@ class App extends React.Component {
         username: this.state.username
       })
       .then((response) => {
-        setTimeout(() => this.listFunctions(), 1000);
+        setTimeout(() => this.listFunctions(), 4000);
       })
       .catch((error) => {
         console.log(error);
@@ -166,7 +165,6 @@ class App extends React.Component {
   }
 
   listFunctions() {
-    console.log("BANANDA");
     let allFuncArray = [];
     axios
       .post("/aws/listFunctions", {
@@ -174,11 +172,11 @@ class App extends React.Component {
       })
       .then(data => {
         for (let i = 0; i < data.data.Functions.length; i++) {
-          console.log("POTATO", i)
           let funcName = data.data.Functions[i].FunctionName;
           allFuncArray.push(<div className="myAWSFuncs" key={i}>{funcName} <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>)
         }
         this.setState({ currentFunctions: allFuncArray });
+        this.getawsAccountID();
       })
       .catch(function (error) {
         console.log(error);
@@ -198,14 +196,12 @@ class App extends React.Component {
   }
 
   getFuncInfo(funcName) {
-    console.log("in getFuncInfo")
     axios
       .post("/aws/getFuncInfo", {
         funcName,
         username: this.state.username
       })
       .then(data => {
-        console.log(data.data);
         alert(`State: ${data.data.Configuration.State}
         \nRuntime: ${data.data.Configuration.Runtime}
         \nLast Modified: ${(new Date(Date.parse(data.data.Configuration.LastModified))).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}
@@ -238,7 +234,6 @@ class App extends React.Component {
       })
       .then(data => {
         this.listFunctions()
-        console.log(data.data)
       })
       .catch(function (error) {
         console.log(error);
@@ -274,38 +269,15 @@ class App extends React.Component {
           username: this.state.username
         })
         .then((response) => {
-          console.log(response);
-          this.listFunctions()
+          console.log("createFunction FRONT END response --->", response);
+          setTimeout(() => this.listFunctions(), 4000);
         })
         .catch((error) => {
           console.log(error);
         });
-      //APPEND!
-      // let myAWSFuncs = document.getElementById("currentFunctions");
-      // let newFunc = document.createElement("div");
-      // newFunc.setAttribute("class", "myAWSFuncs");
-      // // newFunc.setAttribute("key", "123");
-      // newFunc.innerHTML = `${this.state.functionName}`;
-      // myAWSFuncs.appendChild(newFunc)
-      // let getFuncInfo = document.createElement("button");
-      // getFuncInfo.setAttribute("onClick", `{() => ${this.getFuncInfo(this.state.functionName)}}`)
-      // newFunc.appendChild(getFuncInfo)
-      // (<div className="myAWSFuncs" key={i}>{funcName} <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>)
-      // alert("Function created.")
-
     } else {
       alert("Please enter Region, Function Name, Runtime, Role, and Code to create function")
     }
-  }
-  componentDidMount() {
-    // this.listFunctions();
-    // this.listBuckets();
-    // this.getawsAccountID();
-  }
-  componentDidUpdate() {
-    // this.listFunctions();
-    // this.listBuckets();
-    // this.getawsAccountID();
   }
 
   render() {
