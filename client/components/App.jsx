@@ -62,7 +62,7 @@ class App extends React.Component {
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
-    this.setState(updateObj);
+    this.setState(updateObj, () => console.log(this.state.googleProject));
   }
 
   getawsAccountID() {
@@ -238,7 +238,7 @@ class App extends React.Component {
     if (this.state.pageSelect === 'Gcloud') {
       displayed = <GoogleFunctionForm
         submitKey={this.handleSubmitKey}
-        googleProject={this.googleProject}
+        googleProject={this.state.googleProject}
         runtime={this.state.runtime}
         functionName={this.state.functionName}
         googleKey={this.state.googleKey}
