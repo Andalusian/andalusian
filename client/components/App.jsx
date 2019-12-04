@@ -43,6 +43,9 @@ class App extends React.Component {
       com: '',
       //azure
       azureRuntime: '',
+      azureTemplate: '',
+      azureApp: '',
+      azureProject: '',
       // both
       pageSelect: 'Gcloud',
       functionName: '',
@@ -291,6 +294,10 @@ class App extends React.Component {
       displayed = (<React.Fragment>
         <AzureFunctionForm
         updateInfo = {this.updateInfo}
+        azureRuntime={this.state.azureRuntime}
+        azureTemplate={this.state.azureTemplate}
+        azureApp={this.state.azureApp}
+        azureProject={this.state.azureProject}
         />
       </React.Fragment>)
     }

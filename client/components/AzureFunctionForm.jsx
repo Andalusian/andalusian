@@ -9,17 +9,33 @@ const AzureFunctionForm = (props) => {
             <h2>Azure</h2>
             <AzureCredentials/>
             <div className="azureInfo">
-                <input id="azureProject" name="azureProject" type="text" placeholder="Project Name" />
-                <input name="functionName" type="text" placeholder="Function Name" />
+                <input onChange={(e) => props.updateInfo(e.target.name, e.target.value)} id="azureProject" name="azureProject" type="text" placeholder="Project Name" />
                 <select name="azureRuntime" onChange={(e) => props.updateInfo(e.target.name, e.target.value)}>
                 <option value='1'>Runtime</option>
-                <option value="--csharp--dotnet">Dotnet</option>
-                <option value="--javascript--node">Node</option>
+                <option value="--dotnet">Dotnet</option>
+                <option value="--node">Node</option>
                 <option value="--python">Python</option>
                 <option value="--powershell">Powershell</option>
             </select>
+                <button className="azureButton" onClick={() => axios.post('/azure/createProj', {projectName: props.azureProject, runtime: props.azureRuntime})}>Create Project</button>
+                <input name="functionName" type="text" placeholder="Function Name" />
             </div>
-            <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
+            <select name="azureTemplate" onChange={(e) => props.updateInfo(e.target.name, e.target.value)}>
+                <option value='1'>Template</option>
+                <option value='Blob Trigger'>Blob Trigger</option>
+                <option value='Cosmos DB Trigger'>Cosmos DB Trigger</option>
+                <option value='Event Grid Trigger'>Event Grid Trigger</option>
+                <option value='Queue Trigger'>Queue Trigger</option>
+                <option value='SendGrid'>SendGrid</option>
+                <option value='Service Bus Queue Trigger'>Service Bus Queue</option>
+                <option value='Service Bus Topic Trigger'>Service Bus Topic</option>
+                <option value='Timer Trigger'>Timer Trigger</option>
+            </select>
+            <button className="azureButton">Create Function</button>
+            <pre>
+          <textarea onChange={(e) => props.updateInfo('uploadedFunction', e.target.value)} id="codeHere" placeholder="<code here />" spellCheck="false" rows="25"></textarea>
+        </pre>
+            <input onChange={(e) => props.updateInfo(e.target.name, e.target.value)} name="azureApp" type="text" placeholder="App to Deploy to"/>
             <button onClick={() => axios.post('/azure/deploy', {functionName: props.functionName, runtime: props.runtime})
                 .then(response => console.log('successfully deployed'))}
             >Deploy</button>
