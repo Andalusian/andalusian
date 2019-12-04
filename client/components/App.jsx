@@ -60,7 +60,8 @@ class App extends React.Component {
     this.listFunctions = this.listFunctions.bind(this)
     this.listBuckets = this.listBuckets.bind(this)
     this.createFunction = this.createFunction.bind(this);
-    this.configureAWS = this.configureAWS.bind(this)
+    this.configureAWS = this.configureAWS.bind(this);
+    this.createBucket = this.createBucket.bind(this)
   }
 
   updateInfo(property, value) {
@@ -97,6 +98,7 @@ class App extends React.Component {
         this.setState(updateStateObject, () => {
           console.log(this.state);
         });
+
       });
   }
 
@@ -157,6 +159,8 @@ class App extends React.Component {
       })
       .then((response) => {
         setTimeout(() => this.listFunctions(), 4000);
+        setTimeout(() => this.listBuckets(), 4000)
+
       })
       .catch((error) => {
         console.log(error);
@@ -280,6 +284,20 @@ class App extends React.Component {
     }
   }
 
+  createBucket() {
+    axios.post("/aws/createBucket", {
+      S3BucketName: this.state.S3BucketName,
+      newBucketRegion: this.state.newBucketRegion,
+      username: this.state.username
+    })
+      .then(data => {
+        console.log(data)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   render() {
 
     let displayed;
@@ -294,15 +312,19 @@ class App extends React.Component {
         updateInfo={this.updateInfo}
         uploadedFunction={this.state.uploadedFunction} />
     } else if (this.state.pageSelect === 'Lambda') {
-      displayed = (<React.Fragment><AWSCurrentFunctions
+      displayed = (<React.Fragment>
+
+        {/* <AWSCurrentFunctions
         id="AWSCurrentFunctions"
         currentFunctions={this.state.currentFunctions}
         currRegion={this.state.currRegion}
         functionName={this.state.functionName}
         codeHere={this.state.codeHere}
         currentBuckets={this.state.currentBuckets}
-      />
+      /> */}
         <AWSFunctionForm id="AWSFunctionForm"
+          currentFunctions={this.state.currentFunctions}
+          currRegion={this.state.currRegion}
           submitKey={this.handleSubmitKey}
           uploadedFunction={this.state.uploadedFunction}
           S3BucketName={this.state.S3BucketName}
@@ -321,6 +343,7 @@ class App extends React.Component {
           listBuckets={this.listBuckets}
           createFunction={this.createFunction}
           configureAWS={this.configureAWS}
+          createBucket={this.createBucket}
 
         /></React.Fragment>)
     } else if (this.state.pageSelect === 'Docker') {

@@ -9,9 +9,6 @@ const admZip = require('adm-zip');
 const awsController = {};
 
 awsController.configureAWS = (req, res, next) => {
-  if (!fs.existsSync(`${req.body.username}`)) {
-    fs.mkdirSync(`${req.body.username}`)
-  }
   let data = `{ "accessKeyId": ${JSON.stringify(req.body.awsAccessKey)}, "secretAccessKey": ${JSON.stringify(req.body.awsSecretAccessKey)} , "region": ${JSON.stringify(req.body.awsRegion)}  }`;
   fs.writeFileSync(`${req.body.username}/credentials.json`, data, (err) => {
     if (err) { console.log(err) }
@@ -67,6 +64,9 @@ awsController.listFunctions = (req, res, next) => {
       console.log('flop');
     }
   });
+  // let config = new AWS.Config({
+  //   accessKeyId: 'AKIAJITZPATODVCYQLPQ', secretAccessKey: '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', region: 'us-east-1'
+  // });
   console.log("in awsController.listFunctions")
   const lambda = new AWS.Lambda();
   const params = {}
@@ -111,6 +111,7 @@ awsController.deleteFunc = (req, res, next) => {
 }
 
 awsController.allBuckets = (req, res, next) => {
+  console.log("awsController.allBuckets REQ BODY --->", req.body)
   AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
   const s3 = new AWS.S3();
   const params = {}
@@ -176,14 +177,17 @@ awsController.getFuncInfo = (req, res, next) => {
 }
 
 awsController.createBucket = (req, res, next) => {
+  console.log("in BACKEND awsController.createBucket")
+  console.log(req.body)
   AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
-  // const s3 = new AWS.S3();
+  const s3 = new AWS.S3();
   const params = {
     Bucket: `${req.body.S3BucketName} `,
     CreateBucketConfiguration: {
       LocationConstraint: `${req.body.newBucketRegion}`
     }
   };
+  console.log("PARAMS -----> ", params)
   s3.createBucket(params, function (err, data) {
     if (err) {
       console.log(err, err.stack);
