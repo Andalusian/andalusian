@@ -7,14 +7,14 @@ const AWSCredentials = props => {
         type="text"
         id="awsAccessKey"
         name="awsAccessKey"
-        placeholder="Access key ID"
+        placeholder={props.awsAccessKey}
         onChange={e => props.updateInfo(e.target.name, e.target.value)}
       />
       <input
         type="text"
         id="awsSecretAccessKey"
         name="awsSecretAccessKey"
-        placeholder="Secret access key"
+        placeholder={props.awsSecretAccessKey}
         onChange={e => props.updateInfo(e.target.name, e.target.value)}
       />
       <button className="saveButton" onClick={() => props.submitKey('awsSecretAccessKey')}>Save Credentials</button>
