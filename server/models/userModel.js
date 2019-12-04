@@ -15,6 +15,7 @@ const userSchema =
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     keys: [{
+      keyAlias: String,
       keyType: String,
       encryptedKey: String,
       cryptoIV: String,

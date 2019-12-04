@@ -27,7 +27,7 @@ const AWSFunctionForm = props => {
     <React.Fragment>
       <pre>
         <h4>Configuration</h4>
-        <AWSCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} awsAccessKey={props.awsAccessKey} awsSecretAccessKey={props.awsSecretAccessKey}/>
+        <AWSCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} awsAccessKey={props.awsAccessKey} awsSecretAccessKey={props.awsSecretAccessKey} />
         <h5>Region: </h5>
         <input
           type="text"
