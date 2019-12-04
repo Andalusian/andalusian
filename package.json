@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "browser": {
+    "child_process": false
+  },
   "scripts": {
     "start": "node server/server.js",
     "build": "cross-env NODE_ENV=production webpack",
@@ -28,6 +31,7 @@
     "cross-env": "^6.0.3",
     "docker": "^1.0.0",
     "express": "^4.17.1",
+    "fs": "0.0.1-security",
     "mongoose": "^5.7.12",
     "node": "^13.1.0",
     "react": "^16.12.0",
