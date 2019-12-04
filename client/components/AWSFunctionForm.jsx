@@ -1,34 +1,18 @@
 import React from "react";
 import MyDropzone from "./MyDropzone.jsx";
 import AWSCredentials from './AWSCredentials.jsx';
+import AWSCurrentFunctions from './AWSCurrentFunctions.jsx'
 import axios from "axios";
 
 const AWSFunctionForm = props => {
 
-  function createBucket() {
-    let S3BucketInput = document.getElementById("S3BucketInput");
-    S3BucketInput.value = "";
-    let newBucketRegion = document.getElementById("newBucketRegion");
-    newBucketRegion.value = "";
-
-    axios.post("/aws/createBucket", {
-      S3BucketName: props.S3BucketName,
-      newBucketRegion: props.newBucketRegion
-    })
-      .then(data => {
-        console.log(data)
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-
   return (
     <React.Fragment>
-      <pre>
+      <h2>AWS</h2>
+      <pre >
         <h4>Configuration</h4>
         <AWSCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} awsAccessKey={props.awsAccessKey} awsSecretAccessKey={props.awsSecretAccessKey} />
-        <h5>Region: </h5>
+        <h5>Region:</h5>
         <input
           type="text"
           id="awsRegion"
@@ -36,11 +20,28 @@ const AWSFunctionForm = props => {
           placeholder={props.awsRegion}
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
-
-        <button onClick={() => { props.configureAWS() }}>Save Configuration</button>
+        <br />
+        <button id="regionBtn" onClick={() => { props.configureAWS() }}>Save Region</button>
       </pre>
-      <input onChange={(e) => props.updateInfo('functionName', e.target.value)} type="text" name="functionName" placeholder="Function Name" />
-      <select name="awsRuntime" onChange={e => props.updateInfo(e.target.name, e.target.value)} >
+      <hr></hr>
+      <AWSCurrentFunctions
+        id="AWSCurrentFunctions"
+        currentFunctions={props.currentFunctions}
+        currRegion={props.currRegion}
+        functionName={props.functionName}
+        codeHere={props.codeHere}
+        currentBuckets={props.currentBuckets}
+      />
+      <h4>Create Function</h4>
+      <input id="functionName" onChange={(e) => props.updateInfo('functionName', e.target.value)} type="text" name="functionName" placeholder="Function Name" />
+      <input
+        id="awsRole"
+        type="text"
+        name="awsRole"
+        defaultValue=":role/"
+        onChange={e => props.updateInfo(e.target.name, e.target.value)}
+      />
+      <select id="awsRuntime" name="awsRuntime" onChange={e => props.updateInfo(e.target.name, e.target.value)} >
         <option defaultValue={"a"}> -- select runtime -- </option>
         <option value="nodejs8.10">Node 8</option>
         <option value="nodejs10.x">Node 10</option>
@@ -52,17 +53,11 @@ const AWSFunctionForm = props => {
         <option value="dotnetcore2.1">Dotnetcore 2.1</option>
         <option value="ruby2.5">Ruby 2.5</option>
       </select>
-      <input
-        type="text"
-        name="awsRole"
-        defaultValue=":role/"
-        onChange={e => props.updateInfo(e.target.name, e.target.value)}
-      />
 
       <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
-      <button onClick={() => props.createFunction()}>Create Function</button>
-
-      <h4>My AWS S3 Buckets</h4>
+      <button id="createFuncBtn" onClick={() => props.createFunction()}>Create Function</button>
+      {/*<hr></hr>
+       <h3>My AWS S3 Buckets</h3>
       <select id="bucketsDropdown" name="S3BucketName" onChange={e => props.updateInfo(e.target.name, e.target.value)}>
         {props.currentBuckets}
       </select>
@@ -81,8 +76,8 @@ const AWSFunctionForm = props => {
           placeholder="New S3 Bucket Region"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
-        <button onClick={() => createBucket()}>Create New S3 Bucket</button>
-      </div>
+        <button id="createBucketBtn" onClick={() => props.createBucket()}>Create New S3 Bucket</button>
+      </div> */}
 
     </React.Fragment>
   );
