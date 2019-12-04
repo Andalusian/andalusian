@@ -9,7 +9,7 @@ const dbController = {};
 
 dbController.hashPassword = (req, res, next) => {
   const { username, password } = req.body;
-  bcrypt.hash(password, 10, function(err, hash) {
+  bcrypt.hash(password, 10, function (err, hash) {
     if (err) {
       console.log(`Error in dbController.bcryptify: ${err}`);
       return next(err);
@@ -26,6 +26,7 @@ dbController.hashPassword = (req, res, next) => {
 dbController.createUser = (req, res, next) => {
   console.log('within dbController.createUser');
   const { username, password } = res.locals.userInfo;
+  fs.mkdir(`${req.body.username}`)
   User.create({ username, password }, function (err, response) {
     if (err) {
       console.log(`Error in dbController.createUser: ${err}`);

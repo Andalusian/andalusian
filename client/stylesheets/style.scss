@@ -65,7 +65,7 @@ option {
 }
 .mainContainer {
   background: white;
-  width: 700px;
+  width: 500px;
   padding: 1rem;
   text-align: left;
   margin: 3rem 0;
@@ -79,8 +79,9 @@ button {
   border-radius: 2px;
   background: #eee;
   margin-top: 10px;
-  padding: 1em 3em;
+  padding: .5em 1em;
   transition: .25s ease all;
+  margin-left: 5px;
   &:hover {
     background: #8fcc52;
   }
@@ -104,8 +105,8 @@ button {
   &:hover {
     background: #8fcc52;
   }
-  border-style: dashed;
-  border-color: #3b3a39;
+  border-style: solid;
+  border-color: #a8a6a6;
   &:focus {
     outline: 0;
   }
@@ -143,6 +144,12 @@ img {
   margin-top: 10px;
   height: 25px;
   width: 25px;
+}
+
+#currentFunctions {
+  text-align: right;
+  position: relative;
+  right: 100px
 }
 
 .googleInfo {
