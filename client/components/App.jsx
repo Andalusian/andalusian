@@ -7,6 +7,7 @@ import axios from "axios";
 import Login from './Login.jsx';
 import Signup from "./Signup.jsx";
 import DockerSetup from "./DockerSetup.jsx";
+import AzureFunctionForm from "./AzureFunctionForm.jsx"
 
 class App extends React.Component {
   constructor(props) {
@@ -40,6 +41,8 @@ class App extends React.Component {
       runtimeCom: '',
       exposePort: '',
       com: '',
+      //azure
+      azureRuntime: '',
       // both
       pageSelect: 'Gcloud',
       functionName: '',
@@ -62,7 +65,7 @@ class App extends React.Component {
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
-    this.setState(updateObj, () => console.log(this.state.googleProject));
+    this.setState(updateObj, () => console.log(this.state.azureRuntime));
   }
 
   getawsAccountID() {
@@ -284,6 +287,12 @@ class App extends React.Component {
         submitKey={this.submitKey}
         functionName={this.state.functionName}
       ></DockerSetup></React.Fragment>)
+    } else if (this.state.pageSelect === 'Azure') {
+      displayed = (<React.Fragment>
+        <AzureFunctionForm
+        updateInfo = {this.updateInfo}
+        />
+      </React.Fragment>)
     }
 
     return (
@@ -319,6 +328,11 @@ class App extends React.Component {
             <input onChange={() => this.updateInfo('pageSelect', 'Docker')} type="radio"
               value="Docker" checked={this.state.pageSelect === 'Docker'} />
             <img src="https://cdn.iconscout.com/icon/free/png-256/docker-7-569438.png" />
+          </label>
+          <label>
+            <input onChange={() => this.updateInfo('pageSelect', 'Azure')} type="radio"
+                   value="Azure" checked={this.state.pageSelect === 'Azure'} />
+            <img src="https://abouttmc.com/wp-content/uploads/2019/02/logo_azure.png" />
           </label>
         </div>
         {displayed}
