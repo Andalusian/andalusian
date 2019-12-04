@@ -4,8 +4,6 @@ import GoogleCredentials from "./GoogleCredentials.jsx";
 const axios = require('axios')
 
 const GoogleFunctionForm = (props) => {
-    console.log(props.googleProject)
-
     return (
       <React.Fragment>
         <h2>GCloud</h2>

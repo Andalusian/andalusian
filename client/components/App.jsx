@@ -64,7 +64,7 @@ class App extends React.Component {
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
-    this.setState(updateObj, () => console.log(this.state.googleProject));
+    this.setState(updateObj);
   }
 
   getawsAccountID() {
@@ -133,10 +133,6 @@ class App extends React.Component {
         axios.post('/db/storeKey', keyObject);
         break;
     }
-    axios.post('/gcloud/auth', {key_file: this.state.googleKey})
-        .then(response => {if (response.status === 200) axios.post('/db/storeKey', keyObject)});
-    // axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
-
   }
 
   handleToggleSignup() {

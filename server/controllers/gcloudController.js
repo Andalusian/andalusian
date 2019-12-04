@@ -24,7 +24,7 @@ gcloudController.authUser = (req, res, next) => {
     console.error(`stderr: ${stderr}`);
     console.log(`stdout: ${stdout}`);
     return next();
-  }); 
+  });
 }
 
 gcloudController.deploy = (req, res, next) => {
@@ -72,7 +72,7 @@ gcloudController.deploy = (req, res, next) => {
     console.error(`stderr: ${stderr}`);
     console.log(`stdout: ${stdout}`);
 
-    res.locals.endpoint = {endpoint: JSON.parse(stdout).httpsTrigger.url};
+    res.locals.endpoint = { endpoint: JSON.parse(stdout).httpsTrigger.url };
     return next();
   });
 }
