@@ -35,6 +35,9 @@ input[name="functionName"] {
   display: inline-block;
   width: 65%;
 }
+.saveButton {
+  display: block;
+}
 .coupledInputs {
   margin: 0;
 }
@@ -147,4 +150,13 @@ img {
   text-align: right;
   position: relative;
   right: 100px
+}
+
+.googleInfo {
+  display: flex;
+  justify-content: space-around;
+}
+
+#googleProject {
+  margin-right: 5px;
 }
