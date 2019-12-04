@@ -18,6 +18,7 @@ class App extends React.Component {
       // google
       googleKey: '',
       runtime: undefined,
+      googleProject: '',
       // aws
       awsAccessKey: '',
       awsSecretAccessKey: '',
@@ -32,6 +33,8 @@ class App extends React.Component {
       awsRole: '',
       awsAccountID: '',
       // docker
+      dockerUsername: '',
+      dockerPassword: '',
       runtimeEnv: '',
       workDir: '',
       runtimeCom: '',
@@ -44,7 +47,6 @@ class App extends React.Component {
       uploadedFunction: '',
       uploadedFiles: [],
       // render states
-      pageSelect: 'Gcloud',
       isLogin: false,
       isSignup: false,
     };
@@ -62,7 +64,7 @@ class App extends React.Component {
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
-    this.setState(updateObj);
+    this.setState(updateObj, () => console.log(this.state.googleProject));
   }
 
   getawsAccountID() {
@@ -86,8 +88,8 @@ class App extends React.Component {
         };
         response.data.userData.keys.forEach(updateKey => {
           updateStateObject[updateKey.keyType] = updateKey.key;
-          if (updateKey === 'awsSecretAccessKey') {
-            updateStateObject.awsAccessKey = key.awsAccessKey;
+          if (updateKey.keyType === 'awsSecretAccessKey') {
+            updateStateObject.awsAccessKey = updateKey.awsAccessKey;
           }
         });
 
@@ -116,16 +118,25 @@ class App extends React.Component {
         axios.post('/gcloud/auth', { key_file: this.state.googleKey })
           .then(response => {
             if (response.status === 200) {
-              axios.post('/db/storeKey', keyObject)
+              axios.post('/db/storeKey', keyObject);
             }
           });
         break;
       case 'awsSecretAccessKey':
         keyObject.key = this.state.awsSecretAccessKey;
         keyObject.awsAccessKey = this.state.awsAccessKey;
-        axios.post('/db/storeKey', keyObject)
+        axios.post('/db/storeKey', keyObject);
+        break;
+      case 'dockerPassword':
+        keyObject.key = this.state.dockerPassword;
+        keyObject.dockerUsername = this.state.dockerUsername;
+        axios.post('/db/storeKey', keyObject);
         break;
     }
+    axios.post('/gcloud/auth', {key_file: this.state.googleKey})
+        .then(response => {if (response.status === 200) axios.post('/db/storeKey', keyObject)});
+    // axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
+
   }
 
   handleToggleSignup() {
@@ -160,7 +171,9 @@ class App extends React.Component {
       })
       .then(data => {
         console.log(data.data);
-        alert(JSON.stringify(data.data))
+        alert(`State: ${data.data.Configuration.State} 
+        \nRuntime: ${data.data.Configuration.Runtime} 
+        \nLast Modified: ${(new Date (Date.parse(data.data.Configuration.LastModified))).toLocaleString('en-US', {timeZone: 'America/Los_Angeles'})}`)
       })
       .catch(function (error) {
         console.log(error);
@@ -227,6 +240,7 @@ class App extends React.Component {
     if (this.state.pageSelect === 'Gcloud') {
       displayed = <GoogleFunctionForm
         submitKey={this.handleSubmitKey}
+        googleProject={this.state.googleProject}
         runtime={this.state.runtime}
         functionName={this.state.functionName}
         googleKey={this.state.googleKey}
@@ -269,6 +283,7 @@ class App extends React.Component {
         exposePort={this.state.exposePort}
         com={this.state.com}
         updateInfo={this.updateInfo}
+        submitKey={this.submitKey}
         functionName={this.state.functionName}
         copy={this.state.copy}
         uploadedFiles={this.state.uploadedFiles}

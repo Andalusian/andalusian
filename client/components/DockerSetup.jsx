@@ -1,6 +1,7 @@
 import React from "react";
 import MyDropzone from "./MyDropzone.jsx";
 import FileDropzone from "./FileDropzone.jsx"
+import DockerCredentials from './DockerCredentials.jsx';
 import axios from "axios";
 import { dockerDirect } from "../../server/controllers/dockerController.js";
 
@@ -82,6 +83,7 @@ const DockerSetup = props => {
 
     return (
         <React.Fragment>
+            <DockerCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} />
             <pre>
                 <h4>Container Setup</h4>
                 <input
