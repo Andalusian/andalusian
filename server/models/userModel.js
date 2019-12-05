@@ -11,16 +11,18 @@ mongoose.Promise = global.Promise;
 // Define User Schemas
 const userSchema =
   // async () => {
-    new Schema({
-      username: { type: String, required: true, unique: true },
-      password: { type: String, required: true },
-      keys: [{
-        keyType: String,
-        encryptedKey: String,
-        cryptoIV: String,
-        awsAccessKey: String,
-      }],
-    });
-  // }
+  new Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    keys: [{
+      keyAlias: String,
+      keyType: String,
+      encryptedKey: String,
+      cryptoIV: String,
+      awsAccessKey: String,
+      dockerUsername: String,
+    }],
+  });
+// }
 
 module.exports = mongoose.model('User', userSchema, 'users');
