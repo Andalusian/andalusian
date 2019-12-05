@@ -2,9 +2,9 @@ import React from "react";
 
 const MicroList = (props) => {
 
-    return (
+  return (
     <div className="microList"></div>
-    );
+  );
 }
 
 export default MicroList;

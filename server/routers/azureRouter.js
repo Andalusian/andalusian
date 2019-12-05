@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const express = require('express');
 const router = express.Router();
 const azureController = require('../controllers/azureController');
@@ -15,3 +16,12 @@ router.post('/deployFunc', azureController.deployFunc, (req, res) => {
 })
 
 module.exports = router;
+=======
+const express = require('express');
+const router = express.Router();
+const azureController = require('../controllers/azureController');
+
+
+
+module.exports = router;
+>>>>>>> 0d0dabfffecd2dc26196ca43f59eccd14a658e32
