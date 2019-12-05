@@ -1,17 +1,17 @@
 import React from 'react';
 import MyDropzone from "./MyDropzone.jsx";
 import GoogleCredentials from "./GoogleCredentials.jsx";
-const axios = require('axios')
+const axios = require('axios');
 
 const GoogleFunctionForm = (props) => {
 
   return (
     <React.Fragment>
       <h2>GCloud</h2>
-      <GoogleCredentials 
-        updateInfo={props.updateInfo} 
+      <GoogleCredentials
+        updateInfo={props.updateInfo}
         submitKey={props.submitKey}
-        keys={props.keys} 
+        keys={props.keys}
       />
       <div className="googleInfo">
         <hr></hr>

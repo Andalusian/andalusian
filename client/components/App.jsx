@@ -7,6 +7,7 @@ import axios from "axios";
 import Login from './Login.jsx';
 import Signup from "./Signup.jsx";
 import DockerSetup from "./DockerSetup.jsx";
+import AzureFunctionForm from "./AzureFunctionForm.jsx"
 
 class App extends React.Component {
   constructor(props) {
@@ -44,7 +45,12 @@ class App extends React.Component {
       runtimeCom: '',
       exposePort: '',
       com: '',
-      copy: '',
+        copy: '',
+      //azure
+      azureRuntime: '',
+      azureTemplate: '',
+      azureApp: '',
+      azureProject: '',
       // both
       pageSelect: 'Gcloud',
       functionName: '',
@@ -71,6 +77,7 @@ class App extends React.Component {
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
+
     if (property === 'awsKeyAlias') {
       let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'awsSecretAccessKey');
       updateObj.awsAccessKey = updateKey[0].awsAccessKey;
@@ -329,7 +336,7 @@ class App extends React.Component {
         googleKey={this.state.googleKey}
         updateInfo={this.updateInfo}
         uploadedFunction={this.state.uploadedFunction}
-        keys={this.state.keys} 
+        keys={this.state.keys}
       />
     } else if (this.state.pageSelect === 'Lambda') {
       displayed = (<React.Fragment>
@@ -383,6 +390,17 @@ class App extends React.Component {
         uploadedFiles={this.state.uploadedFiles}
         pageSelect={this.state.pageSelect}
       ></DockerSetup></React.Fragment>)
+    } else if (this.state.pageSelect === 'Azure') {
+      displayed = (<React.Fragment>
+        <AzureFunctionForm
+        updateInfo = {this.updateInfo}
+        azureRuntime={this.state.azureRuntime}
+        azureTemplate={this.state.azureTemplate}
+        azureApp={this.state.azureApp}
+        azureProject={this.state.azureProject}
+        functionName={this.state.functionName}
+        />
+      </React.Fragment>)
     }
 
     return (
@@ -418,6 +436,11 @@ class App extends React.Component {
             <input onChange={() => this.updateInfo('pageSelect', 'Docker')} type="radio"
               value="Docker" checked={this.state.pageSelect === 'Docker'} />
             <img src="https://cdn.iconscout.com/icon/free/png-256/docker-7-569438.png" />
+          </label>
+          <label>
+            <input onChange={() => this.updateInfo('pageSelect', 'Azure')} type="radio"
+                   value="Azure" checked={this.state.pageSelect === 'Azure'} />
+            <img src="https://abouttmc.com/wp-content/uploads/2019/02/logo_azure.png" />
           </label>
         </div>
         {displayed}
