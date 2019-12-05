@@ -4,3 +4,4 @@ config.js
 credentials.json
 build
 /server/platforms
+users
