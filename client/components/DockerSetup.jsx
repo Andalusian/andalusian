@@ -6,7 +6,7 @@ import axios from "axios";
 
 // const exec = require('child_process').exec;
 const DockerSetup = props => {
-    function containerSetup() {  
+    function containerSetup() {
         axios
         .post('/docker/containerSetup', {
             runtimeEnv: props.runtimeEnv,
@@ -23,7 +23,7 @@ const DockerSetup = props => {
         })
     }
 
-    function defaultSetup() {  
+    function defaultSetup() {
         axios
         .post('/docker/defaultSetup', {})
         .then((response) => {console.log(response);})
@@ -70,7 +70,7 @@ const DockerSetup = props => {
         .then((response) => {console.log(response);})
         .catch((error) => {console.log(error);})
     }
-    
+
     // function configure() {
     //     let runtimeEnv = props.runtimeEnv;
     //     let workDir = props.workDir;
@@ -132,7 +132,7 @@ const DockerSetup = props => {
         </React.Fragment>
     )
 
-    
+
 }
 
 export default DockerSetup;

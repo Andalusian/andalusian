@@ -2,10 +2,10 @@ import React from "react";
 import GoogleFunctionForm from "./GoogleFunctionForm.jsx";
 import AWSFunctionForm from "./AWSFunctionForm.jsx";
 import MicroList from "./MicroList.jsx"
-import AWSCurrentFunctions from "./AWSCurrentFunctions.jsx";
 import axios from "axios";
 import Login from './Login.jsx';
 import Signup from "./Signup.jsx";
+import Signout from "./Signout.jsx";
 import DockerSetup from "./DockerSetup.jsx";
 import AzureFunctionForm from "./AzureFunctionForm.jsx"
 
@@ -45,7 +45,7 @@ class App extends React.Component {
       runtimeCom: '',
       exposePort: '',
       com: '',
-        copy: '',
+      copy: '',
       //azure
       azureRuntime: '',
       azureTemplate: '',
@@ -74,6 +74,7 @@ class App extends React.Component {
     this.createFunction = this.createFunction.bind(this);
     this.configureAWS = this.configureAWS.bind(this);
     this.createBucket = this.createBucket.bind(this)
+    this.handleSignout = this.handleSignout.bind(this)
   }
 
   updateInfo(property, value) {
@@ -139,6 +140,53 @@ class App extends React.Component {
       });
   }
 
+  handleSignout() {
+    axios.post('db/deleteUserFiles', { username: this.state.username })
+      .then(() => {
+        this.setState({
+          username: '',
+          password: '',
+          // google
+          googleKey: '',
+          runtime: undefined,
+          googleProject: '',
+          // aws
+          awsAccessKey: '',
+          awsSecretAccessKey: '',
+          S3BucketName: '',
+          newBucketRegion: "",
+          currRegion: "",
+          currentBuckets: [],
+          codeHere: "",
+          currentFunctions: [],
+          awsRegion: '',
+          awsRuntime: '',
+          awsRole: '',
+          awsAccountID: '',
+          codeLoaded: '',
+          // docker
+          dockerUsername: '',
+          dockerPassword: '',
+          runtimeEnv: '',
+          workDir: '',
+          runtimeCom: '',
+          exposePort: '',
+          com: '',
+          copy: '',
+          // both
+          pageSelect: 'Gcloud',
+          functionName: '',
+          uploadedFunction: '',
+          uploadedFiles: [],
+          // render states
+          isLogin: false,
+          isSignup: false
+        })
+      });
+    console.log(this.state);
+    console.log("signout")
+  }
+
   handleSubmitKey(keyType) {
     const keyObject = {
       username: this.state.username,
@@ -148,12 +196,12 @@ class App extends React.Component {
       case 'googleKey':
         keyObject.key = this.state.googleKey;
         keyObject.keyAlias = this.state.googleKeyAlias,
-        axios.post('/gcloud/auth', { key_file: this.state.googleKey })
-          .then(response => {
-            if (response.status === 200) {
-              axios.post('/db/storeKey', keyObject);
-            }
-          });
+          axios.post('/gcloud/auth', { key_file: this.state.googleKey })
+            .then(response => {
+              if (response.status === 200) {
+                axios.post('/db/storeKey', keyObject);
+              }
+            });
         break;
       case 'awsSecretAccessKey':
         keyObject.key = this.state.awsSecretAccessKey;
@@ -257,7 +305,7 @@ class App extends React.Component {
   //       return fnButtons;
   //     })
   // }
-  
+
   loadCode(funcName) {
     axios
       .post("/aws/loadCode", {
@@ -373,7 +421,7 @@ class App extends React.Component {
 
     let displayed;
 
-    if (this.state.pageSelect === 'Gcloud') {
+    if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       displayed = <GoogleFunctionForm
         submitKey={this.handleSubmitKey}
         googleProject={this.state.googleProject}
@@ -387,15 +435,6 @@ class App extends React.Component {
       />
     } else if (this.state.pageSelect === 'Lambda') {
       displayed = (<React.Fragment>
-
-        {/* <AWSCurrentFunctions
-        id="AWSCurrentFunctions"
-        currentFunctions={this.state.currentFunctions}
-        currRegion={this.state.currRegion}
-        functionName={this.state.functionName}
-        codeHere={this.state.codeHere}
-        currentBuckets={this.state.currentBuckets}
-      /> */}
         <AWSFunctionForm id="AWSFunctionForm"
           currentFunctions={this.state.currentFunctions}
           currRegion={this.state.currRegion}
@@ -422,7 +461,7 @@ class App extends React.Component {
           keys={this.state.keys}
           codeLoaded={this.state.codeLoaded}
         /></React.Fragment>)
-    } else if (this.state.pageSelect === 'Docker') {
+    } else if ((this.state.pageSelect === 'Docker' && this.state.isLogin)) {
       displayed = (<React.Fragment><DockerSetup id="DockerSetup"
         code={this.state.uploadedFunction}
         runtimeEnv={this.state.runtimeEnv}
@@ -440,12 +479,12 @@ class App extends React.Component {
     } else if (this.state.pageSelect === 'Azure') {
       displayed = (<React.Fragment>
         <AzureFunctionForm
-        updateInfo = {this.updateInfo}
-        azureRuntime={this.state.azureRuntime}
-        azureTemplate={this.state.azureTemplate}
-        azureApp={this.state.azureApp}
-        azureProject={this.state.azureProject}
-        functionName={this.state.functionName}
+          updateInfo={this.updateInfo}
+          azureRuntime={this.state.azureRuntime}
+          azureTemplate={this.state.azureTemplate}
+          azureApp={this.state.azureApp}
+          azureProject={this.state.azureProject}
+          functionName={this.state.functionName}
         />
       </React.Fragment>)
     }
@@ -467,6 +506,12 @@ class App extends React.Component {
             handleToggleSignup={this.handleToggleSignup}
           />
         )}
+        {this.state.isLogin && !this.state.isSignup && (
+          <Signout
+            handleSignout={this.handleSignout}
+          />
+        )}
+
         {/* <MicroList /> */}
         <div className='radio'>
           <label>
@@ -486,7 +531,7 @@ class App extends React.Component {
           </label>
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Azure')} type="radio"
-                   value="Azure" checked={this.state.pageSelect === 'Azure'} />
+              value="Azure" checked={this.state.pageSelect === 'Azure'} />
             <img src="https://abouttmc.com/wp-content/uploads/2019/02/logo_azure.png" />
           </label>
         </div>

@@ -79,11 +79,10 @@ button {
   border: 1px solid #ddd;
   border-radius: 2px;
   background: #eee;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin: 10px 5px 10px 0;
   padding: .5em 1em;
   transition: .25s ease all;
-  margin-left: 0;
+
   &:hover {
     background: #8fcc52;
   }
@@ -99,7 +98,12 @@ button {
 }
 
 #drop1 {
-  margin-right: 5px;
+  margin-top: 15px;
+}
+
+#codeHere, #googleKey {
+margin: 0 auto;
+width: 98%;
 }
 
 .dropzone {
