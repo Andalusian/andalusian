@@ -37,20 +37,18 @@ dockerController.buildImage = (req, res, next) => {
 }
 
 dockerController.dockerDirect = (req, res, next) => {
-    console.log(req.body)
     let files = req.body.files;
     for(let i = 0; i < files.length; i++){
-        console.log(files[i], 'files')
+        // console.log(files[i], 'files')
         fs.readFile(files[i].path, function (err, data) {
-            console.log(files[i].path)
-            var newPath = `server/platforms/docker/live/${files[i].path}`;
-            console.log(newPath, 'newPath')
-            // fs.writeFileSync(newPath, data, function (err) {
-            //     if(err){
-            //   console.log('Unable to Upload')
-            //     }
-            //     next();
-            // });
+            // console.log(files[i].path)
+            var newPath = path.join(__dirname, `../platforms/docker/live/${files[i].path}`);
+            // console.log(newPath, 'newPath')
+            fs.appendFile(newPath, `${info[i]}`, function (err) {
+                if(err){
+              console.log('Unable to Upload')
+                }
+            });
           });
 }}     
 

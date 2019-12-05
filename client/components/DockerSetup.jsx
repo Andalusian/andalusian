@@ -52,7 +52,6 @@ const DockerSetup = props => {
     }
 
     function dockerDirect(){
-        console.log(props.uploadedFiles)
         axios
           .post('/docker/dockerDirect', {
             files: props.uploadedFiles,
