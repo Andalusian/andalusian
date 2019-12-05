@@ -15,4 +15,8 @@ router.post('/storeKey', dbController.encryptKey, dbController.storeKey, (req, r
   res.sendStatus(200);
 });
 
+router.post('/deleteUserFiles', dbController.deleteUserFiles, (req, res) => {
+  res.sendStatus(200);
+});
+
 module.exports = router;

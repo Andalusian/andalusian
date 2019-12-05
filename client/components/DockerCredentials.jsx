@@ -3,7 +3,6 @@ import React from 'react';
 const DockerCredentials = props => {
   return (
     <React.Fragment>
-      <h2>Docker</h2>
       <input
         type="text"
         id="dockerUsername"
