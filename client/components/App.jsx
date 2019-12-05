@@ -105,6 +105,7 @@ class App extends React.Component {
       })
       .then(data => {
         this.setState({ awsAccountID: data.data.Account });
+        console.log("getawsAccountID--->", this.state.awsAccountID)
       })
       .catch(function (error) {
         console.log(error);
