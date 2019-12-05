@@ -7,13 +7,13 @@ const gcloudController = {};
 // AUTHENTICATE THE USER
 gcloudController.authUser = (req, res, next) => {
   // VARIABLES
-  const { key_file, project } = req.body;
+  const { key_file, project, user_name } = req.body;
 
   // BUILD KEYFILE
-  fs.writeFileSync(path.join(__dirname, '../platforms/gcloud/keyfile.json'), key_file);
+  fs.writeFileSync(path.join(__dirname, `../../users/${user_name}/gcloud/keyfile.json`), key_file);
 
   // AUTHORIZE USER
-  exec(`gcloud auth activate-service-account --key-file ${path.join(__dirname, '../platforms/gcloud/keyfile.json')} --project=${project} --quiet`, (error, stdout, stderr) => {
+  exec(`gcloud auth activate-service-account --key-file ${path.join(__dirname, `../../users/${user_name}/gcloud/keyfile.json`)} --project=${project} --quiet`, (error, stdout, stderr) => {
     // OUTPUT HANDLING
     if (error) {
       console.error(`exec error: ${error}`);
@@ -48,15 +48,15 @@ gcloudController.deploy = (req, res, next) => {
 
   // BUILD FUNCTION FILE
   if (runtime === 'nodejs8' || runtime === 'nodejs10') {
-    fs.writeFileSync(path.join(__dirname, '../platforms/gcloud/function.js'), fn);
+    fs.writeFileSync(path.join(__dirname, `../../users/${user_name}/gcloud/function.js`), fn);
   } else if (runtime === 'python37') {
-    fs.writeFileSync(path.join(__dirname, '../platforms/gcloud/function.py'), fn);
+    fs.writeFileSync(path.join(__dirname, `../../users/${user_name}/gcloud/function.py`), fn);
   } else if (runtime === 'go111' || runtime === 'go113') {
-    fs.writeFileSync(path.join(__dirname, '../platforms/gcloud/function.go'), fn);
+    fs.writeFileSync(path.join(__dirname, `../../users/${user_name}/gcloud/function.go`), fn);
   }
 
   // DEPLOY FUNCTION FILE
-  exec(`gcloud functions deploy ${fn_name} --runtime ${runtime} --project ${project} --source ${path.join(__dirname, ('../platforms/gcloud/'))} --trigger-http --format=json --quiet`, (error, stdout, stderr) => {
+  exec(`gcloud functions deploy ${fn_name} --runtime ${runtime} --project ${project} --source ${path.join(__dirname, (`../../users/${user_name}/gcloud/`))} --trigger-http --format=json --quiet`, (error, stdout, stderr) => {
     // OUTPUT HANDLING
     if (error) {
       console.error(`exec error: ${error}`);
