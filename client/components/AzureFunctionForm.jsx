@@ -38,7 +38,7 @@ const AzureFunctionForm = (props) => {
         </pre>
             <input onChange={(e) => props.updateInfo(e.target.name, e.target.value)} name="azureApp" type="text" placeholder="App to Deploy to"/>
             <button onClick={() => axios.post('/azure/deployFunc', {username: props.username, projectName: props.azureProject, app: props.azureApp})
-                .then(response => console.log('successfully deployed'))}
+                .then(response => console.log(''))}
             >Deploy</button>
         </React.Fragment>
     )

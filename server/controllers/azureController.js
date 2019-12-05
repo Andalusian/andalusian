@@ -28,7 +28,7 @@ azureController.createProj = (req, res, next) => {
 
         console.error(`stderr: ${stderr}`);
         console.log(`stdout: ${stdout}`);
-
+        res.locals = stdout;
         return next();
     })
 }
@@ -57,7 +57,7 @@ azureController.createFunc = (req, res, next) => {
 
         console.error(`stderr: ${stderr}`);
         console.log(`stdout: ${stdout}`);
-
+        res.locals = stdout;
         return next();
     })
 
@@ -84,7 +84,7 @@ azureController.deployFunc = (req, res, next) => {
 
         console.error(`stderr: ${stderr}`);
         console.log(`stdout: ${stdout}`);
-
+        res.locals = stdout;
         return next();
     })
 }
