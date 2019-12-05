@@ -197,7 +197,7 @@ class App extends React.Component {
       case 'googleKey':
         keyObject.key = this.state.googleKey;
         keyObject.keyAlias = this.state.googleKeyAlias,
-          axios.post('/gcloud/auth', { key_file: this.state.googleKey })
+          axios.post('/gcloud/auth', { user_name: this.state.username, key_file: this.state.googleKey })
             .then(response => {
               if (response.status === 200) {
                 axios.post('/db/storeKey', keyObject);
@@ -424,6 +424,7 @@ class App extends React.Component {
 
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       displayed = <GoogleFunctionForm
+          username={this.state.username}
         submitKey={this.handleSubmitKey}
         googleProject={this.state.googleProject}
         runtime={this.state.runtime}
@@ -480,6 +481,7 @@ class App extends React.Component {
     } else if (this.state.pageSelect === 'Azure') {
       displayed = (<React.Fragment>
         <AzureFunctionForm
+            username={this.state.username}
           updateInfo={this.updateInfo}
           azureRuntime={this.state.azureRuntime}
           azureTemplate={this.state.azureTemplate}
