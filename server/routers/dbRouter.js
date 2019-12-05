@@ -7,8 +7,8 @@ router.post('/login', dbController.verifyUser, dbController.decrypt, (req, res) 
 });
 
 router.post('/createNewUser', dbController.hashPassword, dbController.createUser, (req, res) => {
-    res.sendStatus(200);
-  }
+  res.sendStatus(200);
+}
 );
 
 router.post('/storeKey', dbController.encryptKey, dbController.storeKey, (req, res) => {
