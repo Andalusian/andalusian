@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
@@ -92,13 +91,4 @@ azureController.deployFunc = (req, res, next) => {
 
 
 module.exports = azureController;
-=======
-const fs = require('fs');
-const { exec } = require('child_process');
 
-const azureController = {};
-
-
-
-module.exports = azureController;
->>>>>>> 0d0dabfffecd2dc26196ca43f59eccd14a658e32
