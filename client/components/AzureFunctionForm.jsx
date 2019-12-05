@@ -17,7 +17,7 @@ const AzureFunctionForm = (props) => {
                 <option value="--python">Python</option>
                 <option value="--powershell">Powershell</option>
             </select>
-                <button className="azureButton" onClick={() => axios.post('/azure/createProj', {projectName: props.azureProject, runtime: props.azureRuntime})}>Create Project</button>
+                <button className="azureButton" onClick={() => axios.post('/azure/createProj', {username: props.username, projectName: props.azureProject, runtime: props.azureRuntime})}>Create Project</button>
                 <input onChange={(e) => {props.updateInfo(e.target.name, e.target.value)}} name="functionName" type="text" placeholder="Function Name" />
             </div>
             <select name="azureTemplate" onChange={(e) => props.updateInfo(e.target.name, e.target.value)}>
@@ -32,12 +32,12 @@ const AzureFunctionForm = (props) => {
                 <option value="Service Bus Topic Trigger">Service Bus Topic</option>
                 <option value="Timer Trigger">Timer Trigger</option>
             </select>
-            <button className="azureButton" onClick={() => axios.post('/azure/createFunc', {projectName: props.azureProject, functionName: props.functionName, template: props.azureTemplate})}>Create Function</button>
+            <button className="azureButton" onClick={() => axios.post('/azure/createFunc', {username: props.username, projectName: props.azureProject, functionName: props.functionName, template: props.azureTemplate})}>Create Function</button>
             <pre>
           <textarea onChange={(e) => props.updateInfo('uploadedFunction', e.target.value)} id="codeHere" placeholder="<code here />" spellCheck="false" rows="25"></textarea>
         </pre>
             <input onChange={(e) => props.updateInfo(e.target.name, e.target.value)} name="azureApp" type="text" placeholder="App to Deploy to"/>
-            <button onClick={() => axios.post('/azure/deployFunc', {projectName: props.azureProject, app: props.azureApp})
+            <button onClick={() => axios.post('/azure/deployFunc', {username: props.username, projectName: props.azureProject, app: props.azureApp})
                 .then(response => console.log('successfully deployed'))}
             >Deploy</button>
         </React.Fragment>

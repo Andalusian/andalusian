@@ -33,12 +33,12 @@ const AWSCredentials = (props) => {
         {
           props.keys.map((key, i) => {
             return (
-              <option key={i} value={ key.keyAlias } >{key.keyAlias}</option>
+              <option key={i} value={key.keyAlias} >{key.keyAlias}</option>
             )
           })
         }
       </select>
-      <button id="regionBtn" onClick={() => { props.configureAWS() }}>Save Config</button>
+      <button type="button" id="regionBtn" onClick={() => { props.configureAWS() }}>Save Config</button>
       <select id="awsRegion" name="awsRegion" onChange={e => props.updateInfo(e.target.name, e.target.value)} >
         <option defaultValue={"a"}> -- select region -- </option>
         <option value="us-east-1">US East 1</option>

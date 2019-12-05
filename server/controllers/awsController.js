@@ -10,20 +10,20 @@ const awsController = {};
 
 awsController.configureAWS = (req, res, next) => {
   let data = `{ "accessKeyId": ${JSON.stringify(req.body.awsAccessKey)}, "secretAccessKey": ${JSON.stringify(req.body.awsSecretAccessKey)} , "region": ${JSON.stringify(req.body.awsRegion)}  }`;
-  fs.writeFileSync(`${req.body.username}/credentials.json`, data, (err) => {
+  fs.writeFileSync(`users/${req.body.username}/aws/credentials.json`, data, (err) => {
     if (err) { console.log(err) }
   });
   return next();
 }
 
 awsController.createFunction = (req, res, next) => {
-  AWS.config.loadFromPath(`${req.body.username}/credentials.json`);
+  AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
   const lambda = new AWS.Lambda();
-  fs.writeFileSync(`${req.body.username}/${req.body.functionName}.js`, req.body.uploadedFunction)
-  exec(`zip ${req.body.username}/${req.body.functionName}.zip ${req.body.username}/${req.body.functionName}.js`, (error, stdout, stderr) => {
+  fs.writeFileSync(`users/${req.body.username}/aws/${req.body.functionName}.js`, req.body.uploadedFunction)
+  exec(`zip users/${req.body.username}/aws/${req.body.functionName}.zip users/${req.body.username}/aws/${req.body.functionName}.js`, (error, stdout, stderr) => {
     const params = {
       "Code": {
-        "ZipFile": fs.readFileSync(`${req.body.username}/${req.body.functionName}.zip`)
+        "ZipFile": fs.readFileSync(`users/${req.body.username}/aws/${req.body.functionName}.zip`)
       },
       "FunctionName": `${req.body.functionName}`,
       "Handler": `${req.body.functionName}` + ".handler",
@@ -52,17 +52,7 @@ awsController.createFunction = (req, res, next) => {
 // REMINDER TO SELF - SET UP TO DELETE THE FOLDER AFTER THE PROCESS IS COMPLETED
 
 awsController.listFunctions = (req, res, next) => {
-
-  AWS.config.loadFromPath(`${req.body.username}/credentials.json`, function (err, data) {
-    if (err) {
-      console.log('noooooooo');
-    } else {
-      console.log('flop');
-    }
-  });
-  // let config = new AWS.Config({
-  //   accessKeyId: 'AKIAJITZPATODVCYQLPQ', secretAccessKey: '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', region: 'us-east-1'
-  // });
+  AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
   const lambda = new AWS.Lambda();
   const params = {}
   lambda.listFunctions(params, (err, data) => {
@@ -77,7 +67,7 @@ awsController.listFunctions = (req, res, next) => {
 }
 
 awsController.invokeFunc = (req, res, next) => {
-  AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
+  AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
   const lambda = new AWS.Lambda();
   const params = { FunctionName: `${req.body.funcName}` }
   lambda.invoke(params, (err, data) => {
@@ -91,8 +81,7 @@ awsController.invokeFunc = (req, res, next) => {
 }
 
 awsController.deleteFunc = (req, res, next) => {
-  console.log("awsController.deleteFunc REQ BODY --->", req.body)
-  AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
+  AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
   const lambda = new AWS.Lambda();
   const params = { FunctionName: `${req.body.funcName}` }
   lambda.deleteFunction(params, (err, data) => {
@@ -105,7 +94,7 @@ awsController.deleteFunc = (req, res, next) => {
 }
 
 awsController.allBuckets = (req, res, next) => {
-  AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
+  AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
   const s3 = new AWS.S3();
   const params = {}
   s3.listBuckets(params, (err, data) => {
@@ -119,7 +108,7 @@ awsController.allBuckets = (req, res, next) => {
 }
 
 awsController.loadCode = (req, res, next) => {
-  AWS.config.loadFromPath(`${req.body.username}/credentials.json`);
+  AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
   const lambda = new AWS.Lambda();
   const params = { FunctionName: `${req.body.funcName}` }
   lambda.getFunction(params, (err, data) => {
@@ -129,10 +118,10 @@ awsController.loadCode = (req, res, next) => {
       .on('error', function (error) {
         console.log(error);
       })
-      .pipe(fs.createWriteStream(`${req.body.username}/${req.body.funcName}.zip`))
+      .pipe(fs.createWriteStream(`users/${req.body.username}/aws/${req.body.funcName}.zip`))
       .on('finish', function () {
-        exec(`unzip ${req.body.username}/${req.body.funcName}.zip`, (error, stdout, stderr) => {
-          fs.readFile(`${req.body.username}/${req.body.funcName}.js`, 'utf8', (err, data) => {
+        exec(`unzip users/${req.body.username}/aws/${req.body.funcName}.zip`, (error, stdout, stderr) => {
+          fs.readFile(`users/${req.body.username}/aws/${req.body.funcName}.js`, 'utf8', (err, data) => {
             if (err) { console.log(err) }
             else {
               res.locals.codeLoaded = data;
@@ -150,7 +139,7 @@ awsController.loadCode = (req, res, next) => {
 }
 
 awsController.getFuncInfo = (req, res, next) => {
-  AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
+  AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
   const lambda = new AWS.Lambda();
   const params = { FunctionName: `${req.body.funcName}` }
   lambda.getFunction(params, (err, data) => {
@@ -165,7 +154,7 @@ awsController.getFuncInfo = (req, res, next) => {
 
 awsController.createBucket = (req, res, next) => {
   console.log(req.body)
-  AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
+  AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
   const s3 = new AWS.S3();
   const params = {
     Bucket: `${req.body.S3BucketName} `,
@@ -173,7 +162,6 @@ awsController.createBucket = (req, res, next) => {
       LocationConstraint: `${req.body.newBucketRegion}`
     }
   };
-  console.log("PARAMS -----> ", params)
   s3.createBucket(params, function (err, data) {
     if (err) {
       console.log(err, err.stack);
@@ -187,7 +175,7 @@ awsController.createBucket = (req, res, next) => {
 }
 
 awsController.getawsAccountID = (req, res, next) => {
-  AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
+  AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
   const sts = new AWS.STS();
   const params = {
   };

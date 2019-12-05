@@ -100,6 +100,7 @@ class App extends React.Component {
       })
       .then(data => {
         this.setState({ awsAccountID: data.data.Account });
+        console.log("getawsAccountID--->", this.state.awsAccountID)
       })
       .catch(function (error) {
         console.log(error);
@@ -196,7 +197,7 @@ class App extends React.Component {
       case 'googleKey':
         keyObject.key = this.state.googleKey;
         keyObject.keyAlias = this.state.googleKeyAlias,
-          axios.post('/gcloud/auth', { key_file: this.state.googleKey })
+          axios.post('/gcloud/auth', { user_name: this.state.username, key_file: this.state.googleKey })
             .then(response => {
               if (response.status === 200) {
                 axios.post('/db/storeKey', keyObject);
@@ -423,6 +424,7 @@ class App extends React.Component {
 
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       displayed = <GoogleFunctionForm
+          username={this.state.username}
         submitKey={this.handleSubmitKey}
         googleProject={this.state.googleProject}
         runtime={this.state.runtime}
@@ -479,6 +481,7 @@ class App extends React.Component {
     } else if (this.state.pageSelect === 'Azure') {
       displayed = (<React.Fragment>
         <AzureFunctionForm
+            username={this.state.username}
           updateInfo={this.updateInfo}
           azureRuntime={this.state.azureRuntime}
           azureTemplate={this.state.azureTemplate}
@@ -517,12 +520,12 @@ class App extends React.Component {
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Gcloud')} type="radio"
               value="Gcloud" checked={this.state.pageSelect === 'Gcloud'} />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png" />
+            <img id="Gcloudimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png" />
           </label>
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Lambda')} type="radio"
               value="Lambda" checked={this.state.pageSelect === 'Lambda'} />
-            <img src="https://git.teknik.io/POTM/Mirror-script.module.lambdascrapers/raw/commit/25b20d0adb8afa6d29eba3a0167046cb2e21ea94/icon.png" />
+            <img id="Lambdaimg" src="https://git.teknik.io/POTM/Mirror-script.module.lambdascrapers/raw/commit/25b20d0adb8afa6d29eba3a0167046cb2e21ea94/icon.png" />
           </label>
           <label>
             <input onChange={() => this.updateInfo('pageSelect', 'Docker')} type="radio"

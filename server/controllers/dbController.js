@@ -27,7 +27,15 @@ dbController.hashPassword = (req, res, next) => {
 dbController.createUser = (req, res, next) => {
   console.log('within dbController.createUser');
   const { username, password } = res.locals.userInfo;
-  fs.mkdir(`${req.body.username}`, () => {});
+  fs.mkdir(`users/${username}/aws`, { recursive: true }, () => {
+    fs.mkdir(`users/${username}/gcloud`, { recursive: true }, () => {
+      fs.mkdir(`users/${username}/azure`, { recursive: true }, () => {
+        fs.mkdir(`users/${username}/docker`, { recursive: true }, () => {
+
+        });
+      });
+    });
+  });
   User.create({ username, password }, function (err, response) {
     if (err) {
       console.log(`Error in dbController.createUser: ${err}`);
@@ -42,8 +50,14 @@ dbController.createUser = (req, res, next) => {
 dbController.verifyUser = (req, res, next) => {
   console.log('within dbController.verifyUser');
   const { username, password } = req.body;
-  fs.mkdir(`${req.body.username}`, () => {
-    console.log("filth")
+  fs.mkdir(`users/${username}/aws`, { recursive: true }, () => {
+    fs.mkdir(`users/${username}/gcloud`, { recursive: true }, () => {
+      fs.mkdir(`users/${username}/azure`, { recursive: true }, () => {
+        fs.mkdir(`users/${username}/docker`, { recursive: true }, () => {
+
+        });
+      });
+    });
   });
   User.findOne({ username }, function (err, response) {
     if (err) {
@@ -148,8 +162,7 @@ dbController.storeKey = (req, res, next) => {
 
 
 dbController.deleteUserFiles = (req, res, next) => {
-  console.log(req.body)
-  fs.rmdir(req.body.username, { recursive: true }, function (err, response) {
+  fs.rmdir(`users/${req.body.username}`, { recursive: true }, function (err, response) {
     if (err) {
       console.log(err)
     } else {
