@@ -35,6 +35,7 @@ class App extends React.Component {
       awsRuntime: '',
       awsRole: '',
       awsAccountID: '',
+      codeLoaded: '',
       // docker
       dockerUsername: '',
       dockerPassword: '',
@@ -211,7 +212,7 @@ class App extends React.Component {
         username: this.state.username
       })
       .then(data => {
-        console.log(data)
+        this.setState({ codeLoaded: data.data });
       })
       .catch(error => console.log(error))
   }
@@ -365,6 +366,7 @@ class App extends React.Component {
           createBucket={this.createBucket}
           awsKeyAlias={this.state.awsKeyAlias}
           keys={this.state.keys}
+          codeLoaded={this.state.codeLoaded}
         /></React.Fragment>)
     } else if (this.state.pageSelect === 'Docker') {
       displayed = (<React.Fragment><DockerSetup id="DockerSetup"

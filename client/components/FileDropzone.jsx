@@ -1,12 +1,19 @@
 import React, { useCallback } from 'react'
-import { useDropzone } from 'react-dropzone'
+import {useDropzone} from 'react-dropzone'
 
 
 function FileDropzone(props) {
   const onDrop = useCallback(acceptedFiles => {
-    props.updateInfo('uploadedFiles', acceptedFiles)
-  }, [])
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+  props.updateInfo('uploadedFiles', acceptedFiles)
+  console.log(acceptedFiles)
+// if(props.pageSelect === 'Docker'){
+// for(let i =0; i < acceptedFiles.length; i++){
+
+// }
+// }
+}, []);
+
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
   return (
     <div {...getRootProps()}>
@@ -20,4 +27,4 @@ function FileDropzone(props) {
   )
 }
 
-export default FileDropzone;
+export default FileDropzone

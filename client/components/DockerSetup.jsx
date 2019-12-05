@@ -3,7 +3,6 @@ import MyDropzone from "./MyDropzone.jsx";
 import FileDropzone from "./FileDropzone.jsx"
 import DockerCredentials from './DockerCredentials.jsx';
 import axios from "axios";
-import { dockerDirect } from "../../server/controllers/dockerController.js";
 
 // const exec = require('child_process').exec;
 const DockerSetup = props => {
@@ -53,7 +52,7 @@ const DockerSetup = props => {
     }
 
     function dockerDirect(){
-        // console.log(props.uploadedFiles)
+        console.log(props.uploadedFiles)
         axios
           .post('/docker/dockerDirect', {
             files: props.uploadedFiles,
@@ -83,6 +82,7 @@ const DockerSetup = props => {
 
     return (
         <React.Fragment>
+            <h2>Docker</h2>
             <DockerCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} />
             <pre>
                 <h4>Container Setup</h4>

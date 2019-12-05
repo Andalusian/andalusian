@@ -3,8 +3,8 @@ const { exec } = require("child_process");
 const AWS = require("aws-sdk");
 const lambda = new AWS.Lambda();
 const s3 = new AWS.S3();
-const request = require('superagent');
-const admZip = require('adm-zip');
+const request = require('superagent'); // npm install superagent
+const admZip = require('adm-zip'); // npm install adm-zip
 
 const awsController = {};
 
@@ -17,16 +17,12 @@ awsController.configureAWS = (req, res, next) => {
 }
 
 awsController.createFunction = (req, res, next) => {
-  console.log("in awsController.createFunction BACKEND")
   AWS.config.loadFromPath(`${req.body.username}/credentials.json`);
   const lambda = new AWS.Lambda();
   fs.writeFileSync(`${req.body.username}/${req.body.functionName}.js`, req.body.uploadedFunction)
   exec(`zip ${req.body.username}/${req.body.functionName}.zip ${req.body.username}/${req.body.functionName}.js`, (error, stdout, stderr) => {
     const params = {
       "Code": {
-        // "S3Bucket": `${req.body.S3BucketName}`,
-        // "S3Key": "",
-        // "S3ObjectVersion": "",
         "ZipFile": fs.readFileSync(`${req.body.username}/${req.body.functionName}.zip`)
       },
       "FunctionName": `${req.body.functionName}`,
@@ -67,11 +63,9 @@ awsController.listFunctions = (req, res, next) => {
   // let config = new AWS.Config({
   //   accessKeyId: 'AKIAJITZPATODVCYQLPQ', secretAccessKey: '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', region: 'us-east-1'
   // });
-  console.log("in awsController.listFunctions")
   const lambda = new AWS.Lambda();
   const params = {}
   lambda.listFunctions(params, (err, data) => {
-    console.log("in lambda")
     if (err) {
       console.log("err: ", err)
       return (err)
@@ -111,7 +105,6 @@ awsController.deleteFunc = (req, res, next) => {
 }
 
 awsController.allBuckets = (req, res, next) => {
-  console.log("awsController.allBuckets REQ BODY --->", req.body)
   AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
   const s3 = new AWS.S3();
   const params = {}
@@ -125,42 +118,36 @@ awsController.allBuckets = (req, res, next) => {
   });
 }
 
-// awsController.loadCode = (req, res, next) => {
-//   AWS.config.loadFromPath(`${req.body.username}/credentials.json`);
-//   const lambda = new AWS.Lambda();
-//   const params = { FunctionName: `${req.body.funcName}` }
-//   lambda.getFunction(params, (err, data) => {
-//     console.log("data.Code.Location ---->", data.Code.Location)
-//     const href = data.Code.Location;
-//     const zipFile = 'aster.zip';
-//     const extractEntryTo = `${zipFile}-master/`;
-//     const outputDir = `./${zipFile}-master/`;
-//     request
-//       .get(href)
-//       .on('error', function (error) {
-//         console.log(error);
-//       })
-//       .pipe(fs.createWriteStream(zipFile))
-//       // .then(data => console.log("DATATDATAT", data))
-//       .on('finish', function () {
-
-//         const zip = new admZip(zipFile);
-//         zip.extractEntryTo(extractEntryTo, outputDir, false, true);
-
-//       });
-//     if (err) {
-//       console.log("err: ", err)
-//       return
-//     }
-//     res.locals.funcCode = data.Code.Location;
-//     console.log("data.Code.Location ---->", data.Code.Location)
-//     exec(`open '${data.Code.Location}'`, (error, stdout, stderr) => {
-//       exec(`~`, (error, stdout, stderr) => { })
-//     })
-//     return next();
-//   }
-//   )
-// }
+awsController.loadCode = (req, res, next) => {
+  AWS.config.loadFromPath(`${req.body.username}/credentials.json`);
+  const lambda = new AWS.Lambda();
+  const params = { FunctionName: `${req.body.funcName}` }
+  lambda.getFunction(params, (err, data) => {
+    const href = data.Code.Location;
+    request
+      .get(href)
+      .on('error', function (error) {
+        console.log(error);
+      })
+      .pipe(fs.createWriteStream(`${req.body.username}/${req.body.funcName}.zip`))
+      .on('finish', function () {
+        exec(`unzip ${req.body.username}/${req.body.funcName}.zip`, (error, stdout, stderr) => {
+          fs.readFile(`${req.body.username}/${req.body.funcName}.js`, 'utf8', (err, data) => {
+            if (err) { console.log(err) }
+            else {
+              res.locals.codeLoaded = data;
+              console.log(res.locals.codeLoaded);
+              return next();
+            }
+          })
+        })
+      });
+    if (err) {
+      console.log("err: ", err)
+      return err;
+    }
+  })
+}
 
 awsController.getFuncInfo = (req, res, next) => {
   AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
@@ -177,7 +164,6 @@ awsController.getFuncInfo = (req, res, next) => {
 }
 
 awsController.createBucket = (req, res, next) => {
-  console.log("in BACKEND awsController.createBucket")
   console.log(req.body)
   AWS.config.loadFromPath(`${req.body.username}/credentials.json`)
   const s3 = new AWS.S3();

@@ -5,7 +5,6 @@ import AWSCurrentFunctions from './AWSCurrentFunctions.jsx'
 import axios from "axios";
 
 const AWSFunctionForm = props => {
-
   return (
     <React.Fragment>
       <h2>AWS</h2>
@@ -17,18 +16,9 @@ const AWSFunctionForm = props => {
         awsSecretAccessKey={props.awsSecretAccessKey}
         awsKeyAlias={props.awsKeyAlias}
         keys={props.keys} 
+        configureAWS={props.configureAWS}
       />
-      <h5>Region:</h5>
-      <input
-        type="text"
-        id="awsRegion"
-        name="awsRegion"
-        placeholder={props.awsRegion}
-        onChange={e => props.updateInfo(e.target.name, e.target.value)}
-      />
-      <br />
-      <button id="regionBtn" onClick={() => { props.configureAWS() }}>Save Region</button>
-      <hr></hr>
+      <hr />
       <AWSCurrentFunctions
         id="AWSCurrentFunctions"
         currentFunctions={props.currentFunctions}
@@ -59,31 +49,8 @@ const AWSFunctionForm = props => {
         <option value="ruby2.5">Ruby 2.5</option>
       </select>
 
-      <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
+      <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} codeLoaded={props.codeLoaded} />
       <button id="createFuncBtn" onClick={() => props.createFunction()}>Create Function</button>
-      {/*<hr></hr>
-       <h3>My AWS S3 Buckets</h3>
-      <select id="bucketsDropdown" name="S3BucketName" onChange={e => props.updateInfo(e.target.name, e.target.value)}>
-        {props.currentBuckets}
-      </select>
-      <div>
-        <input
-          id="S3BucketInput"
-          type="text"
-          name="S3BucketName"
-          placeholder="New S3 Bucket Name"
-          onChange={e => props.updateInfo(e.target.name, e.target.value)}
-        />
-        <input
-          id="newBucketRegion"
-          type="text"
-          name="newBucketRegion"
-          placeholder="New S3 Bucket Region"
-          onChange={e => props.updateInfo(e.target.name, e.target.value)}
-        />
-        <button id="createBucketBtn" onClick={() => props.createBucket()}>Create New S3 Bucket</button>
-      </div> */}
-
     </React.Fragment>
   );
 };
