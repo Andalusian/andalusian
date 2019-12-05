@@ -3,21 +3,14 @@ import {useDropzone} from 'react-dropzone'
 
 
 function FileDropzone(props) {
-  let fileInfo = []
   const onDrop = useCallback(acceptedFiles => {
   props.updateInfo('uploadedFiles', acceptedFiles)
-
-  
+  console.log(acceptedFiles)
+// if(props.pageSelect === 'Docker'){
 // for(let i =0; i < acceptedFiles.length; i++){
-//   const reader = new FileReader()
-//   reader.onload = () => {
-//     const binaryStr=reader.result
-//     let fileText = reader.readAsText(binaryStr)
-//     fileInfo.push(fileText)
-//     console.log(fileText)
-//   }
+
 // }
-// console.log(fileInfo)
+// }
 }, []);
 
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
