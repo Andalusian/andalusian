@@ -55,8 +55,9 @@ class App extends React.Component {
     this.handleSignup = this.handleSignup.bind(this);
     this.handleToggleSignup = this.handleToggleSignup.bind(this);
     this.handleSubmitKey = this.handleSubmitKey.bind(this);
-    this.listFunctions = this.listFunctions.bind(this)
-    this.listBuckets = this.listBuckets.bind(this)
+    this.listFunctions = this.listFunctions.bind(this);
+    this.listBuckets = this.listBuckets.bind(this);
+    // this.googleListFunctions = this.googleListFunctions.bind(this);
   }
 
   updateInfo(property, value) {
@@ -161,6 +162,51 @@ class App extends React.Component {
       });
   }
 
+  // googleListFunctions() {
+  //   console.log('inside googleListFunctions')
+  //   fetch('/gcloud/list')
+  //     .then(data => data.json())
+  //     .then(data => {
+  //       console.log(`Data from list fetch: ${data}`)
+  //       const fnList = data.fn_list;
+  //       const fnButtons = [];
+  //       fnList.forEach((el) => {
+  //         fnButtons.push(<div id={el}>
+  //           <span>{el}</span>
+  //           <button onClick={() => {
+  //             fetch(`/gcloud/info/${el}`)
+  //               .then(data => data.json())
+  //               .then(data => {
+  //                 console.log(data);
+  //               })
+  //           }}>Info</button>
+  //           <button onClick={() => {
+  //             fetch(`/gcloud/call/${el}`)
+  //               .then(data => data.json())
+  //               .then(data => {
+  //                 console.log(data);
+  //               })
+  //           }}>Invoke</button>
+  //           <button onClick={() => {
+  //             fetch(`/gcloud/delete/`, {
+  //               method: 'DELETE',
+  //               headers: {
+  //                   'Content-Type': 'application/json',
+  //               },
+  //               body: JSON.stringify({fn_name: el}),
+  //             })
+  //               .then(data => data.json())
+  //               .then(data => {
+  //                 console.log(data);
+  //               })
+  //           }}>Delete</button>
+  //         </div>);
+  //       });
+  //       console.log(`fnButtons: ${fnButtons}`)
+  //       return fnButtons;
+  //     })
+  // }
+
   getFuncInfo(funcName) {
     console.log("in getFuncInfo")
     axios
@@ -238,12 +284,13 @@ class App extends React.Component {
     if (this.state.pageSelect === 'Gcloud') {
       displayed = <GoogleFunctionForm
         submitKey={this.handleSubmitKey}
-        googleProject={this.googleProject}
+        googleProject={this.state.googleProject}
         runtime={this.state.runtime}
         functionName={this.state.functionName}
         googleKey={this.state.googleKey}
         updateInfo={this.updateInfo}
-        uploadedFunction={this.state.uploadedFunction} />
+        uploadedFunction={this.state.uploadedFunction}
+        /*googleListFunctions={this.googleListFunctions}*/ />
     } else if (this.state.pageSelect === 'Lambda') {
       displayed = (<React.Fragment><AWSCurrentFunctions
         id="AWSCurrentFunctions"
