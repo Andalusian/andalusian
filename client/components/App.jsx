@@ -15,13 +15,16 @@ class App extends React.Component {
       // shinobi
       username: '',
       password: '',
+      keys: [],
       // google
       googleKey: '',
+      googleKeyAlias: '',
       runtime: undefined,
       googleProject: '',
       // aws
       awsAccessKey: '',
       awsSecretAccessKey: '',
+      awsKeyAlias: '',
       S3BucketName: '',
       newBucketRegion: "",
       currRegion: "",
@@ -67,6 +70,16 @@ class App extends React.Component {
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
+    if (property === 'awsKeyAlias') {
+      let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'awsSecretAccessKey');
+      updateObj.awsAccessKey = updateKey[0].awsAccessKey;
+      updateObj.awsSecretAccessKey = updateKey[0].key;
+    }
+    if (property === 'googleKeyAlias') {
+      let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'googleKey');
+      updateObj.awsAccessKey = updateKey[0].awsAccessKey;
+      updateObj.awsSecretAccessKey = updateKey[0].key;
+    }
     this.setState(updateObj);
   }
 
@@ -88,11 +101,16 @@ class App extends React.Component {
       .then(response => {
         const updateStateObject = {
           isLogin: true,
+          keys: response.data.userData.keys,
         };
         response.data.userData.keys.forEach(updateKey => {
           updateStateObject[updateKey.keyType] = updateKey.key;
+          if (updateKey.keyType === 'googleKey') {
+            updateStateObject.googleKeyAlias = updateKey.keyAlias;
+          }
           if (updateKey.keyType === 'awsSecretAccessKey') {
             updateStateObject.awsAccessKey = updateKey.awsAccessKey;
+            updateStateObject.awsKeyAlias = updateKey.keyAlias;
           }
         });
         this.setState(updateStateObject, () => {
@@ -120,6 +138,7 @@ class App extends React.Component {
     switch (keyType) {
       case 'googleKey':
         keyObject.key = this.state.googleKey;
+        keyObject.keyAlias = this.state.googleKeyAlias,
         axios.post('/gcloud/auth', { key_file: this.state.googleKey })
           .then(response => {
             if (response.status === 200) {
@@ -130,6 +149,7 @@ class App extends React.Component {
       case 'awsSecretAccessKey':
         keyObject.key = this.state.awsSecretAccessKey;
         keyObject.awsAccessKey = this.state.awsAccessKey;
+        keyObject.keyAlias = this.state.awsKeyAlias;
         axios.post('/db/storeKey', keyObject);
         break;
       case 'dockerPassword':
@@ -138,9 +158,6 @@ class App extends React.Component {
         axios.post('/db/storeKey', keyObject);
         break;
     }
-    axios.post('/gcloud/auth', { key_file: this.state.googleKey })
-      .then(response => { if (response.status === 200) axios.post('/db/storeKey', keyObject) });
-    // axios.post('/db/storeKey', { username: this.state.username, key: this.state.googleKey });
   }
 
   handleToggleSignup() {
@@ -310,7 +327,9 @@ class App extends React.Component {
         functionName={this.state.functionName}
         googleKey={this.state.googleKey}
         updateInfo={this.updateInfo}
-        uploadedFunction={this.state.uploadedFunction} />
+        uploadedFunction={this.state.uploadedFunction}
+        keys={this.state.keys} 
+      />
     } else if (this.state.pageSelect === 'Lambda') {
       displayed = (<React.Fragment>
 
@@ -344,7 +363,8 @@ class App extends React.Component {
           createFunction={this.createFunction}
           configureAWS={this.configureAWS}
           createBucket={this.createBucket}
-
+          awsKeyAlias={this.state.awsKeyAlias}
+          keys={this.state.keys}
         /></React.Fragment>)
     } else if (this.state.pageSelect === 'Docker') {
       displayed = (<React.Fragment><DockerSetup id="DockerSetup"

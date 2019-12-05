@@ -9,20 +9,25 @@ const AWSFunctionForm = props => {
   return (
     <React.Fragment>
       <h2>AWS</h2>
-      <pre >
-        <h4>Configuration</h4>
-        <AWSCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} awsAccessKey={props.awsAccessKey} awsSecretAccessKey={props.awsSecretAccessKey} />
-        <h5>Region:</h5>
-        <input
-          type="text"
-          id="awsRegion"
-          name="awsRegion"
-          placeholder={props.awsRegion}
-          onChange={e => props.updateInfo(e.target.name, e.target.value)}
-        />
-        <br />
-        <button id="regionBtn" onClick={() => { props.configureAWS() }}>Save Region</button>
-      </pre>
+      <h4>Configuration</h4>
+      <AWSCredentials
+        updateInfo={props.updateInfo}
+        submitKey={props.submitKey}
+        awsAccessKey={props.awsAccessKey}
+        awsSecretAccessKey={props.awsSecretAccessKey}
+        awsKeyAlias={props.awsKeyAlias}
+        keys={props.keys} 
+      />
+      <h5>Region:</h5>
+      <input
+        type="text"
+        id="awsRegion"
+        name="awsRegion"
+        placeholder={props.awsRegion}
+        onChange={e => props.updateInfo(e.target.name, e.target.value)}
+      />
+      <br />
+      <button id="regionBtn" onClick={() => { props.configureAWS() }}>Save Region</button>
       <hr></hr>
       <AWSCurrentFunctions
         id="AWSCurrentFunctions"

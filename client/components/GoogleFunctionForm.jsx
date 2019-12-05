@@ -8,7 +8,11 @@ const GoogleFunctionForm = (props) => {
   return (
     <React.Fragment>
       <h2>GCloud</h2>
-      <GoogleCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} />
+      <GoogleCredentials 
+        updateInfo={props.updateInfo} 
+        submitKey={props.submitKey}
+        keys={props.keys} 
+      />
       <div className="googleInfo">
         <hr></hr>
         <h4>Create Function</h4>
