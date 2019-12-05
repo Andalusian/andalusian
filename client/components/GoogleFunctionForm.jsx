@@ -10,6 +10,8 @@ const GoogleFunctionForm = (props) => {
       <h2>GCloud</h2>
       <GoogleCredentials
         updateInfo={props.updateInfo}
+        googleKey={props.googleKey}
+        googleKeyAlias={props.googleKeyAlias}
         submitKey={props.submitKey}
         keys={props.keys}
       />

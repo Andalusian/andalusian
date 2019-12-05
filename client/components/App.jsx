@@ -83,12 +83,17 @@ class App extends React.Component {
 
     if (property === 'awsKeyAlias') {
       let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'awsSecretAccessKey');
-      updateObj.awsAccessKey = updateKey[0].awsAccessKey;
-      updateObj.awsSecretAccessKey = updateKey[0].key;
+      if(updateKey.length) {
+        updateObj.awsAccessKey = updateKey[0].awsAccessKey;
+        updateObj.awsSecretAccessKey = updateKey[0].key;
+      }
     }
     if (property === 'googleKeyAlias') {
       let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'googleKey');
-      updateObj.googleKey = updateKey[0].key;
+      if(updateKey.length) {
+        axios.post('/gcloud/auth', { user_name: this.state.username, key_file: updateKey[0].key });
+        updateObj.googleKey = updateKey[0].key;
+      }
     }
     this.setState(updateObj);
   }
@@ -193,28 +198,52 @@ class App extends React.Component {
       username: this.state.username,
       keyType: keyType,
     }
-    switch (keyType) {
-      case 'googleKey':
-        keyObject.key = this.state.googleKey;
-        keyObject.keyAlias = this.state.googleKeyAlias,
-          axios.post('/gcloud/auth', { user_name: this.state.username, key_file: this.state.googleKey })
-            .then(response => {
-              if (response.status === 200) {
-                axios.post('/db/storeKey', keyObject);
-              }
-            });
-        break;
-      case 'awsSecretAccessKey':
-        keyObject.key = this.state.awsSecretAccessKey;
-        keyObject.awsAccessKey = this.state.awsAccessKey;
-        keyObject.keyAlias = this.state.awsKeyAlias;
-        axios.post('/db/storeKey', keyObject);
-        break;
-      case 'dockerPassword':
-        keyObject.key = this.state.dockerPassword;
-        keyObject.dockerUsername = this.state.dockerUsername;
-        axios.post('/db/storeKey', keyObject);
-        break;
+    // Check if submitted key already exists in keys array
+    let filterCheck = this.state.keys.filter(key => key.key === this.state[keyType]); 
+    if (filterCheck.length) {
+      let switchKey = filterCheck[0];
+      console.log(`key already exists as ${switchKey.keyAlias}`);
+      keyObject.key = switchKey.key;
+      if (switchKey.keyType === 'awsSecretAccessKey') {
+        document.getElementById('awsCredentials').reset();
+        keyObject.awsKeyAlias = switchKey.keyAlias;
+        keyObject.awsAccessKey = switchKey.awsAccessKey;
+      } else if (switchKey.keyType === 'googleKey') {
+        document.getElementById('googleCredentials').reset();
+        keyObject.googleKeyAlias = switchKey.keyAlias;
+      }
+      this.setState(keyObject);
+    } else {
+      switch (keyType) {
+        case 'googleKey':
+          keyObject.key = this.state.googleKey;
+          keyObject.keyAlias = this.state.googleKeyAlias,
+            axios.post('/gcloud/auth', { user_name: this.state.username, key_file: this.state.googleKey })
+              .then(response => {
+                if (response.status === 200) {
+                  axios
+                    .post('/db/storeKey', keyObject)
+                    .then(response => this.setState({ keys: response.data.keys}));
+                }
+              });
+          break;
+        case 'awsSecretAccessKey':
+          keyObject.key = this.state.awsSecretAccessKey;
+          keyObject.awsAccessKey = this.state.awsAccessKey;
+          keyObject.keyAlias = this.state.awsKeyAlias;
+          axios
+            .post('/db/storeKey', keyObject)
+            .then(response => this.setState({ keys: response.data.keys }));
+
+          break;
+        case 'dockerPassword':
+          keyObject.key = this.state.dockerPassword;
+          keyObject.dockerUsername = this.state.dockerUsername;
+          axios
+            .post('/db/storeKey', keyObject)
+            .then(response => this.setState({ keys: response.data.keys }));
+          break;
+      }
     }
   }
 
@@ -424,16 +453,17 @@ class App extends React.Component {
 
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       displayed = <GoogleFunctionForm
-          username={this.state.username}
+        username={this.state.username}
         submitKey={this.handleSubmitKey}
         googleProject={this.state.googleProject}
         runtime={this.state.runtime}
         functionName={this.state.functionName}
         googleKey={this.state.googleKey}
+        googleKeyAlias={this.state.googleKeyAlias}
         updateInfo={this.updateInfo}
         uploadedFunction={this.state.uploadedFunction}
         /*googleListFunctions={this.googleListFunctions}*/
-        keys={this.state.keys}
+        keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
       />
     } else if (this.state.pageSelect === 'Lambda') {
       displayed = (<React.Fragment>
@@ -461,6 +491,7 @@ class App extends React.Component {
           createBucket={this.createBucket}
           awsKeyAlias={this.state.awsKeyAlias}
           keys={this.state.keys}
+          keys={this.state.keys.filter(key => key.keyType === 'awsSecretAccessKey')}
           codeLoaded={this.state.codeLoaded}
         /></React.Fragment>)
     } else if ((this.state.pageSelect === 'Docker' && this.state.isLogin)) {
@@ -515,29 +546,7 @@ class App extends React.Component {
           />
         )}
 
-        {/* <MicroList /> */}
-        <div className='radio'>
-          <label>
-            <input onChange={() => this.updateInfo('pageSelect', 'Gcloud')} type="radio"
-              value="Gcloud" checked={this.state.pageSelect === 'Gcloud'} />
-            <img id="Gcloudimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png" />
-          </label>
-          <label>
-            <input onChange={() => this.updateInfo('pageSelect', 'Lambda')} type="radio"
-              value="Lambda" checked={this.state.pageSelect === 'Lambda'} />
-            <img id="Lambdaimg" src="https://git.teknik.io/POTM/Mirror-script.module.lambdascrapers/raw/commit/25b20d0adb8afa6d29eba3a0167046cb2e21ea94/icon.png" />
-          </label>
-          <label>
-            <input onChange={() => this.updateInfo('pageSelect', 'Docker')} type="radio"
-              value="Docker" checked={this.state.pageSelect === 'Docker'} />
-            <img src="https://cdn.iconscout.com/icon/free/png-256/docker-7-569438.png" />
-          </label>
-          <label>
-            <input onChange={() => this.updateInfo('pageSelect', 'Azure')} type="radio"
-              value="Azure" checked={this.state.pageSelect === 'Azure'} />
-            <img src="https://abouttmc.com/wp-content/uploads/2019/02/logo_azure.png" />
-          </label>
-        </div>
+        { this.state.isLogin && <MicroList pageSelect={this.state.pageSelect} updateInfo={this.updateInfo} /> }
         {displayed}
       </div>
     );

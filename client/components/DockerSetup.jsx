@@ -46,7 +46,9 @@ const DockerSetup = props => {
 
     function buildImage() {
         axios
-        .post('/docker/buildImage', {})
+        .post('/docker/buildImage', {
+            functionName: props.functionName,
+        })
         .then((response) => {console.log(response);})
         .catch((error) => {console.log(error);})
     }
@@ -55,6 +57,7 @@ const DockerSetup = props => {
         axios
           .post('/docker/dockerDirect', {
             files: props.uploadedFiles,
+
           })
           .then((response) => {
             console.log(response);
@@ -66,7 +69,17 @@ const DockerSetup = props => {
 
     function deployDocker() {
         axios
-        .post('/docker/deployDocker', {})
+        .post('/docker/deployDocker', {
+            functionName: props.functionName,
+        })
+        .then((response) => {console.log(response);})
+        .catch((error) => {console.log(error);})
+    }
+    function stopDocker() {
+        axios
+        .post('/docker/stopDocker', {
+            functionName: props.functionName,
+        })
         .then((response) => {console.log(response);})
         .catch((error) => {console.log(error);})
     }
@@ -128,6 +141,7 @@ const DockerSetup = props => {
                 <button onClick={() => buildImage()}>Build Image</button>
                 </div>
                 <button onClick={() => deployDocker()}>Containerize</button>
+                <button onClick={() => stopDocker()}>Stop and Delete</button>
             </pre>
         </React.Fragment>
     )
