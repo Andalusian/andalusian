@@ -10,4 +10,8 @@ router.post('/createFunc', azureController.createFunc, (req, res) => {
     res.status(200)
 })
 
+router.post('/deployFunc', azureController.deployFunc, (req, res) => {
+    res.status(200)
+})
+
 module.exports = router;
