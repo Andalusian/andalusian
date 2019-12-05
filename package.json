@@ -3,15 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "browser": {
+    "child_process": false
+  },
   "scripts": {
     "start": "node server/server.js",
     "build": "cross-env NODE_ENV=production webpack",
     "dev": "concurrently \"cross-env NODE_ENV=development webpack-dev-server --open \" \"nodemon server/server.js\"",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "packagezip": "sh package-to-zip.sh",
-    "update": "node update.js",
-    "listfunctions": "node listfuncyions.js",
-    "listbuckets": "node listbuckets.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -24,18 +23,20 @@
   },
   "homepage": "https://github.com/Andalusian/shinobi#readme",
   "dependencies": {
+    "adm-zip": "^0.4.13",
     "aws-sdk": "^2.580.0",
     "axios": "^0.19.0",
     "bcrypt": "^3.0.7",
     "cookie-parser": "^1.4.4",
     "cross-env": "^6.0.3",
-    "docker": "^1.0.0",
     "express": "^4.17.1",
+    "fs": "0.0.1-security",
     "mongoose": "^5.7.12",
-    "node": "^13.1.0",
+    "node": "^12.13.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-dropzone": "^10.2.1"
+    "react-dropzone": "^10.2.1",
+    "superagent": "^5.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",

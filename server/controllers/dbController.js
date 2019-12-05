@@ -9,7 +9,7 @@ const dbController = {};
 
 dbController.hashPassword = (req, res, next) => {
   const { username, password } = req.body;
-  bcrypt.hash(password, 10, function(err, hash) {
+  bcrypt.hash(password, 10, function (err, hash) {
     if (err) {
       console.log(`Error in dbController.bcryptify: ${err}`);
       return next(err);
@@ -26,6 +26,7 @@ dbController.hashPassword = (req, res, next) => {
 dbController.createUser = (req, res, next) => {
   console.log('within dbController.createUser');
   const { username, password } = res.locals.userInfo;
+  fs.mkdir(`${req.body.username}`, () => {});
   User.create({ username, password }, function (err, response) {
     if (err) {
       console.log(`Error in dbController.createUser: ${err}`);
@@ -40,6 +41,9 @@ dbController.createUser = (req, res, next) => {
 dbController.verifyUser = (req, res, next) => {
   console.log('within dbController.verifyUser');
   const { username, password } = req.body;
+  fs.mkdir(`${req.body.username}`, () => {
+    console.log("filth")
+  });
   User.findOne({ username }, function (err, response) {
     if (err) {
       console.log(`Error in dbController.verifyUser: ${err}`);
@@ -82,7 +86,9 @@ dbController.decrypt = (req, res, next) => {
       keyType: key.keyType,
       key: decrypted,
     }
-
+    if (key.keyAlias) {
+      decryptedKeyObject.keyAlias = key.keyAlias;
+    }
     if (decryptedKeyObject.keyType === 'awsSecretAccessKey') {
       decryptedKeyObject.awsAccessKey = key.awsAccessKey;
     }
@@ -111,7 +117,7 @@ dbController.encryptKey = (req, res, next) => {
 
 dbController.storeKey = (req, res, next) => {
   console.log('within dbController.storeKey');
-  const { username } = req.body;
+  const { username, keyAlias } = req.body;
   const { encryptedKey, cryptoIV } = res.locals.encryptedKeyPair;
   const encryptedKeyObject = {
     keyType: req.body.keyType,
@@ -121,9 +127,11 @@ dbController.storeKey = (req, res, next) => {
 
   if (encryptedKeyObject.keyType === 'awsSecretAccessKey') {
     encryptedKeyObject.awsAccessKey = req.body.awsAccessKey;
+    encryptedKeyObject.keyAlias = keyAlias;
   }
   if (encryptedKeyObject.keyType === 'dockerPassword') {
     encryptedKeyObject.dockerUsername = req.body.dockerUsername;
+    encryptedKeyObject.keyAlias = keyAlias;
   }
 
   User.findOneAndUpdate({ username }, { $push: { keys: encryptedKeyObject } }, function (err, response) {

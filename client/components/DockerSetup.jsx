@@ -1,5 +1,6 @@
 import React from "react";
 import MyDropzone from "./MyDropzone.jsx";
+import FileDropzone from "./FileDropzone.jsx"
 import DockerCredentials from './DockerCredentials.jsx';
 import axios from "axios";
 
@@ -43,6 +44,27 @@ const DockerSetup = props => {
         })
     }
 
+    function buildImage() {
+        axios
+        .post('/docker/buildImage', {})
+        .then((response) => {console.log(response);})
+        .catch((error) => {console.log(error);})
+    }
+
+    function dockerDirect(){
+        console.log(props.uploadedFiles)
+        axios
+          .post('/docker/dockerDirect', {
+            files: props.uploadedFiles,
+          })
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+      }
+
     function deployDocker() {
         axios
         .post('/docker/deployDocker', {})
@@ -60,6 +82,7 @@ const DockerSetup = props => {
 
     return (
         <React.Fragment>
+            <h2>Docker</h2>
             <DockerCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} />
             <pre>
                 <h4>Container Setup</h4>
@@ -100,9 +123,12 @@ const DockerSetup = props => {
                 <div>
                 <input onChange={(e) => props.updateInfo('functionName', e.target.value)} type="text" name="functionName" placeholder="Function Name" />
                 <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
+                <FileDropzone uploadedFiles={props.uploadedFiles} updateInfo={props.updateInfo} pageSelect={props.pageSelect}/>
                 <button onClick={() => funcSetup()}>Set Function</button>
+                <button onClick={() => dockerDirect()}>Setup Directory</button>
+                <button onClick={() => buildImage()}>Build Image</button>
                 </div>
-                <button onClick={() => deployDocker()}>Deploy</button>
+                <button onClick={() => deployDocker()}>Containerize</button>
             </pre>
         </React.Fragment>
     )
