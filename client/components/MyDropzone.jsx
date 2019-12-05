@@ -34,8 +34,8 @@ function MyDropzone(props) {
                 </div>
             </div>
             <pre>
-          <textarea onChange={(e) => props.updateInfo('uploadedFunction', e.target.value)} id="codeHere" placeholder="<code here />" spellCheck="false" rows="25"></textarea>
-        </pre>
+                <textarea onChange={(e) => props.updateInfo('uploadedFunction', e.target.value)} id="codeHere" defaultValue={props.codeLoaded} spellCheck="false" rows="25"></textarea>
+            </pre>
         </div>
     )
 }

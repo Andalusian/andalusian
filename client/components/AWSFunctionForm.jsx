@@ -13,13 +13,28 @@ const AWSFunctionForm = props => {
         <h4>Configuration</h4>
         <AWSCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} awsAccessKey={props.awsAccessKey} awsSecretAccessKey={props.awsSecretAccessKey} />
         <h5>Region:</h5>
-        <input
-          type="text"
-          id="awsRegion"
-          name="awsRegion"
-          placeholder={props.awsRegion}
-          onChange={e => props.updateInfo(e.target.name, e.target.value)}
-        />
+        <select id="awsRegion" name="awsRegion" onChange={e => props.updateInfo(e.target.name, e.target.value)} >
+          <option defaultValue={"a"}> -- select region -- </option>
+          <option value="us-east-1">US East 1</option>
+          <option value="us-east-2">US East 2</option>
+          <option value="us-west-1">US West 1</option>
+          <option value="us-west-2">US West 2</option>
+          <option value="ap-east-1">AP East 1</option>
+          <option value="ap-south-1">AP South 1</option>
+          <option value="ap-northeast-2">AP Northeast 1</option>
+          <option value="ap-southeast-1">AP Southeast 1</option>
+          <option value="ap-southeast-2">AP Southeast 1</option>
+          <option value="ap-northeast-1">AP Northeast 1</option>
+          <option value="ca-central-1">CA Central 1</option>
+          <option value="eu-central-1">EU Central 1</option>
+          <option value="eu-west-1">EU West 1</option>
+          <option value="eu-west-2">EU West 2</option>
+          <option value="eu-west-3">EU West 3</option>
+          <option value="eu-north-1">EU North 1</option>
+          <option value="me-south-1">ME South 1</option>
+          <option value="sa-east-1">SA East 1</option>
+
+        </select>
         <br />
         <button id="regionBtn" onClick={() => { props.configureAWS() }}>Save Region</button>
       </pre>
@@ -54,7 +69,7 @@ const AWSFunctionForm = props => {
         <option value="ruby2.5">Ruby 2.5</option>
       </select>
 
-      <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
+      <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} codeLoaded={props.codeLoaded} />
       <button id="createFuncBtn" onClick={() => props.createFunction()}>Create Function</button>
       {/*<hr></hr>
        <h3>My AWS S3 Buckets</h3>
