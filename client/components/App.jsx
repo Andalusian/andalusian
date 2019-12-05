@@ -55,6 +55,7 @@ class App extends React.Component {
       pageSelect: 'Gcloud',
       functionName: '',
       uploadedFunction: '',
+      //Dropzone prop for file data and text
       uploadedFiles: [],
       // render states
       isLogin: false,
