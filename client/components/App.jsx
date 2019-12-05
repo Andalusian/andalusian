@@ -67,6 +67,7 @@ class App extends React.Component {
     this.handleSignup = this.handleSignup.bind(this);
     this.handleToggleSignup = this.handleToggleSignup.bind(this);
     this.handleSubmitKey = this.handleSubmitKey.bind(this);
+    // this.googleListFunctions = this.googleListFunctions.bind(this);
     this.listFunctions = this.listFunctions.bind(this)
     this.listBuckets = this.listBuckets.bind(this)
     this.createFunction = this.createFunction.bind(this);
@@ -85,8 +86,7 @@ class App extends React.Component {
     }
     if (property === 'googleKeyAlias') {
       let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'googleKey');
-      updateObj.awsAccessKey = updateKey[0].awsAccessKey;
-      updateObj.awsSecretAccessKey = updateKey[0].key;
+      updateObj.googleKey = updateKey[0].key;
     }
     this.setState(updateObj);
   }
@@ -212,6 +212,51 @@ class App extends React.Component {
       });
   }
 
+  // googleListFunctions() {
+  //   console.log('inside googleListFunctions')
+  //   fetch('/gcloud/list')
+  //     .then(data => data.json())
+  //     .then(data => {
+  //       console.log(`Data from list fetch: ${data}`)
+  //       const fnList = data.fn_list;
+  //       const fnButtons = [];
+  //       fnList.forEach((el) => {
+  //         fnButtons.push(<div id={el}>
+  //           <span>{el}</span>
+  //           <button onClick={() => {
+  //             fetch(`/gcloud/info/${el}`)
+  //               .then(data => data.json())
+  //               .then(data => {
+  //                 console.log(data);
+  //               })
+  //           }}>Info</button>
+  //           <button onClick={() => {
+  //             fetch(`/gcloud/call/${el}`)
+  //               .then(data => data.json())
+  //               .then(data => {
+  //                 console.log(data);
+  //               })
+  //           }}>Invoke</button>
+  //           <button onClick={() => {
+  //             fetch(`/gcloud/delete/`, {
+  //               method: 'DELETE',
+  //               headers: {
+  //                   'Content-Type': 'application/json',
+  //               },
+  //               body: JSON.stringify({fn_name: el}),
+  //             })
+  //               .then(data => data.json())
+  //               .then(data => {
+  //                 console.log(data);
+  //               })
+  //           }}>Delete</button>
+  //         </div>);
+  //       });
+  //       console.log(`fnButtons: ${fnButtons}`)
+  //       return fnButtons;
+  //     })
+  // }
+  
   loadCode(funcName) {
     axios
       .post("/aws/loadCode", {
@@ -336,6 +381,7 @@ class App extends React.Component {
         googleKey={this.state.googleKey}
         updateInfo={this.updateInfo}
         uploadedFunction={this.state.uploadedFunction}
+        /*googleListFunctions={this.googleListFunctions}*/
         keys={this.state.keys}
       />
     } else if (this.state.pageSelect === 'Lambda') {

@@ -15,6 +15,9 @@ body, html {
   display: flex;
   justify-content: center;
 }
+textarea {
+  width: 100%;
+}
 input, textarea, .dropzone, .microList {
   display: block;
   background: #f7f7f7;
