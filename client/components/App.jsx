@@ -89,9 +89,9 @@ class App extends React.Component {
       }
     }
     if (property === 'googleKeyAlias') {
-      console.log('bananas');
       let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'googleKey');
       if(updateKey.length) {
+        axios.post('/gcloud/auth', { user_name: this.state.username, key_file: updateKey[0].key });
         updateObj.googleKey = updateKey[0].key;
       }
     }
