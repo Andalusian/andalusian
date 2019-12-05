@@ -298,6 +298,7 @@ class App extends React.Component {
         azureTemplate={this.state.azureTemplate}
         azureApp={this.state.azureApp}
         azureProject={this.state.azureProject}
+        functionName={this.state.functionName}
         />
       </React.Fragment>)
     }

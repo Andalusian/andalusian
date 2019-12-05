@@ -20,7 +20,7 @@ azureController.createProj = (req, res, next) => {
         return res.status(400).json('Name Your Project');
     }
 
-    exec(`func init ${projectName} ${runtime}`, {cwd: './../platforms/azure'}, (error, stdout, stderr) => {
+    exec(`func init ${projectName} ${runtime}`, {cwd: './server/platforms/azure'}, (error, stdout, stderr) => {
         if (error) {
             console.error(`exec error: ${error}`);
             return res.sendStatus(500);
@@ -31,6 +31,10 @@ azureController.createProj = (req, res, next) => {
 
         return next();
     })
+}
+
+azureController.createFunc = (req, res, next) => {
+    const { projectName, template, functionName } = req.body;
 }
 
 

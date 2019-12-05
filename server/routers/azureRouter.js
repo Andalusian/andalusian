@@ -6,4 +6,8 @@ router.post('/createProj', azureController.createProj, (req, res) => {
     res.status(200)
 })
 
+router.post('/createFunc', azureController.createFunc, (req, res) => {
+    res.status(200)
+})
+
 module.exports = router;

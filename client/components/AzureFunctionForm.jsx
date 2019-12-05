@@ -18,7 +18,7 @@ const AzureFunctionForm = (props) => {
                 <option value="--powershell">Powershell</option>
             </select>
                 <button className="azureButton" onClick={() => axios.post('/azure/createProj', {projectName: props.azureProject, runtime: props.azureRuntime})}>Create Project</button>
-                <input name="functionName" type="text" placeholder="Function Name" />
+                <input onChange={(e) => {props.updateInfo(e.target.name, e.target.value)}} name="functionName" type="text" placeholder="Function Name" />
             </div>
             <select name="azureTemplate" onChange={(e) => props.updateInfo(e.target.name, e.target.value)}>
                 <option value='1'>Template</option>
@@ -31,7 +31,7 @@ const AzureFunctionForm = (props) => {
                 <option value='Service Bus Topic Trigger'>Service Bus Topic</option>
                 <option value='Timer Trigger'>Timer Trigger</option>
             </select>
-            <button className="azureButton">Create Function</button>
+            <button className="azureButton" onClick={() => axios.post('/azure/createFunc', {projectName: props.azureProject, functionName: props.functionName, template: props.azureTemplate})}>Create Function</button>
             <pre>
           <textarea onChange={(e) => props.updateInfo('uploadedFunction', e.target.value)} id="codeHere" placeholder="<code here />" spellCheck="false" rows="25"></textarea>
         </pre>
