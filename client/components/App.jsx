@@ -78,8 +78,7 @@ class App extends React.Component {
     }
     if (property === 'googleKeyAlias') {
       let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'googleKey');
-      updateObj.awsAccessKey = updateKey[0].awsAccessKey;
-      updateObj.awsSecretAccessKey = updateKey[0].key;
+      updateObj.googleKey = updateKey[0].key;
     }
     this.setState(updateObj);
   }

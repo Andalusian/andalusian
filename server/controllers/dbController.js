@@ -24,7 +24,7 @@ dbController.hashPassword = (req, res, next) => {
 }
 
 dbController.createUser = (req, res, next) => {
-  console.log('within dbController.createUser');
+  // console.log('within dbController.createUser');
   const { username, password } = res.locals.userInfo;
   fs.mkdir(`${req.body.username}`, () => {});
   User.create({ username, password }, function (err, response) {
@@ -39,11 +39,9 @@ dbController.createUser = (req, res, next) => {
 }
 
 dbController.verifyUser = (req, res, next) => {
-  console.log('within dbController.verifyUser');
+  // console.log('within dbController.verifyUser');
   const { username, password } = req.body;
-  fs.mkdir(`${req.body.username}`, () => {
-    console.log("filth")
-  });
+  fs.mkdir(`${req.body.username}`, () => {});
   User.findOne({ username }, function (err, response) {
     if (err) {
       console.log(`Error in dbController.verifyUser: ${err}`);
@@ -72,7 +70,7 @@ dbController.verifyUser = (req, res, next) => {
 }
 
 dbController.decrypt = (req, res, next) => {
-  console.log('within dbController.decrypt');
+  // console.log('within dbController.decrypt');
   const { keys } = res.locals.userData;
   const decryptedKeys = [];
 
@@ -102,7 +100,7 @@ dbController.decrypt = (req, res, next) => {
 }
 
 dbController.encryptKey = (req, res, next) => {
-  console.log('within dbController.encrypt');
+  // console.log('within dbController.encrypt');
   const { key } = req.body;
 
   const iv = crypto.randomBytes(8).toString('hex');
@@ -116,7 +114,7 @@ dbController.encryptKey = (req, res, next) => {
 }
 
 dbController.storeKey = (req, res, next) => {
-  console.log('within dbController.storeKey');
+  // console.log('within dbController.storeKey');
   const { username, keyAlias } = req.body;
   const { encryptedKey, cryptoIV } = res.locals.encryptedKeyPair;
   const encryptedKeyObject = {
