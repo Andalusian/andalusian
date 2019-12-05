@@ -28,7 +28,7 @@ gcloudController.authUser = (req, res, next) => {
 // DEPLOY THE FUNCTION
 gcloudController.deploy = (req, res, next) => {
   // VARIABLES
-  const { fn_name, runtime, fn, project } = req.body;
+  const { fn_name, runtime, fn, project, user_name } = req.body;
   const runTimes = new Set(['nodejs8', 'nodejs10', 'python37', 'go111', 'go113']);
 
   // SANITIZATION
