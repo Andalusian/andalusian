@@ -27,7 +27,15 @@ dbController.hashPassword = (req, res, next) => {
 dbController.createUser = (req, res, next) => {
   // console.log('within dbController.createUser');
   const { username, password } = res.locals.userInfo;
-  fs.mkdir(`${req.body.username}`, () => {});
+  fs.mkdir(`users/${username}/aws`, { recursive: true }, () => {
+    fs.mkdir(`users/${username}/gcloud`, { recursive: true }, () => {
+      fs.mkdir(`users/${username}/azure`, { recursive: true }, () => {
+        fs.mkdir(`users/${username}/docker`, { recursive: true }, () => {
+
+        });
+      });
+    });
+  });
   User.create({ username, password }, function (err, response) {
     if (err) {
       console.log(`Error in dbController.createUser: ${err}`);
@@ -42,7 +50,15 @@ dbController.createUser = (req, res, next) => {
 dbController.verifyUser = (req, res, next) => {
   // console.log('within dbController.verifyUser');
   const { username, password } = req.body;
-  fs.mkdir(`${req.body.username}`, () => {});
+  fs.mkdir(`users/${username}/aws`, { recursive: true }, () => {
+    fs.mkdir(`users/${username}/gcloud`, { recursive: true }, () => {
+      fs.mkdir(`users/${username}/azure`, { recursive: true }, () => {
+        fs.mkdir(`users/${username}/docker`, { recursive: true }, () => {
+
+        });
+      });
+    });
+  });
   User.findOne({ username }, function (err, response) {
     if (err) {
       console.log(`Error in dbController.verifyUser: ${err}`);
@@ -122,23 +138,24 @@ dbController.storeKey = (req, res, next) => {
     keyType: req.body.keyType,
     encryptedKey,
     cryptoIV,
+    keyAlias,
   };
 
   if (encryptedKeyObject.keyType === 'awsSecretAccessKey') {
     encryptedKeyObject.awsAccessKey = req.body.awsAccessKey;
-    encryptedKeyObject.keyAlias = keyAlias;
   }
   if (encryptedKeyObject.keyType === 'dockerPassword') {
     encryptedKeyObject.dockerUsername = req.body.dockerUsername;
-    encryptedKeyObject.keyAlias = keyAlias;
   }
 
-  User.findOneAndUpdate({ username }, { $push: { keys: encryptedKeyObject } }, function (err, response) {
+  User.findOneAndUpdate({ username }, { $push: { keys: encryptedKeyObject } }, { new: true }, function (err, response) {
     if (err) {
       console.log(`Error in dbController.storeencryptedKey: ${err}`);
       return next(err);
     } else {
       console.log(`Added encrypted key to ${username} in database`);
+      console.log(response.keys);
+      res.locals.keys = response.keys;
       return next();
     }
   });
@@ -146,8 +163,7 @@ dbController.storeKey = (req, res, next) => {
 
 
 dbController.deleteUserFiles = (req, res, next) => {
-  console.log(req.body)
-  fs.rmdir(req.body.username, { recursive: true }, function (err, response) {
+  fs.rmdir(`users/${req.body.username}`, { recursive: true }, function (err, response) {
     if (err) {
       console.log(err)
     } else {

@@ -10,6 +10,8 @@ const GoogleFunctionForm = (props) => {
       <h2>GCloud</h2>
       <GoogleCredentials
         updateInfo={props.updateInfo}
+        googleKey={props.googleKey}
+        googleKeyAlias={props.googleKeyAlias}
         submitKey={props.submitKey}
         keys={props.keys}
       />
@@ -32,7 +34,7 @@ const GoogleFunctionForm = (props) => {
         </select>
       </div>
       <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
-      <button onClick={() => axios.post('/gcloud/deploy', { project: props.googleProject, fn_name: props.functionName, runtime: props.runtime, fn: props.uploadedFunction })
+      <button onClick={() => axios.post('/gcloud/deploy', { user_name: props.username, project: props.googleProject, fn_name: props.functionName, runtime: props.runtime, fn: props.uploadedFunction })
         .then(response => console.log('successfully deployed'))}
       >Deploy</button>
     </React.Fragment>
