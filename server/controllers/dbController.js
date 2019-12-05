@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
+
 // const { Worker, isMainThread, parentPort } = require('worker_threads');
 const { cryptoKey } = require('../../config');
 const User = require('../models/userModel');
@@ -27,7 +28,6 @@ dbController.createUser = (req, res, next) => {
   console.log('within dbController.createUser');
   const { username, password } = res.locals.userInfo;
   fs.mkdir(`${req.body.username}`, () => {
-    console.log("filth")
   });
   User.create({ username, password }, function (err, response) {
     if (err) {
@@ -141,6 +141,18 @@ dbController.storeKey = (req, res, next) => {
       return next();
     }
   });
+}
+
+
+dbController.deleteUserFiles = (req, res, next) => {
+  console.log(req.body)
+  fs.rmdir(req.body.username, { recursive: true }, function (err, response) {
+    if (err) {
+      console.log(err)
+    } else {
+      return next();
+    }
+  })
 }
 
 module.exports = dbController;
