@@ -40,9 +40,8 @@ router.post("/getawsAccountID", awsController.getawsAccountID, (req, res, next) 
   res.status(200).send(res.locals.awsAccountID);
 })
 
-// router.post("/loadCode", awsController.loadCode, (req, res, next) => {
-//   res.status(200).send(res.locals.funcCode);
-//   return next();
-// })
+router.post("/loadCode", awsController.loadCode, (req, res, next) => {
+  res.status(200).send(res.locals.codeLoaded);
+})
 
 module.exports = router;
