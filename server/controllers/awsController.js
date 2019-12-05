@@ -49,7 +49,6 @@ awsController.createFunction = (req, res, next) => {
     return next();
   })
 }
-// REMINDER TO SELF - SET UP TO DELETE THE FOLDER AFTER THE PROCESS IS COMPLETED
 
 awsController.listFunctions = (req, res, next) => {
   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
@@ -162,6 +161,7 @@ awsController.createBucket = (req, res, next) => {
       LocationConstraint: `${req.body.newBucketRegion}`
     }
   };
+  console.log("PARAMS -----> ", params)
   s3.createBucket(params, function (err, data) {
     if (err) {
       console.log(err, err.stack);
