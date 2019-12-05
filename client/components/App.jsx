@@ -480,6 +480,7 @@ class App extends React.Component {
     } else if (this.state.pageSelect === 'Azure') {
       displayed = (<React.Fragment>
         <AzureFunctionForm
+            username={this.state.username}
           updateInfo={this.updateInfo}
           azureRuntime={this.state.azureRuntime}
           azureTemplate={this.state.azureTemplate}
