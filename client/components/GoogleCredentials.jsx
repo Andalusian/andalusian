@@ -4,7 +4,7 @@ const GoogleCredentials = props => {
   return (
     <form id="googleCredentials">
       <pre>
-        <textarea id="googleKey" name="googleKey" onChange={(e) => props.updateInfo(e.target.name, e.target.value)} placeholder="gcloud auth key" spellCheck="false" rows="10"></textarea>
+        <textarea id="googleKey" name="googleKey" onChange={(e) => props.updateInfo(e.target.name, e.target.value)} placeholder={props.googleKey} spellCheck="false" rows="10"></textarea>
       </pre>
       <label htmlFor="googleKeyAlias">Key Alias:</label>
       <input

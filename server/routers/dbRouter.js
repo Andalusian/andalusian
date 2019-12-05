@@ -12,7 +12,7 @@ router.post('/createNewUser', dbController.hashPassword, dbController.createUser
 );
 
 router.post('/storeKey', dbController.encryptKey, dbController.storeKey, (req, res) => {
-  res.sendStatus(200);
+  res.status(200).json({ keys: res.locals.keys });
 });
 
 router.post('/deleteUserFiles', dbController.deleteUserFiles, (req, res) => {
