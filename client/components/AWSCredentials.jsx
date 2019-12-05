@@ -33,7 +33,7 @@ const AWSCredentials = (props) => {
         {
           props.keys.map((key, i) => {
             return (
-              <option key={i} value={ key.keyAlias } >{key.keyAlias}</option>
+              <option key={i} value={key.keyAlias} >{key.keyAlias}</option>
             )
           })
         }
