@@ -7,6 +7,7 @@ import Login from './Login.jsx';
 import Signup from "./Signup.jsx";
 import Signout from "./Signout.jsx";
 import DockerSetup from "./DockerSetup.jsx";
+import AzureFunctionForm from "./AzureFunctionForm.jsx"
 
 class App extends React.Component {
   constructor(props) {
@@ -15,13 +16,16 @@ class App extends React.Component {
       // shinobi
       username: '',
       password: '',
+      keys: [],
       // google
       googleKey: '',
+      googleKeyAlias: '',
       runtime: undefined,
       googleProject: '',
       // aws
       awsAccessKey: '',
       awsSecretAccessKey: '',
+      awsKeyAlias: '',
       S3BucketName: '',
       newBucketRegion: "",
       currRegion: "",
@@ -42,10 +46,16 @@ class App extends React.Component {
       exposePort: '',
       com: '',
       copy: '',
+      //azure
+      azureRuntime: '',
+      azureTemplate: '',
+      azureApp: '',
+      azureProject: '',
       // both
       pageSelect: 'Gcloud',
       functionName: '',
       uploadedFunction: '',
+      //Dropzone prop for file data and text
       uploadedFiles: [],
       // render states
       isLogin: false,
@@ -58,6 +68,7 @@ class App extends React.Component {
     this.handleSignup = this.handleSignup.bind(this);
     this.handleToggleSignup = this.handleToggleSignup.bind(this);
     this.handleSubmitKey = this.handleSubmitKey.bind(this);
+    // this.googleListFunctions = this.googleListFunctions.bind(this);
     this.listFunctions = this.listFunctions.bind(this)
     this.listBuckets = this.listBuckets.bind(this)
     this.createFunction = this.createFunction.bind(this);
@@ -69,6 +80,16 @@ class App extends React.Component {
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
+
+    if (property === 'awsKeyAlias') {
+      let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'awsSecretAccessKey');
+      updateObj.awsAccessKey = updateKey[0].awsAccessKey;
+      updateObj.awsSecretAccessKey = updateKey[0].key;
+    }
+    if (property === 'googleKeyAlias') {
+      let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'googleKey');
+      updateObj.googleKey = updateKey[0].key;
+    }
     this.setState(updateObj);
   }
 
@@ -90,11 +111,16 @@ class App extends React.Component {
       .then(response => {
         const updateStateObject = {
           isLogin: true,
+          keys: response.data.userData.keys,
         };
         response.data.userData.keys.forEach(updateKey => {
           updateStateObject[updateKey.keyType] = updateKey.key;
+          if (updateKey.keyType === 'googleKey') {
+            updateStateObject.googleKeyAlias = updateKey.keyAlias;
+          }
           if (updateKey.keyType === 'awsSecretAccessKey') {
             updateStateObject.awsAccessKey = updateKey.awsAccessKey;
+            updateStateObject.awsKeyAlias = updateKey.keyAlias;
           }
         });
         this.setState(updateStateObject, () => {
@@ -169,16 +195,18 @@ class App extends React.Component {
     switch (keyType) {
       case 'googleKey':
         keyObject.key = this.state.googleKey;
-        axios.post('/gcloud/auth', { key_file: this.state.googleKey })
-          .then(response => {
-            if (response.status === 200) {
-              axios.post('/db/storeKey', keyObject);
-            }
-          });
+        keyObject.keyAlias = this.state.googleKeyAlias,
+          axios.post('/gcloud/auth', { key_file: this.state.googleKey })
+            .then(response => {
+              if (response.status === 200) {
+                axios.post('/db/storeKey', keyObject);
+              }
+            });
         break;
       case 'awsSecretAccessKey':
         keyObject.key = this.state.awsSecretAccessKey;
         keyObject.awsAccessKey = this.state.awsAccessKey;
+        keyObject.keyAlias = this.state.awsKeyAlias;
         axios.post('/db/storeKey', keyObject);
         break;
       case 'dockerPassword':
@@ -232,6 +260,51 @@ class App extends React.Component {
         console.log(error);
       });
   }
+
+  // googleListFunctions() {
+  //   console.log('inside googleListFunctions')
+  //   fetch('/gcloud/list')
+  //     .then(data => data.json())
+  //     .then(data => {
+  //       console.log(`Data from list fetch: ${data}`)
+  //       const fnList = data.fn_list;
+  //       const fnButtons = [];
+  //       fnList.forEach((el) => {
+  //         fnButtons.push(<div id={el}>
+  //           <span>{el}</span>
+  //           <button onClick={() => {
+  //             fetch(`/gcloud/info/${el}`)
+  //               .then(data => data.json())
+  //               .then(data => {
+  //                 console.log(data);
+  //               })
+  //           }}>Info</button>
+  //           <button onClick={() => {
+  //             fetch(`/gcloud/call/${el}`)
+  //               .then(data => data.json())
+  //               .then(data => {
+  //                 console.log(data);
+  //               })
+  //           }}>Invoke</button>
+  //           <button onClick={() => {
+  //             fetch(`/gcloud/delete/`, {
+  //               method: 'DELETE',
+  //               headers: {
+  //                   'Content-Type': 'application/json',
+  //               },
+  //               body: JSON.stringify({fn_name: el}),
+  //             })
+  //               .then(data => data.json())
+  //               .then(data => {
+  //                 console.log(data);
+  //               })
+  //           }}>Delete</button>
+  //         </div>);
+  //       });
+  //       console.log(`fnButtons: ${fnButtons}`)
+  //       return fnButtons;
+  //     })
+  // }
 
   loadCode(funcName) {
     axios
@@ -356,8 +429,11 @@ class App extends React.Component {
         functionName={this.state.functionName}
         googleKey={this.state.googleKey}
         updateInfo={this.updateInfo}
-        uploadedFunction={this.state.uploadedFunction} />
-    } else if ((this.state.pageSelect === 'Lambda' && this.state.isLogin)) {
+        uploadedFunction={this.state.uploadedFunction}
+        /*googleListFunctions={this.googleListFunctions}*/
+        keys={this.state.keys}
+      />
+    } else if (this.state.pageSelect === 'Lambda') {
       displayed = (<React.Fragment>
         <AWSFunctionForm id="AWSFunctionForm"
           currentFunctions={this.state.currentFunctions}
@@ -381,8 +457,9 @@ class App extends React.Component {
           createFunction={this.createFunction}
           configureAWS={this.configureAWS}
           createBucket={this.createBucket}
+          awsKeyAlias={this.state.awsKeyAlias}
+          keys={this.state.keys}
           codeLoaded={this.state.codeLoaded}
-
         /></React.Fragment>)
     } else if ((this.state.pageSelect === 'Docker' && this.state.isLogin)) {
       displayed = (<React.Fragment><DockerSetup id="DockerSetup"
@@ -399,6 +476,17 @@ class App extends React.Component {
         uploadedFiles={this.state.uploadedFiles}
         pageSelect={this.state.pageSelect}
       ></DockerSetup></React.Fragment>)
+    } else if (this.state.pageSelect === 'Azure') {
+      displayed = (<React.Fragment>
+        <AzureFunctionForm
+          updateInfo={this.updateInfo}
+          azureRuntime={this.state.azureRuntime}
+          azureTemplate={this.state.azureTemplate}
+          azureApp={this.state.azureApp}
+          azureProject={this.state.azureProject}
+          functionName={this.state.functionName}
+        />
+      </React.Fragment>)
     }
 
     return (
@@ -440,6 +528,11 @@ class App extends React.Component {
             <input onChange={() => this.updateInfo('pageSelect', 'Docker')} type="radio"
               value="Docker" checked={this.state.pageSelect === 'Docker'} />
             <img src="https://cdn.iconscout.com/icon/free/png-256/docker-7-569438.png" />
+          </label>
+          <label>
+            <input onChange={() => this.updateInfo('pageSelect', 'Azure')} type="radio"
+              value="Azure" checked={this.state.pageSelect === 'Azure'} />
+            <img src="https://abouttmc.com/wp-content/uploads/2019/02/logo_azure.png" />
           </label>
         </div>
         {displayed}

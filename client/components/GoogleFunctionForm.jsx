@@ -1,14 +1,21 @@
 import React from 'react';
 import MyDropzone from "./MyDropzone.jsx";
 import GoogleCredentials from "./GoogleCredentials.jsx";
-const axios = require('axios')
+const axios = require('axios');
 
 const GoogleFunctionForm = (props) => {
 
   return (
     <React.Fragment>
       <h2>GCloud</h2>
-      <GoogleCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} />
+      <GoogleCredentials
+        updateInfo={props.updateInfo}
+        submitKey={props.submitKey}
+        keys={props.keys}
+      />
+      {/* <div className="googleFunctions">
+        { functionButtons }
+      </div> */}
       <div className="googleInfo">
         <hr></hr>
         <h4>Create Function</h4>
@@ -27,7 +34,6 @@ const GoogleFunctionForm = (props) => {
       <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
       <button onClick={() => axios.post('/gcloud/deploy', { project: props.googleProject, fn_name: props.functionName, runtime: props.runtime, fn: props.uploadedFunction })
         .then(response => console.log('successfully deployed'))}
-
       >Deploy</button>
     </React.Fragment>
   );
