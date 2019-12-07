@@ -57,6 +57,7 @@ class App extends React.Component {
       functionName: '',
       uploadedFunction: '',
       operatingSystem: '',
+      checkCount: 0,
       //Dropzone prop for file data and text
       uploadedFiles: [],
       // render states
@@ -187,6 +188,7 @@ class App extends React.Component {
           uploadedFunction: '',
           uploadedFiles: [],
           operatingSystem: '',
+          checkCount: 0,
           // render states
           isLogin: false,
           isSignup: false
@@ -208,9 +210,16 @@ class App extends React.Component {
   } else if (!os && /Linux/.test(platform)) {
     os = 'Linux';
   }
-  this.operatingSystem = os;
-  console.log(this.operatingSystem)
+    if(this.state.checkCount === 0){
+      this.setState({
+        operatingSystem: os,
+        checkCount: this.state.checkCount + 1,
+      }, () => {console.log(this.state.operatingSystem)})
+
+    }
   }
+  componentDidMount(){this.osChecker()}
+
 
   handleSubmitKey(keyType) {
     const keyObject = {
@@ -469,7 +478,7 @@ class App extends React.Component {
   render() {
 
     let displayed;
-    this.osChecker()
+
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       displayed = <GoogleFunctionForm
         username={this.state.username}
@@ -527,6 +536,7 @@ class App extends React.Component {
         copy={this.state.copy}
         uploadedFiles={this.state.uploadedFiles}
         pageSelect={this.state.pageSelect}
+        username={this.state.username}
       ></DockerSetup></React.Fragment>)
     } else if (this.state.pageSelect === 'Azure') {
       displayed = (<React.Fragment>

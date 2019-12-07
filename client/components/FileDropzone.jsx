@@ -15,6 +15,7 @@ const onDrop = useCallback((acceptedFiles) => {
       const binaryStr = reader.result
       filesArray.push(binaryStr)
     }
+    console.log(file)
     reader.readAsText(file)
     filesArray.push(file)    
 
