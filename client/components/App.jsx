@@ -77,7 +77,6 @@ class App extends React.Component {
     this.configureAWS = this.configureAWS.bind(this);
     this.createBucket = this.createBucket.bind(this)
     this.handleSignout = this.handleSignout.bind(this)
-    this.operatingSystem = this.operatingSystem.bind(this);
   }
 
   updateInfo(property, value) {
@@ -197,12 +196,11 @@ class App extends React.Component {
     console.log("signout")
   }
 
-  operatingSystem() {
+  osChecker() {
   let platform = window.navigator.platform,
     macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
     windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
     os = null;
-
   if (macosPlatforms.indexOf(platform) !== -1) {
     os = 'Mac OS';
   } else if (windowsPlatforms.indexOf(platform) !== -1) {
@@ -471,7 +469,7 @@ class App extends React.Component {
   render() {
 
     let displayed;
-    this.operatingSystem();
+    this.osChecker()
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       displayed = <GoogleFunctionForm
         username={this.state.username}
