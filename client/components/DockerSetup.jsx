@@ -137,7 +137,7 @@ const DockerSetup = props => {
                 <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
                 <FileDropzone uploadedFiles={props.uploadedFiles} updateInfo={props.updateInfo} pageSelect={props.pageSelect} />
                 <button onClick={() => funcSetup()}>Set Function</button>
-                <button onClick={() => {dockerDirect();}}>Setup Directory</button>
+                <button onClick={() => dockerDirect()}>Setup Directory</button>
                 <button onClick={() => buildImage()}>Build Image</button>
                 </div>
                 <button onClick={() => deployDocker()}>Containerize</button>
