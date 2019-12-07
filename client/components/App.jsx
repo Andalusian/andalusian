@@ -10,6 +10,7 @@ import AWSFunctionInfo from "./AWSFunctionInfo.jsx";
 import AzureFunctionForm from "./AzureFunctionForm.jsx";
 import DockerSetup from "./DockerSetup.jsx";
 
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -54,10 +55,14 @@ class App extends React.Component {
       azureTemplate: '',
       azureApp: '',
       azureProject: '',
+      azureUser: '',
+      azurePass: '',
+      azureTenant: '',
       // both
       pageSelect: 'Gcloud',
       functionName: '',
       uploadedFunction: '',
+      operatingSystem: '',
       //Dropzone prop for file data and text
       uploadedFiles: [],
       // render states
@@ -99,7 +104,7 @@ class App extends React.Component {
         updateObj.googleKey = updateKey[0].key;
       }
     }
-    this.setState(updateObj);
+    this.setState(updateObj, () => console.log(this.state.azureTenant));
   }
 
   getawsAccountID() {
@@ -186,11 +191,20 @@ class App extends React.Component {
           exposePort: '',
           com: '',
           copy: '',
+          //azure
+          azureRuntime: '',
+          azureTemplate: '',
+          azureApp: '',
+          azureProject: '',
+          azureUser: '',
+          azurePass: '',
+          azureTenant: '',
           // both
           pageSelect: 'Gcloud',
           functionName: '',
           uploadedFunction: '',
           uploadedFiles: [],
+          operatingSystem: '',
           // render states
           isLogin: false,
           isSignup: false
@@ -200,11 +214,28 @@ class App extends React.Component {
     console.log("signout")
   }
 
+  osChecker() {
+  let platform = window.navigator.platform,
+    macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+    windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+    os = null;
+  if (macosPlatforms.indexOf(platform) !== -1) {
+    os = 'Mac OS';
+  } else if (windowsPlatforms.indexOf(platform) !== -1) {
+    os = 'Windows';
+  } else if (!os && /Linux/.test(platform)) {
+    os = 'Linux';
+  }
+  this.operatingSystem = os;
+  console.log(this.operatingSystem)
+  }
+
   handleSubmitKey(keyType) {
     const keyObject = {
       username: this.state.username,
       keyType: keyType,
     }
+
     // Check if submitted key already exists in keys array
     let filterCheck = this.state.keys.filter(key => key.key === this.state[keyType]);
     if (filterCheck.length) {
@@ -474,7 +505,7 @@ class App extends React.Component {
   render() {
 
     let displayed;
-
+    this.osChecker()
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       displayed = <GoogleFunctionForm
         username={this.state.username}
@@ -587,6 +618,9 @@ class App extends React.Component {
           azureApp={this.state.azureApp}
           azureProject={this.state.azureProject}
           functionName={this.state.functionName}
+            azureUser={this.state.azureUser}
+            azurePass={this.state.azurePass}
+            azureTenant={this.state.azureTenant}
         />
       </React.Fragment>)
     }

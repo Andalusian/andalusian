@@ -22,7 +22,6 @@ const GoogleFunctionForm = (props) => {
         <hr></hr>
         <h4>Create Function</h4>
 
-        
         <input id="functionName" name="functionName" onChange={(e) => props.updateInfo(e.target.name, e.target.value)} type="text" placeholder="Function Name" />
         <select id="gcRuntime" onChange={(e) => props.updateInfo('runtime', e.target.value)}>
           <option value='1'>Runtime</option>
