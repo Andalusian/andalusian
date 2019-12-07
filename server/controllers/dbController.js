@@ -25,7 +25,7 @@ dbController.hashPassword = (req, res, next) => {
 }
 
 dbController.createUser = (req, res, next) => {
-  console.log('within dbController.createUser');
+  // console.log('within dbController.createUser');
   const { username, password } = res.locals.userInfo;
   fs.mkdir(`users/${username}/aws`, { recursive: true }, () => {
     fs.mkdir(`users/${username}/gcloud`, { recursive: true }, () => {
@@ -48,7 +48,7 @@ dbController.createUser = (req, res, next) => {
 }
 
 dbController.verifyUser = (req, res, next) => {
-  console.log('within dbController.verifyUser');
+  // console.log('within dbController.verifyUser');
   const { username, password } = req.body;
   fs.mkdir(`users/${username}/aws`, { recursive: true }, () => {
     fs.mkdir(`users/${username}/gcloud`, { recursive: true }, () => {
@@ -87,7 +87,7 @@ dbController.verifyUser = (req, res, next) => {
 }
 
 dbController.decrypt = (req, res, next) => {
-  console.log('within dbController.decrypt');
+  // console.log('within dbController.decrypt');
   const { keys } = res.locals.userData;
   const decryptedKeys = [];
 
@@ -117,7 +117,7 @@ dbController.decrypt = (req, res, next) => {
 }
 
 dbController.encryptKey = (req, res, next) => {
-  console.log('within dbController.encrypt');
+  // console.log('within dbController.encrypt');
   const { key } = req.body;
 
   const iv = crypto.randomBytes(8).toString('hex');
@@ -131,30 +131,31 @@ dbController.encryptKey = (req, res, next) => {
 }
 
 dbController.storeKey = (req, res, next) => {
-  console.log('within dbController.storeKey');
+  // console.log('within dbController.storeKey');
   const { username, keyAlias } = req.body;
   const { encryptedKey, cryptoIV } = res.locals.encryptedKeyPair;
   const encryptedKeyObject = {
     keyType: req.body.keyType,
     encryptedKey,
     cryptoIV,
+    keyAlias,
   };
 
   if (encryptedKeyObject.keyType === 'awsSecretAccessKey') {
     encryptedKeyObject.awsAccessKey = req.body.awsAccessKey;
-    encryptedKeyObject.keyAlias = keyAlias;
   }
   if (encryptedKeyObject.keyType === 'dockerPassword') {
     encryptedKeyObject.dockerUsername = req.body.dockerUsername;
-    encryptedKeyObject.keyAlias = keyAlias;
   }
 
-  User.findOneAndUpdate({ username }, { $push: { keys: encryptedKeyObject } }, function (err, response) {
+  User.findOneAndUpdate({ username }, { $push: { keys: encryptedKeyObject } }, { new: true }, function (err, response) {
     if (err) {
       console.log(`Error in dbController.storeencryptedKey: ${err}`);
       return next(err);
     } else {
       console.log(`Added encrypted key to ${username} in database`);
+      console.log(response.keys);
+      res.locals.keys = response.keys;
       return next();
     }
   });
