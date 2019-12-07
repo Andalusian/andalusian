@@ -34,7 +34,7 @@ class App extends React.Component {
       // currentBuckets: [],
       codeHere: "",
       currentFunctions: [],
-      awsRegion: 'us-east-1',
+      awsRegion: '',
       awsRuntime: '',
       awsRole: '',
       awsAccountID: '',
@@ -84,6 +84,7 @@ class App extends React.Component {
     // this.createBucket = this.createBucket.bind(this)
     this.handleSignout = this.handleSignout.bind(this)
     this.closeFuncInfo = this.closeFuncInfo.bind(this)
+    this.updateFunction = this.updateFunction.bind(this)
   }
 
   updateInfo(property, value) {
@@ -104,7 +105,7 @@ class App extends React.Component {
         updateObj.googleKey = updateKey[0].key;
       }
     }
-    this.setState(updateObj, () => console.log(this.state.azureTenant));
+    this.setState(updateObj);
   }
 
   getawsAccountID() {
@@ -140,7 +141,7 @@ class App extends React.Component {
         this.setState(updateStateObject, () => {
           console.log(this.state);
         });
-
+        this.osChecker()
       });
   }
 
@@ -151,6 +152,7 @@ class App extends React.Component {
           isLogin: true,
           isSignup: false,
         });
+        this.osChecker()
       });
   }
 
@@ -211,23 +213,21 @@ class App extends React.Component {
         })
       });
     console.log(this.state);
-    console.log("signout")
   }
 
   osChecker() {
-  let platform = window.navigator.platform,
-    macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
-    windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
-    os = null;
-  if (macosPlatforms.indexOf(platform) !== -1) {
-    os = 'Mac OS';
-  } else if (windowsPlatforms.indexOf(platform) !== -1) {
-    os = 'Windows';
-  } else if (!os && /Linux/.test(platform)) {
-    os = 'Linux';
-  }
-  this.operatingSystem = os;
-  console.log(this.operatingSystem)
+    let platform = window.navigator.platform,
+      macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+      windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+      os = null;
+    if (macosPlatforms.indexOf(platform) !== -1) {
+      os = 'Mac OS';
+    } else if (windowsPlatforms.indexOf(platform) !== -1) {
+      os = 'Windows';
+    } else if (!os && /Linux/.test(platform)) {
+      os = 'Linux';
+    }
+    this.setState({ operatingSystem: os });
   }
 
   handleSubmitKey(keyType) {
@@ -306,7 +306,6 @@ class App extends React.Component {
       })
       .catch((error) => {
         console.log(error);
-
       });
   }
 
@@ -378,7 +377,8 @@ class App extends React.Component {
     axios
       .post("/aws/loadCode", {
         funcName,
-        username: this.state.username
+        username: this.state.username,
+        operatingSystem: this.state.operatingSystem
       })
       .then(data => {
         this.setState({ codeLoaded: data.data });
@@ -395,9 +395,11 @@ class App extends React.Component {
         username: this.state.username
       })
       .then(data => {
-        for (let i = 0; i < data.data[1].logStreams.length; i++) {
-          let invokeTime = (new Date(data.data[1].logStreams[i].creationTime)).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
-          functionInvocations.push(<div key={i}>{invokeTime} </div>)
+        if (data.data[1]) {
+          for (let i = 0; i < data.data[1].logStreams.length; i++) {
+            let invokeTime = (new Date(data.data[1].logStreams[i].creationTime)).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
+            functionInvocations.push(<div key={i}>{invokeTime} </div>)
+          }
         }
         this.setState({
           functionName: funcName,
@@ -408,8 +410,6 @@ class App extends React.Component {
           awsPopup: true,
           functionInvocations: functionInvocations
         })
-
-        console.log(data.data[1].logStreams[0].creationTime)
       })
       .catch(function (error) {
         console.log(error);
@@ -426,8 +426,6 @@ class App extends React.Component {
         funcName,
         username: this.state.username
       })
-      .then(data =>
-        console.log(data.data))
       .catch(function (error) {
         console.log(error);
       });
@@ -474,7 +472,8 @@ class App extends React.Component {
           awsRuntime: this.state.awsRuntime,
           awsRole: this.state.awsRole,
           awsAccountID: this.state.awsAccountID,
-          username: this.state.username
+          username: this.state.username,
+          operatingSystem: this.state.operatingSystem
         })
         .then((response) => {
           console.log("createFunction FRONT END response --->", response);
@@ -488,24 +487,27 @@ class App extends React.Component {
     }
   }
 
-  createBucket() {
-    axios.post("/aws/createBucket", {
-      S3BucketName: this.state.S3BucketName,
-      newBucketRegion: this.state.newBucketRegion,
-      username: this.state.username
-    })
-      .then(data => {
-        console.log(data)
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  updateFunction() {
+
   }
+
+  // createBucket() {
+  //   axios.post("/aws/createBucket", {
+  //     S3BucketName: this.state.S3BucketName,
+  //     newBucketRegion: this.state.newBucketRegion,
+  //     username: this.state.username
+  //   })
+  //     .then(data => {
+  //       console.log(data)
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }
 
   render() {
 
     let displayed;
-    this.osChecker()
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       displayed = <GoogleFunctionForm
         username={this.state.username}
@@ -618,9 +620,9 @@ class App extends React.Component {
           azureApp={this.state.azureApp}
           azureProject={this.state.azureProject}
           functionName={this.state.functionName}
-            azureUser={this.state.azureUser}
-            azurePass={this.state.azurePass}
-            azureTenant={this.state.azureTenant}
+          azureUser={this.state.azureUser}
+          azurePass={this.state.azurePass}
+          azureTenant={this.state.azureTenant}
         />
       </React.Fragment>)
     }
