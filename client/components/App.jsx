@@ -9,6 +9,7 @@ import Signout from "./Signout.jsx";
 import DockerSetup from "./DockerSetup.jsx";
 import AzureFunctionForm from "./AzureFunctionForm.jsx"
 
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -55,6 +56,7 @@ class App extends React.Component {
       pageSelect: 'Gcloud',
       functionName: '',
       uploadedFunction: '',
+      operatingSystem: '',
       //Dropzone prop for file data and text
       uploadedFiles: [],
       // render states
@@ -184,6 +186,7 @@ class App extends React.Component {
           functionName: '',
           uploadedFunction: '',
           uploadedFiles: [],
+          operatingSystem: '',
           // render states
           isLogin: false,
           isSignup: false
@@ -191,6 +194,22 @@ class App extends React.Component {
       });
     console.log(this.state);
     console.log("signout")
+  }
+
+  osChecker() {
+  let platform = window.navigator.platform,
+    macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+    windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+    os = null;
+  if (macosPlatforms.indexOf(platform) !== -1) {
+    os = 'Mac OS';
+  } else if (windowsPlatforms.indexOf(platform) !== -1) {
+    os = 'Windows';
+  } else if (!os && /Linux/.test(platform)) {
+    os = 'Linux';
+  }
+  this.operatingSystem = os;
+  console.log(this.operatingSystem)
   }
 
   handleSubmitKey(keyType) {
@@ -450,7 +469,7 @@ class App extends React.Component {
   render() {
 
     let displayed;
-
+    this.osChecker()
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       displayed = <GoogleFunctionForm
         username={this.state.username}
