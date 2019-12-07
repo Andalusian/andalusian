@@ -10,7 +10,8 @@ const AzureFunctionForm = (props) => {
             <AzureCredentials
                 updateInfo={props.updateInfo}
                 azureUser={props.azureUser}
-                azurePass={props.azurePass}/>
+                azurePass={props.azurePass}
+                azureTenant={props.azureTenant}/>
             <div className="azureInfo">
                 <input onChange={(e) => props.updateInfo(e.target.name, e.target.value)} id="azureProject" name="azureProject" type="text" placeholder="Project Name" />
                 <select name="azureRuntime" onChange={(e) => props.updateInfo(e.target.name, e.target.value)}>

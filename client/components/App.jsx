@@ -53,6 +53,7 @@ class App extends React.Component {
       azureProject: '',
       azureUser: '',
       azurePass: '',
+      azureTenant: '',
       // both
       pageSelect: 'Gcloud',
       functionName: '',
@@ -92,7 +93,7 @@ class App extends React.Component {
       let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'googleKey');
       updateObj.googleKey = updateKey[0].key;
     }
-    this.setState(updateObj, () => console.log(this.state.googleProject));
+    this.setState(updateObj, () => console.log(this.state.azureTenant));
   }
 
   getawsAccountID() {
@@ -183,6 +184,7 @@ class App extends React.Component {
           azureProject: '',
           azureUser: '',
           azurePass: '',
+          azureTenant: '',
           // both
           pageSelect: 'Gcloud',
           functionName: '',
@@ -499,6 +501,7 @@ class App extends React.Component {
           functionName={this.state.functionName}
             azureUser={this.state.azureUser}
             azurePass={this.state.azurePass}
+            azureTenant={this.state.azureTenant}
         />
       </React.Fragment>)
     }
