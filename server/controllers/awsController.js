@@ -75,6 +75,7 @@ awsController.invokeFunc = (req, res, next) => {
       return (err)
     }
     res.locals.func = data;
+    console.log("INVOKEDATA --->", data)
     return next();
   });
 }
@@ -146,7 +147,21 @@ awsController.getFuncInfo = (req, res, next) => {
       console.log("err: ", err)
       next(err);
     }
-    res.locals.funcInfo = data;
+    res.locals.funcInfo = [];
+    res.locals.funcInfo[0] = data;
+    return next();
+  });
+}
+
+awsController.getInvocationInfo = (req, res, next) => {
+  AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
+  const cloudwatchlogs = new AWS.CloudWatchLogs();
+  var params = {
+    logGroupName: `/aws/lambda/${req.body.funcName}`
+  };
+  cloudwatchlogs.describeLogStreams(params, function (err, data) {
+    if (err) console.log(err, err.stack);
+    res.locals.funcInfo[1] = data;
     return next();
   });
 }
