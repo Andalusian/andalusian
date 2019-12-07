@@ -64,7 +64,6 @@ azureController.createFunc = (req, res, next) => {
 }
 
 azureController.deployFunc = (req, res, next) => {
-    console.log('in deploy')
     const { username, projectName, app } = req.body;
 
     for (let i = 0; i < projectName.length; i++) {
@@ -75,8 +74,36 @@ azureController.deployFunc = (req, res, next) => {
         return res.status(400).json('Must provide app name')
     }
 
-    console.log('past the guards')
+    console.log('deploying')
     exec(`func azure functionapp publish ${app}`, {cwd: `./users/${username}/azure/${projectName}`}, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return res.sendStatus(500);
+        }
+
+        console.error(`stderr: ${stderr}`);
+        console.log(`stdout: ${stdout}`);
+        res.locals = stdout;
+        return next();
+    })
+}
+
+azureController.auth = (req, res, next) => {
+    const { azureUser, azurePass } = req.body;
+
+    for (let i = 0; i < azureUser.length; i++) {
+        if (!/[a-z0-9A-Z-_@.]/gm.test(azureUser[i])) return res.status(400).json('Username formatted incorrectly.\nMust only contain letters, numbers, underscores, hyphens, periods, and @s.');
+    }
+
+    for (let i = 0; i < azurePass.length; i += 1) {
+        if (/[<>]/gm.test(azurePass[i])) return res.status(400).json('No scripts in your password please.');
+    }
+
+    if (!azureUser || !azurePass) {
+        return res.status(400).json('Must provide username and password')
+    }
+
+    exec(`az login -u ${azureUser} -p ${azurePass}`, (error, stdout, stderr) => {
         if (error) {
             console.error(`exec error: ${error}`);
             return res.sendStatus(500);

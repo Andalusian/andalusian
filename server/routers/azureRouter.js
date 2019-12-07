@@ -14,5 +14,9 @@ router.post('/deployFunc', azureController.deployFunc, (req, res) => {
     res.status(200).send(res.locals)
 })
 
+router.post('/auth', azureController.auth, (req, res) => {
+    res.status(200).send(res.locals)
+})
+
 module.exports = router;
 

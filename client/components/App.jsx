@@ -51,6 +51,8 @@ class App extends React.Component {
       azureTemplate: '',
       azureApp: '',
       azureProject: '',
+      azureUser: '',
+      azurePass: '',
       // both
       pageSelect: 'Gcloud',
       functionName: '',
@@ -90,7 +92,7 @@ class App extends React.Component {
       let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'googleKey');
       updateObj.googleKey = updateKey[0].key;
     }
-    this.setState(updateObj);
+    this.setState(updateObj, () => console.log(this.state.googleProject));
   }
 
   getawsAccountID() {
@@ -174,6 +176,13 @@ class App extends React.Component {
           exposePort: '',
           com: '',
           copy: '',
+          //azure
+          azureRuntime: '',
+          azureTemplate: '',
+          azureApp: '',
+          azureProject: '',
+          azureUser: '',
+          azurePass: '',
           // both
           pageSelect: 'Gcloud',
           functionName: '',
@@ -197,7 +206,7 @@ class App extends React.Component {
       case 'googleKey':
         keyObject.key = this.state.googleKey;
         keyObject.keyAlias = this.state.googleKeyAlias,
-          axios.post('/gcloud/auth', { user_name: this.state.username, key_file: this.state.googleKey })
+          axios.post('/gcloud/auth', { project: this.state.googleProject, user_name: this.state.username, key_file: this.state.googleKey })
             .then(response => {
               if (response.status === 200) {
                 axios.post('/db/storeKey', keyObject);
@@ -488,6 +497,8 @@ class App extends React.Component {
           azureApp={this.state.azureApp}
           azureProject={this.state.azureProject}
           functionName={this.state.functionName}
+            azureUser={this.state.azureUser}
+            azurePass={this.state.azurePass}
         />
       </React.Fragment>)
     }
