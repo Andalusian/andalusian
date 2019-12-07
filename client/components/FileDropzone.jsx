@@ -1,29 +1,28 @@
 import React, { useCallback } from 'react'
-import {useDropzone} from 'react-dropzone'
+import { useDropzone } from 'react-dropzone'
 
 
 function FileDropzone(props) {
-const onDrop = useCallback((acceptedFiles) => {
-  let filesArray = []
-  acceptedFiles.forEach((file) => {
-    const reader = new FileReader()
+  const onDrop = useCallback((acceptedFiles) => {
+    let filesArray = []
+    acceptedFiles.forEach((file) => {
+      const reader = new FileReader()
 
-    reader.onabort = () => console.log('file reading was aborted')
-    reader.onerror = () => console.log('file reading has failed')
-    reader.onload = () => {
-    // Do whatever you want with the file contents
-      const binaryStr = reader.result
-      filesArray.push(binaryStr)
-    }
-    console.log(file)
-    reader.readAsText(file)
-    filesArray.push(file)    
+      reader.onabort = () => console.log('file reading was aborted')
+      reader.onerror = () => console.log('file reading has failed')
+      reader.onload = () => {
+        // Do whatever you want with the file contents
+        const binaryStr = reader.result
+        filesArray.push(binaryStr)
+      }
+      reader.readAsText(file)
+      filesArray.push(file)
 
-  })
+    })
     props.updateInfo('uploadedFiles', filesArray)
-    console.log('These are your uploaded files!',filesArray)
-}, [])
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
+    console.log('These are your uploaded files!', filesArray)
+  }, [])
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
   return (
     <div {...getRootProps()}>
@@ -31,7 +30,7 @@ const onDrop = useCallback((acceptedFiles) => {
       {
         isDragActive ?
           <p>Drop the files here ...</p> :
-          <p>Drag 'n' drop some files here, or click to select files</p>
+          <p>Drag and drop files here, or click to select.</p>
       }
     </div>
   )

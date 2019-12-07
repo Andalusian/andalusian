@@ -1,7 +1,7 @@
 import React from "react";
 import MyDropzone from "./MyDropzone.jsx";
 import AWSCredentials from './AWSCredentials.jsx';
-import AWSCurrentFunctions from './AWSCurrentFunctions.jsx'
+import AWSCurrentFunctions from './AWSCurrentFunctions.jsx';
 import axios from "axios";
 
 const AWSFunctionForm = props => {
@@ -15,7 +15,7 @@ const AWSFunctionForm = props => {
         awsAccessKey={props.awsAccessKey}
         awsSecretAccessKey={props.awsSecretAccessKey}
         awsKeyAlias={props.awsKeyAlias}
-        keys={props.keys} 
+        keys={props.keys}
         configureAWS={props.configureAWS}
       />
       <hr />
