@@ -16,7 +16,7 @@ router.post("/allBuckets", awsController.allBuckets, (req, res, next) => {
   res.status(200).send(res.locals.buckets);
 })
 
-router.post("/getFuncInfo", awsController.getFuncInfo, (req, res, next) => {
+router.post("/getFuncInfo", awsController.getFuncInfo, awsController.getInvocationInfo, (req, res, next) => {
   res.status(200).send(res.locals.funcInfo);
 })
 
