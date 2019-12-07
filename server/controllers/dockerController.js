@@ -1,7 +1,10 @@
-const fs = require("fs");
+const fs = require("fs-extra");
 const path = require('path');
 const { exec } = require("child_process");
+const absolutePath = path.resolve("Relative file path");
 const dockerController = {};
+
+
 
 
 dockerController.containerSetup = (req, res, next) => {
@@ -33,15 +36,22 @@ dockerController.dockerDirect = (req, res, next) => {
     let files = req.body.files;
     let metadata = []
     let text = []
+    let count = 0
     for(let i = 0; i < files.length/2; i++){
         metadata.push(files[i])
     }
+    // console.log(metadata[0].path)
     for(let x = (files.length/2); x < files.length; x++){
         text.push(files[x])
     }
     for(let y = 0; y < metadata.length; y++){
-        var newPath = path.join(__dirname, `../platforms/docker/live/${metadata[y].path}`);
-        fs.writeFile(newPath, `${text[y]}`, function (err, data) {});
+        let dir = metadata[y].path.substring(0, metadata[y].path.lastIndexOf("/") + 1)
+        // console.log(metadata[y].path)
+        fs.mkdirSync(path.join(__dirname, `../../users/${req.body.username}/docker${dir}`), { recursive: true }, err => {
+            console.log(err)
+        })
+        var newPath = path.join(__dirname, `../../users/${req.body.username}/docker${metadata[y].path}`);
+        fs.writeFileSync(newPath, `${text[y]}`, function (err, data) {});
     }
 } 
 
