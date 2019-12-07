@@ -52,6 +52,9 @@ class App extends React.Component {
       azureTemplate: '',
       azureApp: '',
       azureProject: '',
+      azureUser: '',
+      azurePass: '',
+      azureTenant: '',
       // both
       pageSelect: 'Gcloud',
       functionName: '',
@@ -97,7 +100,7 @@ class App extends React.Component {
         updateObj.googleKey = updateKey[0].key;
       }
     }
-    this.setState(updateObj);
+    this.setState(updateObj, () => console.log(this.state.azureTenant));
   }
 
   getawsAccountID() {
@@ -181,6 +184,14 @@ class App extends React.Component {
           exposePort: '',
           com: '',
           copy: '',
+          //azure
+          azureRuntime: '',
+          azureTemplate: '',
+          azureApp: '',
+          azureProject: '',
+          azureUser: '',
+          azurePass: '',
+          azureTenant: '',
           // both
           pageSelect: 'Gcloud',
           functionName: '',
@@ -217,8 +228,9 @@ class App extends React.Component {
       username: this.state.username,
       keyType: keyType,
     }
+
     // Check if submitted key already exists in keys array
-    let filterCheck = this.state.keys.filter(key => key.key === this.state[keyType]); 
+    let filterCheck = this.state.keys.filter(key => key.key === this.state[keyType]);
     if (filterCheck.length) {
       let switchKey = filterCheck[0];
       console.log(`key already exists as ${switchKey.keyAlias}`);
@@ -538,6 +550,9 @@ class App extends React.Component {
           azureApp={this.state.azureApp}
           azureProject={this.state.azureProject}
           functionName={this.state.functionName}
+            azureUser={this.state.azureUser}
+            azurePass={this.state.azurePass}
+            azureTenant={this.state.azureTenant}
         />
       </React.Fragment>)
     }
