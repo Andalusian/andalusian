@@ -1,19 +1,332 @@
+* {
+  box-sizing: border-box;
+  &:focus {
+    outline: none;
+    // border: 1px solid #2668bd;
+  }
+}
 body, html {
-    background: #eee;
-    margin: 0;
-    padding: 0;
-    font-family: sans-serif;
-    font-size: 16px;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    box-sizing: border-box;
+  background: #d4d4d4;
+  color: #333;
+  // background: #050f19;
+  // color: #d07d02;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+}
+textarea {
+  width: 100%;
+}
+input, textarea, .dropzone, .microList {
+  display: block;
+  background: white;
+  // color: #f0f0f0;
+  // background: #f7f7f7;
+  border: 1px solid #eee;
+  // color: #15bcef;
+  // background: #1c3d67;
+  // border: 1px solid #1c3d67;
+  padding: .5em 1em;
+  margin: 5px 0;
+  font-family: monospace;
+  font-size: 1rem;
+  border-radius: 2px;
+  padding: .75em 1em;
+  &::placeholder {
+    // color: #3c75af;
+    color: #bbb;
+  }
+}
+input[type="text"], input[type="password"] {
+  width: 100%;
+}
+#loginForm {
+  position: relative;
+  width: 76%;
+  left: 50%;
+  margin-left: -38%;
+}
+#loginForm input {
+  width: 100%;
+}
+// input[name="functionName"] {
+//   display: inline-block;
+//   width: 65%;
+// }
+.saveButton {
+  display: block;
+}
+.coupledInputs {
+  margin: 0;
+}
+.toggleSignup {
+  display: inline-block;
+  margin-left: 1rem;
+  &:hover {
+    cursor: pointer;
+  }
+}
+select {
+  background: white;
+  // background: #356096;
+  // border: 1px solid #356096;
+  // color: #8dbae8;
+  // color: #333;
+  padding: .5em 1em;
+  width: 25%;
+  margin-left: 10px;
+  font-family: monospace;
+  font-size: 9pt;
+  border: 1px solid #eee;
+  border-radius: 2px;
 }
 .mainContainer {
-    background: white;
-    width: 500px;
-    height: 500px;
-    padding: 1em;
+  background: #f5f5f5;
+  // background: #002235;
+  width: 550px;
+  padding: 3rem;
+  text-align: left;
+  margin: 3rem 0;
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(0,0,0,.1);
+  h1 {
     text-align: center;
-    margin-top: 3em;
+    margin: 0 0 1em 0;
+  }
+}
+button, .dropzone {
+  border-radius: 2px;
+  // background: #eee;
+  // background: #7dd866;
+  background: #d6d6d6;
+  border: none;
+  // background: #338ec3;
+  margin: 10px 5px 10px 0;
+  padding: 1em 1.5em;
+  transition: .25s ease all;
+  // color: #f0f0f0;
+  &:hover {
+    // background: #8fcc52;
+    // background: #e88014;
+    // border-color: #e88014;
+    // background: #7dd866;
+    background: #83dc6d;
+  }
+}
+
+#signoutButton {
+  border: none;
+}
+
+#loginButton {
+  padding: .75rem 2rem;
+}
+
+#dropz {
+  display: flex;
+  font-size: 9pt;
+  justify-content: space-around;
+  &:focus {
+    outline: 0;
+  }
+}
+
+#drop1 {
+  margin-top: 15px;
+}
+
+#codeHere, #googleKey {
+margin: 0 auto;
+width: 98%;
+}
+
+// .dropzone {
+//   transition: .25s ease all;
+//   &:hover {
+//     background: #8fcc52;
+//   }
+//   border-style: solid;
+//   border-color: #a8a6a6;
+//   &:focus {
+//     outline: 0;
+//   }
+// }
+
+.functionName {
+  margin-bottom: 15px;
+}
+
+.radio {
+  display: flex;
+  justify-content: flex-start;
+}
+
+#bucketsDropdown {
+  width: 300px !important;
+}
+
+[type=radio] {
+  opacity: 0;
+  width: 0;
+  height: 0
+}
+
+[type=radio] + img {
+  cursor: pointer;
+}
+
+[type=radio]:checked + img {
+  padding: 1px;
+  border: 1px solid #bbb;
+  border-radius: 2px;
+}
+
+img {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  height: 25px;
+  width: 25px;
+}
+
+#currentFunctions {
+  text-align: right;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+// .googleInfo {
+//   display: flex;
+//   justify-content: space-around;
+// }
+
+#googleProject {
+  margin-right: 5px;
+}
+
+.azureButton {
+  margin-left: 10px;
+}
+
+h5 {
+  display: inline-block;
+  margin-top: 2px;
+  margin-right: 5px;
+  margin-bottom: 0;
+  line-height: 15px;
+  font-size: 14px;
+  color: rgb(83, 83, 83)
+}
+
+// #awsRegion, #awsAccessKey, #awsSecretAccessKey, #functionName, #awsRole {
+//   display: inline-block;
+//   margin-bottom: 1px;
+//   width: 200px;
+//   margin-right: 5px;
+// }
+
+#awsCredentials, #googleCredentials {
+  display: grid;
+  grid-template-columns: calc(30% - 3px) calc(70% - 3px);
+  grid-gap: 6px;
+  align-items: center;
+}
+
+#googleCredentials pre, #googleCredentials textarea {
+  grid-column: 1 / span 2;
+  margin: 0;
+  width: 100%;
+}
+
+#awsCredentials input, #googleCredentials input {
+  margin: 0;
+}
+
+#googleCredentials button {
+  margin: 0;
+}
+
+#awsCredentials label {
+  grid-column: 1;
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: -.0125em;
+  font-family: monospace;
+}
+
+#awsCredentials input {
+  grid-column: 2;
+}
+
+#awsCredentials button {
+  margin: 0;
+}
+
+.keySelection, #awsRegion {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+#regionBtn, #credentialsBtn, #createFuncBtn, #createBucketBtn {
+align-items: flex-end;
+margin-left: 0;
+}
+
+#awsRuntime, #googleProject, #functionName, #gcRuntime  {
+  display: block;
+  margin-left: 0;
+  margin-top: 5px
+}
+
+h4 {
+  margin: 5px 0;
+  font-family: monospace;
+}
+
+// #functionName, #googleProject {
+//   width: 200px;
+// }
+
+#awsRuntime {
+  width: 200px
+}
+
+#bucketsDropdown {
+  margin-left: 0;
+}
+
+hr {
+  margin: 20px 0;
+}
+
+#AWSFunctionInfo {
+  position: fixed;
+  top: 20%;
+  left: 10%;
+  width: 80%;
+  background-color: white;
+  border: 2px solid rgb(87, 87, 87);
+  border-radius: 5px;
+  padding: 30px;
+  margin: 0;
+}
+
+#AWSFunctionInfoGrid {
+  display: grid;
+  grid-template-columns: 20% 80%;
+  justify-items: start;
+  justify-content: space-around;
+}
+
+.myAWSFuncs {
+  font-size: 12px;
+}
+
+.funcInfoH4, .funcInfoP {
+  display: inline-block;
+  margin: 0 15px 5px 0
 }
