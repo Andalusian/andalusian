@@ -13,7 +13,7 @@ function MyDropzone(props) {
             reader.onload = () => {
                 // Do whatever you want with the file contents
                 const binaryStr = reader.result
-                console.log(binaryStr)
+                // console.log(binaryStr)
                 document.getElementById('codeHere').value = binaryStr;
                 // setTempUploadedFunction(binaryStr);
                 props.updateInfo('uploadedFunction', binaryStr)
@@ -34,7 +34,7 @@ function MyDropzone(props) {
                 </div>
             </div>
             <pre>
-                <textarea onChange={(e) => props.updateInfo('uploadedFunction', e.target.value)} id="codeHere" defaultValue={props.codeLoaded} spellCheck="false" rows="25"></textarea>
+                <textarea onChange={(e) => props.updateInfo('uploadedFunction', e.target.value)} id="codeHere" spellCheck="false" rows="25" defaultValue={props.codeLoaded}></textarea>
             </pre>
         </div>
     )
