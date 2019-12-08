@@ -63,6 +63,7 @@ class App extends React.Component {
       functionName: '',
       uploadedFunction: '',
       operatingSystem: '',
+      checkCount: 0,
       //Dropzone prop for file data and text
       uploadedFiles: [],
       // render states
@@ -84,7 +85,7 @@ class App extends React.Component {
     // this.createBucket = this.createBucket.bind(this)
     this.handleSignout = this.handleSignout.bind(this)
     this.closeFuncInfo = this.closeFuncInfo.bind(this)
-    this.updateFunction = this.updateFunction.bind(this)
+    // this.updateFunction = this.updateFunction.bind(this)
   }
 
   updateInfo(property, value) {
@@ -101,7 +102,8 @@ class App extends React.Component {
     if (property === 'googleKeyAlias') {
       let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'googleKey');
       if (updateKey.length) {
-        axios.post('/gcloud/auth', { project: this.state.googleProject, user_name: this.state.username, key_file: updateKey[0].key });
+        const project = JSON.parse(updateKey[0].key).project_id;
+        axios.post('/gcloud/auth', { user_name: this.state.username, key_file: updateKey[0].key, project });
         updateObj.googleKey = updateKey[0].key;
       }
     }
@@ -207,6 +209,7 @@ class App extends React.Component {
           uploadedFunction: '',
           uploadedFiles: [],
           operatingSystem: '',
+          checkCount: 0,
           // render states
           isLogin: false,
           isSignup: false
@@ -227,8 +230,15 @@ class App extends React.Component {
     } else if (!os && /Linux/.test(platform)) {
       os = 'Linux';
     }
-    this.setState({ operatingSystem: os });
+    if (this.state.checkCount === 0) {
+      this.setState({
+        operatingSystem: os,
+        checkCount: this.state.checkCount + 1,
+      }, () => { console.log(this.state.operatingSystem) })
+    }
   }
+
+  // componentDidMount() { this.osChecker() }
 
   handleSubmitKey(keyType) {
     const keyObject = {
@@ -254,16 +264,17 @@ class App extends React.Component {
     } else {
       switch (keyType) {
         case 'googleKey':
+          const project = JSON.parse(this.state.googleKey).project_id;
           keyObject.key = this.state.googleKey;
-          keyObject.keyAlias = this.state.googleKeyAlias,
-            axios.post('/gcloud/auth', { project: this.state.googleProject, user_name: this.state.username, key_file: this.state.googleKey })
-              .then(response => {
-                if (response.status === 200) {
-                  axios
-                    .post('/db/storeKey', keyObject)
-                    .then(response => this.setState({ keys: response.data.keys }));
-                }
-              });
+          keyObject.keyAlias = this.state.googleKeyAlias;
+          axios.post('/gcloud/auth', { user_name: this.state.username, key_file: this.state.googleKey, project })
+            .then(response => {
+              if (response.status === 200) {
+                axios
+                  .post('/db/storeKey', keyObject)
+                  .then(response => this.setState({ keys: response.data.keys }));
+              }
+            });
           break;
         case 'awsSecretAccessKey':
           keyObject.key = this.state.awsSecretAccessKey;
@@ -487,9 +498,9 @@ class App extends React.Component {
     }
   }
 
-  updateFunction() {
+  // updateFunction() {
 
-  }
+  // }
 
   // createBucket() {
   //   axios.post("/aws/createBucket", {
@@ -609,6 +620,7 @@ class App extends React.Component {
         copy={this.state.copy}
         uploadedFiles={this.state.uploadedFiles}
         pageSelect={this.state.pageSelect}
+        username={this.state.username}
       ></DockerSetup></React.Fragment>)
     } else if (this.state.pageSelect === 'Azure') {
       displayed = (<React.Fragment>

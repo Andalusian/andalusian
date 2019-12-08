@@ -23,8 +23,6 @@
   },
   "homepage": "https://github.com/Andalusian/shinobi#readme",
   "dependencies": {
-    "adm-zip": "^0.4.13",
-    "archiver": "^3.1.1",
     "aws-sdk": "^2.580.0",
     "axios": "^0.19.0",
     "bcrypt": "^3.0.7",
@@ -32,6 +30,7 @@
     "cross-env": "^6.0.3",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
+    "fs-extra": "^8.1.0",
     "mongoose": "^5.7.12",
     "node": "^12.13.0",
     "react": "^16.12.0",
