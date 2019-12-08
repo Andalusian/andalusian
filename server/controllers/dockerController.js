@@ -40,13 +40,11 @@ dockerController.dockerDirect = (req, res, next) => {
     for(let i = 0; i < files.length/2; i++){
         metadata.push(files[i])
     }
-    // console.log(metadata[0].path)
     for(let x = (files.length/2); x < files.length; x++){
         text.push(files[x])
     }
     for(let y = 0; y < metadata.length; y++){
         let dir = metadata[y].path.substring(0, metadata[y].path.lastIndexOf("/") + 1)
-        // console.log(metadata[y].path)
         fs.mkdirSync(path.join(__dirname, `../../users/${req.body.username}/docker${dir}`), { recursive: true }, err => {
             console.log(err)
         })
