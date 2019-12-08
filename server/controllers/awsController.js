@@ -4,7 +4,8 @@ const AWS = require("aws-sdk");
 const lambda = new AWS.Lambda();
 const s3 = new AWS.S3();
 const request = require('superagent'); // npm install superagent
-const admZip = require('adm-zip'); // npm install adm-zip
+const zipper = require("zip-local"); // npm i zip-local
+
 
 const awsController = {};
 
@@ -19,37 +20,34 @@ awsController.configureAWS = (req, res, next) => {
 awsController.createFunction = (req, res, next) => {
   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
   const lambda = new AWS.Lambda();
-  fs.writeFileSync(`users/${req.body.username}/aws/${req.body.functionName}.js`, req.body.uploadedFunction)
-  exec(`zip users/${req.body.username}/aws/${req.body.functionName}.zip users/${req.body.username}/aws/${req.body.functionName}.js`, (error, stdout, stderr) => {
-    const params = {
-      "Code": {
-        "ZipFile": fs.readFileSync(`users/${req.body.username}/aws/${req.body.functionName}.zip`)
-      },
-      "FunctionName": `${req.body.functionName}`,
-      "Handler": `${req.body.functionName}` + ".handler",
-      "Role": "arn:aws:iam::" + `${req.body.awsAccountID}` + `${req.body.awsRole}`,
-      "Runtime": `${req.body.awsRuntime}`
-    };
-    console.log(params);
-    lambda.createFunction(params, (err, data) => {
-      if (err) {
-        console.log(err, err.stack);
-        return (err)
-      }
-      else {
-        console.log("WHATTTT -->", data);
-      }
-    })
-    if (error) {
-      console.error(`exec error: ${error}`);
-      return (error)
+  fs.writeFileSync(`users/${req.body.username}/aws/${req.body.functionName}.js`, req.body.uploadedFunction);
+  zipper.sync.zip(`users/${req.body.username}/aws/${req.body.functionName}.js`).compress().save(`users/${req.body.username}/aws/${req.body.functionName}.zip`);
+  const params = {
+    "Code": {
+      "ZipFile": fs.readFileSync(`users/${req.body.username}/aws/${req.body.functionName}.zip`)
+    },
+    "FunctionName": `${req.body.functionName}`,
+    "Handler": `${req.body.functionName}` + ".handler",
+    "Role": "arn:aws:iam::" + `${req.body.awsAccountID}` + `${req.body.awsRole}`,
+    "Runtime": `${req.body.awsRuntime}`
+  };
+  console.log("PARAMS --->", params)
+  lambda.createFunction(params, (err, data) => {
+    if (err) {
+      console.log(err, err.stack);
+      return (err)
     }
-    console.log(`createFunction stdout: ${stdout}`);
-    console.error(`createFunction stderr: ${stderr}`);
-    return next();
+    else {
+      console.log("function created -->", data);
+    }
   })
+  return next();
 }
-// REMINDER TO SELF - SET UP TO DELETE THE FOLDER AFTER THE PROCESS IS COMPLETED
+
+// awsController.updateFunction = (req, res, next) => {
+//   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
+//   const lambda = new AWS.Lambda();
+// }
 
 awsController.listFunctions = (req, res, next) => {
   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
@@ -107,7 +105,7 @@ awsController.allBuckets = (req, res, next) => {
   });
 }
 
-awsController.loadCode = (req, res, next) => {
+awsController.loadCode = async (req, res, next) => {
   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
   const lambda = new AWS.Lambda();
   const params = { FunctionName: `${req.body.funcName}` }
@@ -120,22 +118,22 @@ awsController.loadCode = (req, res, next) => {
       })
       .pipe(fs.createWriteStream(`users/${req.body.username}/aws/${req.body.funcName}.zip`))
       .on('finish', function () {
-        exec(`unzip users/${req.body.username}/aws/${req.body.funcName}.zip`, (error, stdout, stderr) => {
-          fs.readFile(`users/${req.body.username}/aws/${req.body.funcName}.js`, 'utf8', (err, data) => {
-            if (err) { console.log(err) }
-            else {
-              res.locals.codeLoaded = data;
-              console.log(res.locals.codeLoaded);
-              return next();
-            }
-          })
+        zipper.sync.unzip(`users/${req.body.username}/aws/${req.body.funcName}.zip`).save(``);
+        fs.readFile(`users/${req.body.username}/aws/${req.body.funcName}.js`, 'utf8', (err, data) => {
+          if (err) { console.log(err) }
+          else {
+            res.locals.codeLoaded = data;
+            return next();
+          }
         })
-      });
+      })
     if (err) {
       console.log("err: ", err)
       return err;
     }
   })
+  // fs.rmdirSync(`users/${req.body.username}/aws/${req.body.funcName}.js`);
+  // fs.rmdirSync(`users/${req.body.username}/aws/${req.body.funcName}.zip`);
 }
 
 awsController.getFuncInfo = (req, res, next) => {
@@ -147,7 +145,21 @@ awsController.getFuncInfo = (req, res, next) => {
       console.log("err: ", err)
       next(err);
     }
-    res.locals.funcInfo = data;
+    res.locals.funcInfo = [];
+    res.locals.funcInfo[0] = data;
+    return next();
+  });
+}
+
+awsController.getInvocationInfo = (req, res, next) => {
+  AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
+  const cloudwatchlogs = new AWS.CloudWatchLogs();
+  var params = {
+    logGroupName: `/aws/lambda/${req.body.funcName}`
+  };
+  cloudwatchlogs.describeLogStreams(params, function (err, data) {
+    if (err) console.log(err, err.stack);
+    res.locals.funcInfo[1] = data;
     return next();
   });
 }
@@ -162,6 +174,7 @@ awsController.createBucket = (req, res, next) => {
       LocationConstraint: `${req.body.newBucketRegion}`
     }
   };
+  console.log("PARAMS -----> ", params)
   s3.createBucket(params, function (err, data) {
     if (err) {
       console.log(err, err.stack);

@@ -195,7 +195,6 @@ img {
 #currentFunctions {
   text-align: right;
   position: relative;
-  right: 100px;
   margin-bottom: 20px;
 }
 
@@ -302,4 +301,32 @@ h4 {
 
 hr {
   margin: 20px 0;
+}
+
+#AWSFunctionInfo {
+  position: fixed;
+  top: 20%;
+  left: 10%;
+  width: 80%;
+  background-color: white;
+  border: 2px solid rgb(87, 87, 87);
+  border-radius: 5px;
+  padding: 30px;
+  margin: 0;
+}
+
+#AWSFunctionInfoGrid {
+  display: grid;
+  grid-template-columns: 20% 80%;
+  justify-items: start;
+  justify-content: space-around;
+}
+
+.myAWSFuncs {
+  font-size: 12px;
+}
+
+.funcInfoH4, .funcInfoP {
+  display: inline-block;
+  margin: 0 15px 5px 0
 }

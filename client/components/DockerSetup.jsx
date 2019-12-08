@@ -57,7 +57,7 @@ const DockerSetup = props => {
         axios
           .post('/docker/dockerDirect', {
             files: props.uploadedFiles,
-
+            username: props.username,
           })
           .then((response) => {
             console.log(response);
@@ -80,7 +80,7 @@ const DockerSetup = props => {
         .post('/docker/stopDocker', {
             functionName: props.functionName,
         })
-        .then((response) => {console.log(response);})
+        // .then((response) => {console.log(response);})
         .catch((error) => {console.log(error);})
     }
 
@@ -135,7 +135,7 @@ const DockerSetup = props => {
                 <div>
                 <input onChange={(e) => props.updateInfo('functionName', e.target.value)} type="text" name="functionName" placeholder="Function Name" />
                 <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
-                <FileDropzone uploadedFiles={props.uploadedFiles} updateInfo={props.updateInfo} pageSelect={props.pageSelect}/>
+                <FileDropzone uploadedFiles={props.uploadedFiles} updateInfo={props.updateInfo} pageSelect={props.pageSelect} />
                 <button onClick={() => funcSetup()}>Set Function</button>
                 <button onClick={() => dockerDirect()}>Setup Directory</button>
                 <button onClick={() => buildImage()}>Build Image</button>
