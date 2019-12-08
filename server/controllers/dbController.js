@@ -118,6 +118,7 @@ dbController.decrypt = (req, res, next) => {
 
 dbController.encryptKey = (req, res, next) => {
   // console.log('within dbController.encrypt');
+  console.log(req.body)
   const { key } = req.body;
 
   const iv = crypto.randomBytes(8).toString('hex');
@@ -146,6 +147,10 @@ dbController.storeKey = (req, res, next) => {
   }
   if (encryptedKeyObject.keyType === 'dockerPassword') {
     encryptedKeyObject.dockerUsername = req.body.dockerUsername;
+  }
+  if (encryptedKeyObject.keyType === 'azureKeys') {
+    encryptedKeyObject.azureUser = req.body.azurePass;
+    encryptedKeyObject.azureTenant = req.body.azureTenant;
   }
 
   User.findOneAndUpdate({ username }, { $push: { keys: encryptedKeyObject } }, { new: true }, function (err, response) {

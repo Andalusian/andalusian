@@ -100,7 +100,7 @@ class App extends React.Component {
         updateObj.googleKey = updateKey[0].key;
       }
     }
-    this.setState(updateObj, () => console.log(this.state.azureTenant));
+    this.setState(updateObj);
   }
 
   getawsAccountID() {
@@ -132,6 +132,11 @@ class App extends React.Component {
           if (updateKey.keyType === 'awsSecretAccessKey') {
             updateStateObject.awsAccessKey = updateKey.awsAccessKey;
             updateStateObject.awsKeyAlias = updateKey.keyAlias;
+          }
+          if (updateKey.keyType === 'azureKey') {
+            updateStateObject.azureUser = updateKey.azureUser;
+            updateStateObject.azurePass = updateKey.azurePass;
+            updateStateObject.azureTenant = updateKey.azureTenant;
           }
         });
         this.setState(updateStateObject, () => {
@@ -207,21 +212,20 @@ class App extends React.Component {
     console.log("signout")
   }
 
-  osChecker() {
-  let platform = window.navigator.platform,
-    macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
-    windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
-    os = null;
-  if (macosPlatforms.indexOf(platform) !== -1) {
-    os = 'Mac OS';
-  } else if (windowsPlatforms.indexOf(platform) !== -1) {
-    os = 'Windows';
-  } else if (!os && /Linux/.test(platform)) {
-    os = 'Linux';
-  }
-  this.operatingSystem = os;
-  console.log(this.operatingSystem)
-  }
+  // osChecker() {
+  // let platform = window.navigator.platform,
+  //   macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+  //   windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+  //   os = null;
+  // if (macosPlatforms.indexOf(platform) !== -1) {
+  //   os = 'Mac OS';
+  // } else if (windowsPlatforms.indexOf(platform) !== -1) {
+  //   os = 'Windows';
+  // } else if (!os && /Linux/.test(platform)) {
+  //   os = 'Linux';
+  // }
+  // this.operatingSystem = os;
+  // }
 
   handleSubmitKey(keyType) {
     const keyObject = {
@@ -242,6 +246,11 @@ class App extends React.Component {
       } else if (switchKey.keyType === 'googleKey') {
         document.getElementById('googleCredentials').reset();
         keyObject.googleKeyAlias = switchKey.keyAlias;
+      } else if (switchKey.keyType === 'azureKeys') {
+        document.getElementById('azureCredentials').reset();
+        keyObject.azureUser = switchKey.azureUser;
+        keyObject.azurePass = switchKey.azurePass;
+        keyObject.azureTenant = switchKey.azureTenant;
       }
       this.setState(keyObject);
     } else {
@@ -273,6 +282,14 @@ class App extends React.Component {
           axios
             .post('/db/storeKey', keyObject)
             .then(response => this.setState({ keys: response.data.keys }));
+          break;
+        case 'azureKeys':
+          keyObject.azureUser = this.state.azureUser;
+          keyObject.key = this.state.azurePass;
+          keyObject.azureTenant = this.state.azureTenant;
+          axios
+              .post('/db/storeKey', keyObject)
+              .then(response => this.setState({keys: response.data.keys}));
           break;
       }
     }
@@ -388,6 +405,7 @@ class App extends React.Component {
       .then(data => {
         alert(`State: ${data.data.Configuration.State}
         \nRuntime: ${data.data.Configuration.Runtime}
+        \nTest: ${data.data.Configuration.LastModified}
         \nLast Modified: ${(new Date(Date.parse(data.data.Configuration.LastModified))).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}
         \nRole: ${data.data.Configuration.Role}`)
       })
@@ -481,7 +499,7 @@ class App extends React.Component {
   render() {
 
     let displayed;
-    this.osChecker()
+    // this.osChecker()
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       displayed = <GoogleFunctionForm
         username={this.state.username}
@@ -553,6 +571,7 @@ class App extends React.Component {
             azureUser={this.state.azureUser}
             azurePass={this.state.azurePass}
             azureTenant={this.state.azureTenant}
+            submitKey={this.handleSubmitKey}
         />
       </React.Fragment>)
     }
