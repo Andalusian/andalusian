@@ -9,6 +9,8 @@ import AWSFunctionForm from "./AWSFunctionForm.jsx";
 import AWSFunctionInfo from "./AWSFunctionInfo.jsx";
 import AzureFunctionForm from "./AzureFunctionForm.jsx";
 import DockerSetup from "./DockerSetup.jsx";
+import GoogleWelcomeForm from "./GoogleWelcomeForm.jsx";
+import GoogleInvokedFunctionModal from "./GoogleInvokedFunctionModal.jsx";
 
 
 class App extends React.Component {
@@ -24,6 +26,9 @@ class App extends React.Component {
       googleKeyAlias: '',
       runtime: undefined,
       googleProject: '',
+      googleFunctionButtons: [],
+      googleFunctionInfoButtonClicked: false,
+      googleFunctionInfo: {},
       // aws
       awsAccessKey: '',
       awsSecretAccessKey: '',
@@ -76,7 +81,7 @@ class App extends React.Component {
     this.handleSignup = this.handleSignup.bind(this);
     this.handleToggleSignup = this.handleToggleSignup.bind(this);
     this.handleSubmitKey = this.handleSubmitKey.bind(this);
-    // this.googleListFunctions = this.googleListFunctions.bind(this);
+    this.googleListFunctions = this.googleListFunctions.bind(this);
     this.listFunctions = this.listFunctions.bind(this)
     // this.listBuckets = this.listBuckets.bind(this)
     this.createFunction = this.createFunction.bind(this);
@@ -101,7 +106,11 @@ class App extends React.Component {
       let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'googleKey');
       if(updateKey.length) {
         const project = JSON.parse(updateKey[0].key).project_id;
-        axios.post('/gcloud/auth', { user_name: this.state.username, key_file: updateKey[0].key, project });
+        this.setState({googleProject:project});
+        axios.post('/gcloud/auth', { user_name: this.state.username, key_file: updateKey[0].key, project })
+        .then((res) => {
+          if (res.status === 200) this.googleListFunctions();
+        });
         updateObj.googleKey = updateKey[0].key;
       }
     }
@@ -256,6 +265,7 @@ class App extends React.Component {
       switch (keyType) {
         case 'googleKey':
           const project = JSON.parse(this.state.googleKey).project_id;
+          this.setState({googleProject:project});
           keyObject.key = this.state.googleKey;
           keyObject.keyAlias = this.state.googleKeyAlias;
             axios.post('/gcloud/auth', { user_name: this.state.username, key_file: this.state.googleKey, project })
@@ -331,50 +341,54 @@ class App extends React.Component {
       });
   }
 
-  // googleListFunctions() {
-  //   console.log('inside googleListFunctions')
-  //   fetch('/gcloud/list')
-  //     .then(data => data.json())
-  //     .then(data => {
-  //       console.log(`Data from list fetch: ${data}`)
-  //       const fnList = data.fn_list;
-  //       const fnButtons = [];
-  //       fnList.forEach((el) => {
-  //         fnButtons.push(<div id={el}>
-  //           <span>{el}</span>
-  //           <button onClick={() => {
-  //             fetch(`/gcloud/info/${el}`)
-  //               .then(data => data.json())
-  //               .then(data => {
-  //                 console.log(data);
-  //               })
-  //           }}>Info</button>
-  //           <button onClick={() => {
-  //             fetch(`/gcloud/call/${el}`)
-  //               .then(data => data.json())
-  //               .then(data => {
-  //                 console.log(data);
-  //               })
-  //           }}>Invoke</button>
-  //           <button onClick={() => {
-  //             fetch(`/gcloud/delete/`, {
-  //               method: 'DELETE',
-  //               headers: {
-  //                   'Content-Type': 'application/json',
-  //               },
-  //               body: JSON.stringify({fn_name: el}),
-  //             })
-  //               .then(data => data.json())
-  //               .then(data => {
-  //                 console.log(data);
-  //               })
-  //           }}>Delete</button>
-  //         </div>);
-  //       });
-  //       console.log(`fnButtons: ${fnButtons}`)
-  //       return fnButtons;
-  //     })
-  // }
+  googleListFunctions() {
+    if (!this.state.googleFunctionButtons[0]) {
+      fetch('/gcloud/list')
+        .then(data => data.json())
+        .then(data => {
+          const fnList = data.fn_list;
+          const fnButtons = [<hr/>,<h4>Project's Functions</h4>];
+          fnList.forEach((el) => {
+            fnButtons.push(<div id={el}>
+              <span>{el}</span>
+              <button onClick={() => {
+                fetch(`/gcloud/info/${el}`)
+                  .then(data => data.json())
+                  .then(data => {
+                    this.setState({
+                      googleFunctionInfoButtonClicked: true,
+                      googleFunctionInfo: data,
+                    })
+                  })
+              }}>Info</button>
+              <button onClick={() => {
+                fetch(`/gcloud/call/${el}`)
+                  .then(data => {
+                    if (data.status === 200) {
+                      console.log('do something!');
+                    }
+                  })
+              }}>Invoke</button>
+              <button onClick={() => {
+                fetch(`/gcloud/delete/`, {
+                  method: 'DELETE',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({fn_name: el}),
+                })
+                  .then(data => {
+                    if (data.status === 200) {
+                      document.getElementById(el).remove();
+                    }
+                  })
+              }}>Delete</button>
+            </div>);
+          });
+          this.setState({googleFunctionButtons: fnButtons});
+        })
+    }
+  }
 
   loadCode(funcName) {
     axios
@@ -509,7 +523,18 @@ class App extends React.Component {
     let displayed;
     this.osChecker()
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
-      displayed = <GoogleFunctionForm
+      let filteredkeys = this.state.keys.filter(key => key.keyType === 'googleKey');
+      if (filteredkeys[0] === undefined) {
+        displayed = (<React.Fragment>
+            <h2>GCloud</h2>
+            <GoogleWelcomeForm
+              updateInfo={this.updateInfo}
+              submitKey={this.handleSubmitKey}
+            />
+          </React.Fragment>
+          )
+      } else {
+        displayed = <GoogleFunctionForm
         username={this.state.username}
         submitKey={this.handleSubmitKey}
         googleProject={this.state.googleProject}
@@ -517,11 +542,16 @@ class App extends React.Component {
         functionName={this.state.functionName}
         googleKey={this.state.googleKey}
         googleKeyAlias={this.state.googleKeyAlias}
+        googleFunctionButtons={this.state.googleFunctionButtons}
         updateInfo={this.updateInfo}
         uploadedFunction={this.state.uploadedFunction}
-        /*googleListFunctions={this.googleListFunctions}*/
+        googleListFunctions={this.googleListFunctions}
+        googleFunctionInfo={this.state.googleFunctionInfo}
+        googleFunctionInfoButtonClicked={this.state.googleFunctionInfoButtonClicked}
         keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
-      />
+        />
+      }
+      
     } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && !this.state.awsPopup) {
       displayed = (<React.Fragment>
         <AWSFunctionForm id="AWSFunctionForm"
