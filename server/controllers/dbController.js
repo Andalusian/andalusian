@@ -107,9 +107,6 @@ dbController.decrypt = (req, res, next) => {
     if (decryptedKeyObject.keyType === 'awsSecretAccessKey') {
       decryptedKeyObject.awsAccessKey = key.awsAccessKey;
     }
-    if (decryptedKeyObject.keyType === 'dockerPassword') {
-      decryptedKeyObject.dockerUsername = key.dockerUsername;
-    }
 
     decryptedKeys.push(decryptedKeyObject);
   });

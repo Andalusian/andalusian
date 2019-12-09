@@ -17,7 +17,7 @@ const DockerCredentials = props => {
         placeholder="Docker Password"
         onChange={e => props.updateInfo(e.target.name, e.target.value)}
       />
-      <button type="button" className="saveButton" onClick={() => props.submitKey('dockerPassword')}>Save Credentials</button>
+      <button className="saveButton" onClick={() => props.submitKey('dockerPassword')}>Save Credentials</button>
     </React.Fragment>
   );
 }
