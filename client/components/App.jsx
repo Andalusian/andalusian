@@ -34,7 +34,7 @@ class App extends React.Component {
       // currentBuckets: [],
       codeHere: "",
       currentFunctions: [],
-      awsRegion: 'us-east-1',
+      awsRegion: '',
       awsRuntime: '',
       awsRole: '',
       awsAccountID: '',
@@ -63,6 +63,7 @@ class App extends React.Component {
       functionName: '',
       uploadedFunction: '',
       operatingSystem: '',
+      checkCount: 0,
       //Dropzone prop for file data and text
       uploadedFiles: [],
       // render states
@@ -84,6 +85,7 @@ class App extends React.Component {
     // this.createBucket = this.createBucket.bind(this)
     this.handleSignout = this.handleSignout.bind(this)
     this.closeFuncInfo = this.closeFuncInfo.bind(this)
+    // this.updateFunction = this.updateFunction.bind(this)
   }
 
   updateInfo(property, value) {
@@ -99,13 +101,13 @@ class App extends React.Component {
     }
     if (property === 'googleKeyAlias') {
       let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'googleKey');
-      if(updateKey.length) {
+      if (updateKey.length) {
         const project = JSON.parse(updateKey[0].key).project_id;
         axios.post('/gcloud/auth', { user_name: this.state.username, key_file: updateKey[0].key, project });
         updateObj.googleKey = updateKey[0].key;
       }
     }
-    this.setState(updateObj, () => console.log(this.state.azureTenant));
+    this.setState(updateObj);
   }
 
   getawsAccountID() {
@@ -141,7 +143,7 @@ class App extends React.Component {
         this.setState(updateStateObject, () => {
           console.log(this.state);
         });
-
+        this.osChecker()
       });
   }
 
@@ -152,6 +154,7 @@ class App extends React.Component {
           isLogin: true,
           isSignup: false,
         });
+        this.osChecker()
       });
   }
 
@@ -206,30 +209,36 @@ class App extends React.Component {
           uploadedFunction: '',
           uploadedFiles: [],
           operatingSystem: '',
+          checkCount: 0,
           // render states
           isLogin: false,
           isSignup: false
         })
       });
     console.log(this.state);
-    console.log("signout")
   }
 
   osChecker() {
-  let platform = window.navigator.platform,
-    macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
-    windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
-    os = null;
-  if (macosPlatforms.indexOf(platform) !== -1) {
-    os = 'Mac OS';
-  } else if (windowsPlatforms.indexOf(platform) !== -1) {
-    os = 'Windows';
-  } else if (!os && /Linux/.test(platform)) {
-    os = 'Linux';
+    let platform = window.navigator.platform,
+      macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+      windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+      os = null;
+    if (macosPlatforms.indexOf(platform) !== -1) {
+      os = 'Mac OS';
+    } else if (windowsPlatforms.indexOf(platform) !== -1) {
+      os = 'Windows';
+    } else if (!os && /Linux/.test(platform)) {
+      os = 'Linux';
+    }
+    if (this.state.checkCount === 0) {
+      this.setState({
+        operatingSystem: os,
+        checkCount: this.state.checkCount + 1,
+      }, () => { console.log(this.state.operatingSystem) })
+    }
   }
-  this.operatingSystem = os;
-  console.log(this.operatingSystem)
-  }
+
+  // componentDidMount() { this.osChecker() }
 
   handleSubmitKey(keyType) {
     const keyObject = {
@@ -258,14 +267,14 @@ class App extends React.Component {
           const project = JSON.parse(this.state.googleKey).project_id;
           keyObject.key = this.state.googleKey;
           keyObject.keyAlias = this.state.googleKeyAlias;
-            axios.post('/gcloud/auth', { user_name: this.state.username, key_file: this.state.googleKey, project })
-              .then(response => {
-                if (response.status === 200) {
-                  axios
-                    .post('/db/storeKey', keyObject)
-                    .then(response => this.setState({ keys: response.data.keys }));
-                }
-              });
+          axios.post('/gcloud/auth', { user_name: this.state.username, key_file: this.state.googleKey, project })
+            .then(response => {
+              if (response.status === 200) {
+                axios
+                  .post('/db/storeKey', keyObject)
+                  .then(response => this.setState({ keys: response.data.keys }));
+              }
+            });
           break;
         case 'awsSecretAccessKey':
           keyObject.key = this.state.awsSecretAccessKey;
@@ -308,7 +317,6 @@ class App extends React.Component {
       })
       .catch((error) => {
         console.log(error);
-
       });
   }
 
@@ -335,7 +343,8 @@ class App extends React.Component {
     axios
       .post("/aws/loadCode", {
         funcName,
-        username: this.state.username
+        username: this.state.username,
+        operatingSystem: this.state.operatingSystem
       })
       .then(data => {
         this.setState({ codeLoaded: data.data });
@@ -352,9 +361,11 @@ class App extends React.Component {
         username: this.state.username
       })
       .then(data => {
-        for (let i = 0; i < data.data[1].logStreams.length; i++) {
-          let invokeTime = (new Date(data.data[1].logStreams[i].creationTime)).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
-          functionInvocations.push(<div key={i}>{invokeTime} </div>)
+        if (data.data[1]) {
+          for (let i = 0; i < data.data[1].logStreams.length; i++) {
+            let invokeTime = (new Date(data.data[1].logStreams[i].creationTime)).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
+            functionInvocations.push(<div key={i}>{invokeTime} </div>)
+          }
         }
         this.setState({
           functionName: funcName,
@@ -365,8 +376,6 @@ class App extends React.Component {
           awsPopup: true,
           functionInvocations: functionInvocations
         })
-
-        console.log(data.data[1].logStreams[0].creationTime)
       })
       .catch(function (error) {
         console.log(error);
@@ -383,8 +392,6 @@ class App extends React.Component {
         funcName,
         username: this.state.username
       })
-      .then(data =>
-        console.log(data.data))
       .catch(function (error) {
         console.log(error);
       });
@@ -414,7 +421,8 @@ class App extends React.Component {
           awsRuntime: this.state.awsRuntime,
           awsRole: this.state.awsRole,
           awsAccountID: this.state.awsAccountID,
-          username: this.state.username
+          username: this.state.username,
+          operatingSystem: this.state.operatingSystem
         })
         .then((response) => {
           console.log("createFunction FRONT END response --->", response);
@@ -428,24 +436,27 @@ class App extends React.Component {
     }
   }
 
-  createBucket() {
-    axios.post("/aws/createBucket", {
-      S3BucketName: this.state.S3BucketName,
-      newBucketRegion: this.state.newBucketRegion,
-      username: this.state.username
-    })
-      .then(data => {
-        console.log(data)
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+  // updateFunction() {
+
+  // }
+
+  // createBucket() {
+  //   axios.post("/aws/createBucket", {
+  //     S3BucketName: this.state.S3BucketName,
+  //     newBucketRegion: this.state.newBucketRegion,
+  //     username: this.state.username
+  //   })
+  //     .then(data => {
+  //       console.log(data)
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }
 
   render() {
 
     let displayed;
-    this.osChecker()
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       displayed = <GoogleFunctionForm
         username={this.state.username}
