@@ -1,10 +1,24 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const { sessionSecret } = require('../config.js');
 
 // SERVER CONFIG
 const app = express();
 const PORT = 3000;
+
+// SESSION
+app.use(session({
+  name: 'sid',
+  resave: false,
+  saveUninitialized: false,
+  secret: sessionSecret,
+  cookie: {
+    maxAge: 1000*60*60*2, // two hours
+    sameSite: true,   
+  }
+}))
 
 // BODY PARSING (EXPRESS' BUILT IN PARSER)
 app.use(express.json({limit: '50mb'}));

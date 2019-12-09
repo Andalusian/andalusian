@@ -339,51 +339,6 @@ class App extends React.Component {
       });
   }
 
-  // googleListFunctions() {
-  //   console.log('inside googleListFunctions')
-  //   fetch('/gcloud/list')
-  //     .then(data => data.json())
-  //     .then(data => {
-  //       console.log(`Data from list fetch: ${data}`)
-  //       const fnList = data.fn_list;
-  //       const fnButtons = [];
-  //       fnList.forEach((el) => {
-  //         fnButtons.push(<div id={el}>
-  //           <span>{el}</span>
-  //           <button onClick={() => {
-  //             fetch(`/gcloud/info/${el}`)
-  //               .then(data => data.json())
-  //               .then(data => {
-  //                 console.log(data);
-  //               })
-  //           }}>Info</button>
-  //           <button onClick={() => {
-  //             fetch(`/gcloud/call/${el}`)
-  //               .then(data => data.json())
-  //               .then(data => {
-  //                 console.log(data);
-  //               })
-  //           }}>Invoke</button>
-  //           <button onClick={() => {
-  //             fetch(`/gcloud/delete/`, {
-  //               method: 'DELETE',
-  //               headers: {
-  //                   'Content-Type': 'application/json',
-  //               },
-  //               body: JSON.stringify({fn_name: el}),
-  //             })
-  //               .then(data => data.json())
-  //               .then(data => {
-  //                 console.log(data);
-  //               })
-  //           }}>Delete</button>
-  //         </div>);
-  //       });
-  //       console.log(`fnButtons: ${fnButtons}`)
-  //       return fnButtons;
-  //     })
-  // }
-
   loadCode(funcName) {
     axios
       .post("/aws/loadCode", {
@@ -456,23 +411,6 @@ class App extends React.Component {
         console.log(error);
       });
   }
-
-  // listBuckets() {
-  //   let allBuckets = [<option defaultValue={"a"}> -- select an option -- </option>]
-  //   axios
-  //     .post("/aws/allBuckets", { username: this.state.username })
-  //     .then(data => {
-  //       for (let i = 0; i < data.data.Buckets.length; i++) {
-  //         let bucketName = data.data.Buckets[i].Name;
-  //         allBuckets.push(<option className="myAWSBuckets" key={i} value={bucketName}>{bucketName}
-  //         </option >)
-  //       }
-  //       this.setState({ currentBuckets: allBuckets })
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // }
 
   createFunction() {
     if (this.state.functionName && this.state.uploadedFunction && this.state.awsRuntime && this.state.awsRole && this.state.awsRegion) {
@@ -558,7 +496,6 @@ class App extends React.Component {
           configureAWS={this.configureAWS}
           createBucket={this.createBucket}
           awsKeyAlias={this.state.awsKeyAlias}
-          keys={this.state.keys}
           keys={this.state.keys.filter(key => key.keyType === 'awsSecretAccessKey')}
           codeLoaded={this.state.codeLoaded}
           awsPopup={this.state.awsPopup}
@@ -589,7 +526,6 @@ class App extends React.Component {
           configureAWS={this.configureAWS}
           createBucket={this.createBucket}
           awsKeyAlias={this.state.awsKeyAlias}
-          keys={this.state.keys}
           keys={this.state.keys.filter(key => key.keyType === 'awsSecretAccessKey')}
           codeLoaded={this.state.codeLoaded}
           awsPopup={this.state.awsPopup}
@@ -615,12 +551,12 @@ class App extends React.Component {
         exposePort={this.state.exposePort}
         com={this.state.com}
         updateInfo={this.updateInfo}
-        submitKey={this.submitKey}
+        submitKey={this.handleSubmitKey}
         functionName={this.state.functionName}
         copy={this.state.copy}
         uploadedFiles={this.state.uploadedFiles}
         pageSelect={this.state.pageSelect}
-        username={this.state.username}
+        keys={this.state.keys.filter(key => key.keyType === 'dockerPassword')[0]}
       ></DockerSetup></React.Fragment>)
     } else if (this.state.pageSelect === 'Azure') {
       displayed = (<React.Fragment>
