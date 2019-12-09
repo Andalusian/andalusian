@@ -30,8 +30,9 @@ function FileDropzone(props) {
       {
         isDragActive ?
           <p>Drop the files here ...</p> :
-          <p>Drag and drop files here, or click to select.</p>
-      }
+          <p>Drag and drop root folder contents here.</p>
+        }
+        <p>Click to select individual files.</p>
     </div>
   )
 }

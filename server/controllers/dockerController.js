@@ -6,7 +6,7 @@ const dockerController = {};
 
 
 
-
+//DON'T FORGET TO UPDATE FILEPATHS FOR CONTROLLERS!!!!
 dockerController.containerSetup = (req, res, next) => {
     exec(`cd server/platforms/docker/live; touch Dockerfile; echo "FROM ${req.body.runtimeEnv} \n \n WORKDIR ${req.body.workDir} \n \n COPY package*.json ./ \n \n RUN ${req.body.runtimeCom} \n \n COPY . . \n \n EXPOSE ${req.body.exposePort} \n \n CMD ${req.body.com}" >> Dockerfile; wait`, 
     ['shell'], function(err, stdout, stderr){
@@ -36,7 +36,6 @@ dockerController.dockerDirect = (req, res, next) => {
     let files = req.body.files;
     let metadata = []
     let text = []
-    let count = 0
     for(let i = 0; i < files.length/2; i++){
         metadata.push(files[i])
     }
