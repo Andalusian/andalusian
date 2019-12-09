@@ -540,7 +540,7 @@ class App extends React.Component {
         exposePort={this.state.exposePort}
         com={this.state.com}
         updateInfo={this.updateInfo}
-        submitKey={this.submitKey}
+        submitKey={this.handleSubmitKey}
         functionName={this.state.functionName}
         copy={this.state.copy}
         uploadedFiles={this.state.uploadedFiles}
