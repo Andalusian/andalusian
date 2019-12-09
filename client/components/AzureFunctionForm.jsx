@@ -44,6 +44,7 @@ const AzureFunctionForm = (props) => {
             <pre>
                 <textarea onChange={(e) => props.updateInfo('uploadedFunction', e.target.value)} id="codeHere" defaultValue={props.uploadedFunction} spellCheck="false" rows="25"></textarea>
             </pre>
+            <button onClick={props.updateCode}>Save Changes</button>
             <input onChange={(e) => props.updateInfo(e.target.name, e.target.value)} name="azureApp" type="text" placeholder="App to Deploy to" />
             <button onClick={() =>
                 axios.post('/azure/deployFunc', { username: props.username, projectName: props.azureProject, app: props.azureApp })}>Deploy</button>

@@ -90,6 +90,7 @@ class App extends React.Component {
     this.handleSignout = this.handleSignout.bind(this)
     this.closeFuncInfo = this.closeFuncInfo.bind(this)
     // this.updateFunction = this.updateFunction.bind(this)
+    this.updateCode = this.updateCode.bind(this)
   }
 
   updateInfo(property, value) {
@@ -115,7 +116,7 @@ class App extends React.Component {
         updateObj.googleKey = updateKey[0].key;
       }
     }
-    this.setState(updateObj, () => console.log(this.state.uploadedFunction));
+    this.setState(updateObj);
   }
 
   getawsAccountID() {
@@ -427,6 +428,16 @@ class App extends React.Component {
       .catch(error => console.log(error))
   }
 
+  updateCode() {
+    axios.post('/azure/updateCode', {
+      code: this.state.uploadedFunction,
+      username: this.state.username,
+      projectName: this.state.azureProject,
+      functionName: this.state.functionName})
+        .then(data => console.log('Updated'))
+        .catch(error => console.log(error))
+  }
+
   getFuncInfo(funcName) {
     let functionInvocations = [];
     axios
@@ -577,7 +588,7 @@ class App extends React.Component {
         keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
         />
       }
-      
+
     } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && !this.state.awsPopup) {
       displayed = (<React.Fragment>
         <AWSFunctionForm id="AWSFunctionForm"
@@ -683,6 +694,7 @@ class App extends React.Component {
           codeHere={this.state.codeHere}
             submitKey={this.handleSubmitKey}
           uploadedFunction={this.state.uploadedFunction}
+          updateCode={this.updateCode}
         />
       </React.Fragment>)
     }
