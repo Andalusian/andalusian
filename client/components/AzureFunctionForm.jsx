@@ -39,10 +39,12 @@ const AzureFunctionForm = (props) => {
                 <option value="Timer Trigger">Timer Trigger</option>
             </select>
             <button className="azureButton" onClick={() => axios.post('/azure/createFunc', { username: props.username, projectName: props.azureProject, functionName: props.functionName, template: props.azureTemplate })
-                .then(data => props.updateInfo('uploadedFunction', data.data))
+                .then(data => {
+                    props.updateInfo('uploadedFunction', data.data);
+                    document.getElementById('azureCode').value = data.data;})
             }>Create Function</button>
             <pre>
-                <textarea onChange={(e) => props.updateInfo('uploadedFunction', e.target.value)} id="codeHere" defaultValue={props.uploadedFunction} spellCheck="false" rows="25"></textarea>
+                <textarea onChange={(e) => props.updateInfo('uploadedFunction', e.target.value)} id="azureCode" defaultValue={props.uploadedFunction} spellCheck="false" rows="25"></textarea>
             </pre>
             <button onClick={props.updateCode}>Save Changes</button>
             <input onChange={(e) => props.updateInfo(e.target.name, e.target.value)} name="azureApp" type="text" placeholder="App to Deploy to" />
