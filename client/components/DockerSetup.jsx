@@ -84,19 +84,10 @@ const DockerSetup = props => {
         .catch((error) => {console.log(error);})
     }
 
-    // function configure() {
-    //     let runtimeEnv = props.runtimeEnv;
-    //     let workDir = props.workDir;
-    //     let runtimeCom = props.runtimeCom;
-    //     let exposePort = props.exposePort;
-    //     let com = props.com;
-    // }
-
     return (
         <React.Fragment>
             <h2>Docker</h2>
-        {console.log(props.keys)}
-            <DockerCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} />
+            <DockerCredentials keys={props.keys} updateInfo={props.updateInfo} submitKey={props.submitKey} />
             <pre>
                 <h4>Container Setup</h4>
                 <input

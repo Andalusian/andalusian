@@ -1,6 +1,11 @@
 import React from 'react';
+import { exec } from 'child_process';
 
 const DockerCredentials = props => {
+
+  function dockerLogin() {
+    // exec('docker login; '
+  }
   return (
     <React.Fragment>
       <input
@@ -18,6 +23,7 @@ const DockerCredentials = props => {
         onChange={e => props.updateInfo(e.target.name, e.target.value)}
       />
       <button type="button" className="saveButton" onClick={() => props.submitKey('dockerPassword')}>Save Credentials</button>
+      {/* <button type="button" className="loginButton" onClick={() => dockerLogin()}>Login</button> */}
     </React.Fragment>
   );
 }
