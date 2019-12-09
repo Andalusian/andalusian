@@ -10,7 +10,6 @@ import AWSFunctionInfo from "./AWSFunctionInfo.jsx";
 import AzureFunctionForm from "./AzureFunctionForm.jsx";
 import DockerSetup from "./DockerSetup.jsx";
 import GoogleWelcomeForm from "./GoogleWelcomeForm.jsx";
-import GoogleInvokedFunctionModal from "./GoogleInvokedFunctionModal.jsx";
 
 
 class App extends React.Component {
