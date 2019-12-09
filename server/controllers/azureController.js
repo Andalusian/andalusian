@@ -6,7 +6,7 @@ const azureController = {};
 
 azureController.createProj = (req, res, next) => {
     const { username, projectName, runtime } = req.body;
-    const runtimes = new Set(['--dotnet', '--node', '--python', '--powershell']);
+    const runtimes = new Set(['--csharp --dotnet', '--javascript --node', '--python', '--powershell']);
 
     if (!runtimes.has(runtime)) {
         return res.status(400).json('Improper runtime');
@@ -54,10 +54,9 @@ azureController.createFunc = (req, res, next) => {
             console.error(`exec error: ${error}`);
             return res.sendStatus(500);
         }
-
+        res.locals = fs.readFileSync(`./users/${username}/azure/${projectName}/${functionName}/index.js`, 'utf8')
         console.error(`stderr: ${stderr}`);
         console.log(`stdout: ${stdout}`);
-        res.locals = stdout;
         return next();
     })
 

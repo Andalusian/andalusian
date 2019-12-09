@@ -107,7 +107,7 @@ class App extends React.Component {
         updateObj.googleKey = updateKey[0].key;
       }
     }
-    this.setState(updateObj);
+    this.setState(updateObj, () => console.log(this.state.uploadedFunction));
   }
 
   getawsAccountID() {
@@ -139,16 +139,15 @@ class App extends React.Component {
             updateStateObject.awsAccessKey = updateKey.awsAccessKey;
             updateStateObject.awsKeyAlias = updateKey.keyAlias;
           }
-          if (updateKey.keyType === 'azureKey') {
+          if (updateKey.keyType === 'azurePass') {
             updateStateObject.azureUser = updateKey.azureUser;
-            updateStateObject.azurePass = updateKey.azurePass;
             updateStateObject.azureTenant = updateKey.azureTenant;
           }
         });
         this.setState(updateStateObject, () => {
           console.log(this.state);
         });
-        this.osChecker()
+        // this.osChecker()
       });
   }
 
@@ -264,10 +263,9 @@ class App extends React.Component {
       } else if (switchKey.keyType === 'googleKey') {
         document.getElementById('googleCredentials').reset();
         keyObject.googleKeyAlias = switchKey.keyAlias;
-      } else if (switchKey.keyType === 'azureKeys') {
+      } else if (switchKey.keyType === 'azurePass') {
         document.getElementById('azureCredentials').reset();
         keyObject.azureUser = switchKey.azureUser;
-        keyObject.azurePass = switchKey.azurePass;
         keyObject.azureTenant = switchKey.azureTenant;
       }
       this.setState(keyObject);
@@ -302,7 +300,7 @@ class App extends React.Component {
             .post('/db/storeKey', keyObject)
             .then(response => this.setState({ keys: response.data.keys }));
           break;
-        case 'azureKeys':
+        case 'azurePass':
           keyObject.azureUser = this.state.azureUser;
           keyObject.key = this.state.azurePass;
           keyObject.azureTenant = this.state.azureTenant;
@@ -653,7 +651,9 @@ class App extends React.Component {
             azureUser={this.state.azureUser}
             azurePass={this.state.azurePass}
             azureTenant={this.state.azureTenant}
+          codeHere={this.state.codeHere}
             submitKey={this.handleSubmitKey}
+          uploadedFunction={this.state.uploadedFunction}
         />
       </React.Fragment>)
     }

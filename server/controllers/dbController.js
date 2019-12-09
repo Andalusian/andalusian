@@ -107,6 +107,10 @@ dbController.decrypt = (req, res, next) => {
     if (decryptedKeyObject.keyType === 'awsSecretAccessKey') {
       decryptedKeyObject.awsAccessKey = key.awsAccessKey;
     }
+    if (decryptedKeyObject.keyType === 'azurePass') {
+      decryptedKeyObject.azureUser = key.azureUser;
+      decryptedKeyObject.azureTenant = key.azureTenant;
+    }
 
     decryptedKeys.push(decryptedKeyObject);
   });
@@ -148,8 +152,8 @@ dbController.storeKey = (req, res, next) => {
   if (encryptedKeyObject.keyType === 'dockerPassword') {
     encryptedKeyObject.dockerUsername = req.body.dockerUsername;
   }
-  if (encryptedKeyObject.keyType === 'azureKeys') {
-    encryptedKeyObject.azureUser = req.body.azurePass;
+  if (encryptedKeyObject.keyType === 'azurePass') {
+    encryptedKeyObject.azureUser = req.body.azureUser;
     encryptedKeyObject.azureTenant = req.body.azureTenant;
   }
 
