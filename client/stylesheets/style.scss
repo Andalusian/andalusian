@@ -117,6 +117,10 @@ button, .dropzone {
   }
 }
 
+button:active {
+  background: darkgreen;
+}
+
 #signoutButton {
   border: none;
 }
