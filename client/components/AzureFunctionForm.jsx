@@ -2,6 +2,7 @@ import React from 'react';
 import MyDropzone from "./MyDropzone.jsx";
 const axios = require('axios')
 import AzureCredentials from './AzureCredentials.jsx'
+import AzureCurrentFunctions from "./AzureCurrentFunctions.jsx";
 
 const AzureFunctionForm = (props) => {
     return (
@@ -13,7 +14,7 @@ const AzureFunctionForm = (props) => {
                 azurePass={props.azurePass}
                 azureTenant={props.azureTenant}
                 submitKey={props.submitKey} />
-
+            <AzureCurrentFunctions azureFunctions={props.azureFunctions} />
             <div className="azureInfo">
                 <input onChange={(e) => props.updateInfo(e.target.name, e.target.value)} id="azureProject" name="azureProject" type="text" placeholder="Project Name" />
                 <select name="azureRuntime" onChange={(e) => props.updateInfo(e.target.name, e.target.value)}>

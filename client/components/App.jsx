@@ -62,6 +62,7 @@ class App extends React.Component {
       azureUser: '',
       azurePass: '',
       azureTenant: '',
+      azureFunctions: [],
       // both
       pageSelect: 'Gcloud',
       functionName: '',
@@ -216,6 +217,7 @@ class App extends React.Component {
           azureUser: '',
           azurePass: '',
           azureTenant: '',
+          azureFunctions: [],
           // both
           pageSelect: 'Gcloud',
           functionName: '',
@@ -695,6 +697,7 @@ class App extends React.Component {
             submitKey={this.handleSubmitKey}
           uploadedFunction={this.state.uploadedFunction}
           updateCode={this.updateCode}
+          azureFunctions={this.state.azureFunctions}
         />
       </React.Fragment>)
     }
