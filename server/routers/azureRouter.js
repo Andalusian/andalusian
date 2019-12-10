@@ -10,6 +10,10 @@ router.post('/createFunc', azureController.createFunc, (req, res) => {
     res.status(200).send(res.locals)
 })
 
+router.post('/updateCode', azureController.updateCode, (req, res) => {
+    res.status(200).send(res.locals)
+})
+
 router.post('/deployFunc', azureController.deployFunc, (req, res) => {
     res.status(200).send(res.locals)
 })

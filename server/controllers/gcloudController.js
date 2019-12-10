@@ -174,16 +174,16 @@ gcloudController.getinformation = (req, res, next) => {
 
     // PARSE RELEVANT INFORMATION INTO AN OBJECT
     const fn_info = {
-      availableMemory: `${response.availableMemoryMb}Mb`,
-      endpoint: response.httpsTrigger.url,
-      runtime: response.runtime,
-      status: response.status,
-      timeout: response.timeout,
-      version: response.versionId,
+      'Available Memory': `${response.availableMemoryMb}Mb`,
+      'Endpoint': response.httpsTrigger.url,
+      'Runtime': response.runtime,
+      'Status': response.status,
+      'Timeout': response.timeout,
+      'Version': response.versionId,
     };
 
     // RESPOND WITH FUNCTION INFORMATION
-    res.locals.info = { fn_info };
+    res.locals.info = { fn_info, name: response.entryPoint };
     return next();
   });
 }
