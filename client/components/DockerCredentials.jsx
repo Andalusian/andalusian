@@ -6,7 +6,8 @@ const DockerCredentials = props => {
   function dockerLogin() {
     axios
     .post('/docker/dockerLogin', {
-        keys: props.keys,
+        dockerUsername: props.dockerUsername,
+        dockerPassword: props.dockerPassword,
     })
     .then((response) => {
         console.log(response);
