@@ -161,6 +161,7 @@ class App extends React.Component {
         });
         this.setState(updateStateObject, () => {
           console.log(this.state);
+          console.log(this.state.dockerUsername)
         });
         // this.osChecker()
       });
@@ -685,6 +686,8 @@ class App extends React.Component {
         pageSelect={this.state.pageSelect}
         username={this.state.username}
         repository={this.state.repository}
+        dockerUsername={this.state.dockerUsername}
+        dockerPassword={this.state.dockerPassword}
       ></DockerSetup></React.Fragment>)
     } else if (this.state.pageSelect === 'Azure') {
       displayed = (<React.Fragment>

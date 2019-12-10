@@ -92,10 +92,9 @@ dockerController.dockerHubDeploy = (req, res, next) => {
 }
 
 dockerController.dockerLogin = (req, res, next) => {
-    console.log(req.body)
-    // exec(`docker login -u ${req.body.keys.username} -p ${req.body.keys.password}`, ['shell'], function(err, stdout, stderr){
-    //     console.log(err || stdout || stderr)
-    // })
-    // console.log(stdout)
+    // console.log(req)
+    exec(`docker login -u ${req.body.dockerUsername} -p ${req.body.dockerPassword}`, ['shell'], function(err, stdout, stderr){
+        console.log(err || stdout || stderr)
+    })
 }
 module.exports = dockerController;

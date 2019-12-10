@@ -99,7 +99,7 @@ const DockerSetup = props => {
     return (
         <React.Fragment>
             <h2>Docker</h2>
-            <DockerCredentials keys={props.keys} updateInfo={props.updateInfo} handleSubmitKey={props.handleSubmitKey} />
+            <DockerCredentials dockerUsername={props.dockerUsername} dockerPassword={props.dockerPassword} updateInfo={props.updateInfo} handleSubmitKey={props.handleSubmitKey} />
             <pre>
                 <h4>Container Setup</h4>
                 <input
