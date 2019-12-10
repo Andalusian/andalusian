@@ -94,6 +94,11 @@ class App extends React.Component {
     this.updateCode = this.updateCode.bind(this)
   }
 
+  componentDidMount() {
+    axios.get('/checkLogin')
+      .then(response => this.setState(response.data));
+  }
+
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
@@ -144,12 +149,12 @@ class App extends React.Component {
           updateStateObject[updateKey.keyType] = updateKey.key;
           if (updateKey.keyType === 'googleKey') {
             updateStateObject.googleKeyAlias = updateKey.keyAlias;
-          }
-          if (updateKey.keyType === 'awsSecretAccessKey') {
+          } else if (updateKey.keyType === 'awsSecretAccessKey') {
             updateStateObject.awsAccessKey = updateKey.awsAccessKey;
             updateStateObject.awsKeyAlias = updateKey.keyAlias;
-          }
-          if (updateKey.keyType === 'azurePass') {
+          } else if (updateKey.keyType === 'dockerPassword') {
+            updateStateObject.dockerUsername = updateKey.dockerUsername;
+          } else if (updateKey.keyType === 'azurePass') {
             updateStateObject.azureUser = updateKey.azureUser;
             updateStateObject.azureTenant = updateKey.azureTenant;
           }
@@ -560,6 +565,7 @@ class App extends React.Component {
   render() {
 
     let displayed;
+    // this.osChecker()
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       let filteredkeys = this.state.keys.filter(key => key.keyType === 'googleKey');
       if (filteredkeys[0] === undefined) {

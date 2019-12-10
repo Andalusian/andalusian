@@ -109,6 +109,9 @@ dbController.decrypt = (req, res, next) => {
     if (decryptedKeyObject.keyType === 'awsSecretAccessKey') {
       decryptedKeyObject.awsAccessKey = key.awsAccessKey;
     }
+    if (decryptedKeyObject.keyType === 'dockerPassword') {
+      decryptedKeyObject.dockerUsername = key.dockerUsername;
+    }
     if (decryptedKeyObject.keyType === 'azurePass') {
       decryptedKeyObject.azureUser = key.azureUser;
       decryptedKeyObject.azureTenant = key.azureTenant;
