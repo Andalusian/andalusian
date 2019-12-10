@@ -86,6 +86,11 @@ class App extends React.Component {
     this.closeFuncInfo = this.closeFuncInfo.bind(this)
   }
 
+  componentDidMount() {
+    axios.get('/checkLogin')
+      .then(response => this.setState(response.data));
+  }
+
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
@@ -136,6 +141,9 @@ class App extends React.Component {
           if (updateKey.keyType === 'awsSecretAccessKey') {
             updateStateObject.awsAccessKey = updateKey.awsAccessKey;
             updateStateObject.awsKeyAlias = updateKey.keyAlias;
+          }
+          if (updateKey.keyType === 'dockerPassword') {
+            updateStateObject.dockerUsername = updateKey.dockerUsername;
           }
         });
         this.setState(updateStateObject, () => {
@@ -445,7 +453,7 @@ class App extends React.Component {
   render() {
 
     let displayed;
-    this.osChecker()
+    // this.osChecker()
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       displayed = <GoogleFunctionForm
         username={this.state.username}
