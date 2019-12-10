@@ -9,10 +9,26 @@ const dockerController = {};
 
 
 dockerController.containerSetup = (req, res, next) => {
-    exec(`cd users/${req.body.username}/docker/tmp; touch Dockerfile; echo "FROM ${req.body.runtimeEnv} \n \n WORKDIR ${req.body.workDir} \n \n COPY package*.json ./ \n \n RUN ${req.body.runtimeCom} \n \n COPY . . \n \n EXPOSE ${req.body.exposePort} \n \n CMD ${req.body.com}" >> Dockerfile; wait`, 
+    let dockerfileSetup = ''
+    if(req.body.runtimeEnv !== ''){
+        dockerfileSetup = dockerfileSetup + `FROM ${req.body.runtimeEnv} \n \n`
+    }
+    if(req.body.workDir !== ''){
+        dockerfileSetup = dockerfileSetup + `WORKDIR ${req.body.workDir} \n \n`
+    }
+    if(req.body.runtimeCom !== ''){
+        dockerfileSetup = dockerfileSetup + `RUN ${req.body.runtimeCom} \n \n`
+    }
+    if(req.body.exposePort !== ''){
+        dockerfileSetup = dockerfileSetup + `EXPOSE ${req.body.exposePort} \n \n`
+    }
+    if(req.body.com !== ''){
+        dockerfileSetup = dockerfileSetup + `CMD ${req.body.com} \n \n`
+    }
+    exec(`cd users/${req.body.username}/docker/tmp; touch Dockerfile; echo "${dockerfileSetup}" >> Dockerfile; wait`),
     ['shell'], function(err, stdout, stderr){
     console.log(err || stdout || stderr)
-    })
+    }
     next();
 }
 
@@ -24,13 +40,13 @@ dockerController.defaultSetup = (req, res, next) => {
     next();
 }
 
-dockerController.funcSetup = (req, res, next) => {
-    exec(`cd users/${req.body.username}/docker/tmp; touch ${req.body.functionName}.js; echo "${req.body.code}" >> ${req.body.functionName}.js; wait`, 
-        ['shell'], function(err, stdout, stderr){
-        console.log(err || stdout || stderr)
-        })
-    next();
-}
+// dockerController.funcSetup = (req, res, next) => {
+//     exec(`cd users/${req.body.username}/docker/tmp; touch ${req.body.functionName}.js; echo "${req.body.code}" >> ${req.body.functionName}.js; wait`, 
+//         ['shell'], function(err, stdout, stderr){
+//         console.log(err || stdout || stderr)
+//         })
+//     next();
+// }
 
 
 dockerController.dockerDirect = (req, res, next) => {
@@ -77,6 +93,9 @@ dockerController.stopDocker = (req, res, next) => {
     exec(`docker stop ${req.body.functionName}; wait;`, ['shell'], function(err, stdout, stderr){
         console.log(err || stdout || stderr)
     })
+}
+
+dockerController.deleteContainers = (req, res, next) => {
     exec(`docker system prune -a -f;`, ['shell'], function(err, stdout, stderr){
         console.log(err || stdout || stderr)
     })
