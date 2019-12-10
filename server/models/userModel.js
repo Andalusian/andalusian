@@ -3,7 +3,15 @@ const Schema = mongoose.Schema;
 
 // Connect to Mongo
 const { mongo_uri } = require('../../config');
-mongoose.connect(mongo_uri, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true });
+mongoose.connect(mongo_uri, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+.then(() => {
+  console.log('Connected to database!');
+})
+.catch(error => {
+  console.log('Connection failed!');
+  console.log(error);
+});
+;
 
 mongoose.Promise = global.Promise;
 

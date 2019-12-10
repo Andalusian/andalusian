@@ -54,7 +54,9 @@ dbController.verifyUser = (req, res, next) => {
     fs.mkdir(`users/${username}/gcloud`, { recursive: true }, () => {
       fs.mkdir(`users/${username}/azure`, { recursive: true }, () => {
         fs.mkdir(`users/${username}/docker`, { recursive: true }, () => {
+          fs.mkdir(`users/${username}/docker/tmp`, { recursive: true}, () => {
 
+          });
         });
       });
     });

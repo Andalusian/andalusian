@@ -14,6 +14,7 @@ const DockerSetup = props => {
             runtimeCom: props.runtimeCom,
             exposePort: props.exposePort,
             com: props.com,
+            username: props.username,
         })
         .then((response) => {
             console.log(response);
@@ -25,7 +26,7 @@ const DockerSetup = props => {
 
     function defaultSetup() {
         axios
-        .post('/docker/defaultSetup', {})
+        .post('/docker/defaultSetup', {username: props.username,})
         .then((response) => {console.log(response);})
         .catch((error) => {console.log(error);})
     }
@@ -47,6 +48,7 @@ const DockerSetup = props => {
     function buildImage() {
         axios
         .post('/docker/buildImage', {
+            username: props.username,
             functionName: props.functionName,
         })
         .then((response) => {console.log(response);})
@@ -79,23 +81,25 @@ const DockerSetup = props => {
         axios
         .post('/docker/stopDocker', {
             functionName: props.functionName,
+            username: props.username,
         })
-        // .then((response) => {console.log(response);})
+        .then((response) => {console.log(response);})
         .catch((error) => {console.log(error);})
     }
-
-    // function configure() {
-    //     let runtimeEnv = props.runtimeEnv;
-    //     let workDir = props.workDir;
-    //     let runtimeCom = props.runtimeCom;
-    //     let exposePort = props.exposePort;
-    //     let com = props.com;
-    // }
+    function dockerHubDeploy() {
+        axios
+        .post('/docker/dockerHubDeploy', {
+            repository: props.repository,
+            functionName: props.functionName,
+        })
+        .then((response) => {console.log(response);})
+        .catch((error) => {console.log(error);})
+    }
 
     return (
         <React.Fragment>
             <h2>Docker</h2>
-            <DockerCredentials updateInfo={props.updateInfo} submitKey={props.submitKey} />
+            <DockerCredentials keys={props.keys} updateInfo={props.updateInfo} handleSubmitKey={props.handleSubmitKey} />
             <pre>
                 <h4>Container Setup</h4>
                 <input
@@ -142,6 +146,18 @@ const DockerSetup = props => {
                 </div>
                 <button onClick={() => deployDocker()}>Containerize</button>
                 <button onClick={() => stopDocker()}>Stop and Delete</button>
+                <div>
+                    <div>
+                        <input
+                        type="text"
+                        name="respository"
+                        placeholder="Paste Docker Hub Repository and Tag Here"
+                        onChange={e => props.updateInfo('repository', e.target.value)}
+                        />
+                        <button onClick={() => dockerHubDeploy()}>Deploy to Docker Hub</button>
+                    </div>
+
+                </div>
             </pre>
         </React.Fragment>
     )

@@ -54,6 +54,7 @@ class App extends React.Component {
       exposePort: '',
       com: '',
       copy: '',
+      repository: '',
       //azure
       azureRuntime: '',
       azureTemplate: '',
@@ -671,12 +672,13 @@ class App extends React.Component {
         exposePort={this.state.exposePort}
         com={this.state.com}
         updateInfo={this.updateInfo}
-        submitKey={this.submitKey}
+        handleSubmitKey={this.handleSubmitKey}
         functionName={this.state.functionName}
         copy={this.state.copy}
         uploadedFiles={this.state.uploadedFiles}
         pageSelect={this.state.pageSelect}
         username={this.state.username}
+        repository={this.state.repository}
       ></DockerSetup></React.Fragment>)
     } else if (this.state.pageSelect === 'Azure') {
       displayed = (<React.Fragment>
