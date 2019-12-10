@@ -90,6 +90,7 @@ class App extends React.Component {
     this.handleSignout = this.handleSignout.bind(this)
     this.closeFuncInfo = this.closeFuncInfo.bind(this)
     // this.updateFunction = this.updateFunction.bind(this)
+    this.updateCode = this.updateCode.bind(this)
   }
 
   updateInfo(property, value) {
@@ -147,11 +148,15 @@ class App extends React.Component {
             updateStateObject.awsAccessKey = updateKey.awsAccessKey;
             updateStateObject.awsKeyAlias = updateKey.keyAlias;
           }
+          if (updateKey.keyType === 'azurePass') {
+            updateStateObject.azureUser = updateKey.azureUser;
+            updateStateObject.azureTenant = updateKey.azureTenant;
+          }
         });
         this.setState(updateStateObject, () => {
           console.log(this.state);
         });
-        this.osChecker()
+        // this.osChecker()
       });
   }
 
@@ -242,7 +247,7 @@ class App extends React.Component {
       this.setState({
         operatingSystem: os,
         checkCount: this.state.checkCount + 1,
-      }, () => { console.log(this.state.operatingSystem) })
+      } )
     }
   }
 
@@ -267,6 +272,10 @@ class App extends React.Component {
       } else if (switchKey.keyType === 'googleKey') {
         document.getElementById('googleCredentials').reset();
         keyObject.googleKeyAlias = switchKey.keyAlias;
+      } else if (switchKey.keyType === 'azurePass') {
+        document.getElementById('azureCredentials').reset();
+        keyObject.azureUser = switchKey.azureUser;
+        keyObject.azureTenant = switchKey.azureTenant;
       }
       this.setState(keyObject);
     } else {
@@ -300,6 +309,14 @@ class App extends React.Component {
           axios
             .post('/db/storeKey', keyObject)
             .then(response => this.setState({ keys: response.data.keys }));
+          break;
+        case 'azurePass':
+          keyObject.azureUser = this.state.azureUser;
+          keyObject.key = this.state.azurePass;
+          keyObject.azureTenant = this.state.azureTenant;
+          axios
+              .post('/db/storeKey', keyObject)
+              .then(response => this.setState({keys: response.data.keys}));
           break;
       }
     }
@@ -409,6 +426,16 @@ class App extends React.Component {
         console.log(this.state.codeLoaded)
       })
       .catch(error => console.log(error))
+  }
+
+  updateCode() {
+    axios.post('/azure/updateCode', {
+      code: this.state.uploadedFunction,
+      username: this.state.username,
+      projectName: this.state.azureProject,
+      functionName: this.state.functionName})
+        .then(data => console.log('Updated'))
+        .catch(error => console.log(error))
   }
 
   getFuncInfo(funcName) {
@@ -561,7 +588,7 @@ class App extends React.Component {
         keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
         />
       }
-      
+
     } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && !this.state.awsPopup) {
       displayed = (<React.Fragment>
         <AWSFunctionForm id="AWSFunctionForm"
@@ -661,9 +688,13 @@ class App extends React.Component {
           azureApp={this.state.azureApp}
           azureProject={this.state.azureProject}
           functionName={this.state.functionName}
-          azureUser={this.state.azureUser}
-          azurePass={this.state.azurePass}
-          azureTenant={this.state.azureTenant}
+            azureUser={this.state.azureUser}
+            azurePass={this.state.azurePass}
+            azureTenant={this.state.azureTenant}
+          codeHere={this.state.codeHere}
+            submitKey={this.handleSubmitKey}
+          uploadedFunction={this.state.uploadedFunction}
+          updateCode={this.updateCode}
         />
       </React.Fragment>)
     }

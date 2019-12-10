@@ -29,6 +29,8 @@ const userSchema =
       cryptoIV: String,
       awsAccessKey: String,
       dockerUsername: String,
+        azureUser: String,
+        azureTenant: String,
     }],
   });
 // }
