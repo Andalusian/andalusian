@@ -72,7 +72,7 @@ dockerController.dockerDirect = (req, res, next) => {
 dockerController.buildImage = (req, res, next) => {
     exec(`cd users/${req.body.username}/docker/tmp; ls; docker image build -t ${req.body.functionName} .; wait; docker image ls`,
     ['shell'], function(err, stdout, stderr){
-        console.log(req.body.functionName)
+        // console.log(req.body.functionName)
        console.log(err || stdout || stderr)
    })
    next();
@@ -99,7 +99,7 @@ dockerController.deleteContainers = (req, res, next) => {
     exec(`docker system prune -a -f;`, ['shell'], function(err, stdout, stderr){
         console.log(err || stdout || stderr)
     })
-    exec(`cd users/${req.body.username}/docker/tmp; rm *;`, ['shell'], function(err, stdout, stderr){
+    exec(`rm -rfv users/${req.body.username}/docker/tmp/*;`, ['shell'], function(err, stdout, stderr){
         console.log(err || stdout || stderr)
     })
 }
