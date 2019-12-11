@@ -44,8 +44,8 @@ router.post("/loadCode", awsController.loadCode, (req, res) => {
   res.status(200).send(res.locals.codeLoaded);
 })
 
-// router.post("/updateFunction", awsController.updateFunction, (req, res) => {
-//   res.sendStatus(200);
-// })
+router.post("/updateFunction", awsController.updateFunction, (req, res) => {
+  res.sendStatus(200);
+})
 
 module.exports = router;
