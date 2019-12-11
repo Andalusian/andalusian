@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "axios";
-import MicroList from "./MicroList.jsx"
+// import * as V from 'victory';
+// import { VictoryBar } from 'victory';
+import MicroList from "./MicroList.jsx";
 import Login from './Login.jsx';
 import Signup from "./Signup.jsx";
 import Signout from "./Signout.jsx";
@@ -41,6 +43,7 @@ class App extends React.Component {
       codeLoaded: '',
       awsPopup: false,
       functionInvocations: [],
+      // graph: '',
       // docker
       dockerUsername: '',
       dockerPassword: '',
@@ -85,7 +88,7 @@ class App extends React.Component {
     // this.createBucket = this.createBucket.bind(this)
     this.handleSignout = this.handleSignout.bind(this)
     this.closeFuncInfo = this.closeFuncInfo.bind(this)
-    // this.updateFunction = this.updateFunction.bind(this)
+    this.updateFunction = this.updateFunction.bind(this)
   }
 
   updateInfo(property, value) {
@@ -234,7 +237,7 @@ class App extends React.Component {
       this.setState({
         operatingSystem: os,
         checkCount: this.state.checkCount + 1,
-      }, () => { console.log(this.state.operatingSystem) })
+      })
     }
   }
 
@@ -389,11 +392,11 @@ class App extends React.Component {
       .post("/aws/loadCode", {
         funcName,
         username: this.state.username,
-        operatingSystem: this.state.operatingSystem
       })
       .then(data => {
         this.setState({ codeLoaded: data.data });
-        console.log(this.state.codeLoaded)
+        document.getElementById("codeHere").value = data.data
+        document.getElementById("functionName").value = funcName
       })
       .catch(error => console.log(error))
   }
@@ -419,8 +422,8 @@ class App extends React.Component {
           awsFuncLastModified: (new Date(Date.parse(data.data[0].Configuration.LastModified))).toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }),
           awsFuncRole: data.data[0].Configuration.Role,
           awsPopup: true,
-          functionInvocations: functionInvocations
-        })
+          functionInvocations: functionInvocations,
+        });
       })
       .catch(function (error) {
         console.log(error);
@@ -487,8 +490,11 @@ class App extends React.Component {
           operatingSystem: this.state.operatingSystem
         })
         .then((response) => {
-          console.log("createFunction FRONT END response --->", response);
-          setTimeout(() => this.listFunctions(), 4000);
+          setTimeout(() => this.listFunctions(), 2000);
+          // document.getElementById("functionName").value = ""
+          // document.getElementById("awsRuntime").value = "{"a"}> -- select runtime -- "
+          // document.getElementById("codeHere").value = ""
+          // document.getElementById("awsRole").value = ":role/"
         })
         .catch((error) => {
           console.log(error);
@@ -498,9 +504,25 @@ class App extends React.Component {
     }
   }
 
-  // updateFunction() {
-
-  // }
+  updateFunction() {
+    axios
+      .post("aws/updateFunction", {
+        functionName: document.getElementById("functionName").value,
+        uploadedFunction: this.state.uploadedFunction,
+        awsAccountID: this.state.awsAccountID,
+        username: this.state.username,
+      })
+      .then((response) => {
+        setTimeout(() => this.listFunctions(), 2000);
+        // document.getElementById("functionName").value = ""
+        // document.getElementById("awsRuntime").value = "{"a"}> -- select runtime -- "
+        // document.getElementById("codeHere").value = ""
+        // document.getElementById("awsRole").value = ":role/"
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   // createBucket() {
   //   axios.post("/aws/createBucket", {
@@ -517,7 +539,6 @@ class App extends React.Component {
   // }
 
   render() {
-
     let displayed;
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       displayed = <GoogleFunctionForm
@@ -535,6 +556,7 @@ class App extends React.Component {
       />
     } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && !this.state.awsPopup) {
       displayed = (<React.Fragment>
+        {/* <GraphComponent /> */}
         <AWSFunctionForm id="AWSFunctionForm"
           currentFunctions={this.state.currentFunctions}
           currRegion={this.state.currRegion}
@@ -562,7 +584,7 @@ class App extends React.Component {
           keys={this.state.keys.filter(key => key.keyType === 'awsSecretAccessKey')}
           codeLoaded={this.state.codeLoaded}
           awsPopup={this.state.awsPopup}
-
+          updateFunction={this.updateFunction}
         /></React.Fragment>)
     } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && this.state.awsPopup) {
       displayed = (<React.Fragment>
@@ -593,6 +615,7 @@ class App extends React.Component {
           keys={this.state.keys.filter(key => key.keyType === 'awsSecretAccessKey')}
           codeLoaded={this.state.codeLoaded}
           awsPopup={this.state.awsPopup}
+          updateFunction={this.updateFunction}
         />
         <AWSFunctionInfo closeFuncInfo={this.closeFuncInfo}
           functionName={this.state.functionName}
@@ -603,7 +626,8 @@ class App extends React.Component {
           awsRegion={this.state.awsRegion}
           awsAccountID={this.state.awsAccountID}
           functionInvocations={this.state.functionInvocations}
-
+          codeLoaded={this.state.codeLoaded}
+          graph={this.state.graph}
         />
       </React.Fragment>)
     } else if ((this.state.pageSelect === 'Docker' && this.state.isLogin)) {

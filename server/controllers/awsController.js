@@ -1,10 +1,8 @@
 const fs = require("fs");
-const { exec } = require("child_process");
 const AWS = require("aws-sdk");
-const lambda = new AWS.Lambda();
-const s3 = new AWS.S3();
 const request = require('superagent'); // npm install superagent
 const zipper = require("zip-local"); // npm i zip-local
+// const { exec } = require("child_process");
 
 
 const awsController = {};
@@ -44,10 +42,27 @@ awsController.createFunction = (req, res, next) => {
   return next();
 }
 
-// awsController.updateFunction = (req, res, next) => {
-//   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
-//   const lambda = new AWS.Lambda();
-// }
+awsController.updateFunction = (req, res, next) => {
+  AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
+  const lambda = new AWS.Lambda();
+  fs.writeFileSync(`users/${req.body.username}/aws/${req.body.functionName}.js`, req.body.uploadedFunction);
+  zipper.sync.zip(`users/${req.body.username}/aws/${req.body.functionName}.js`).compress().save(`users/${req.body.username}/aws/${req.body.functionName}.zip`);
+  const params = {
+    "FunctionName": `${req.body.functionName}`,
+    "ZipFile": fs.readFileSync(`users/${req.body.username}/aws/${req.body.functionName}.zip`),
+  };
+  console.log("PARAMS --->", params)
+  lambda.updateFunctionCode(params, (err, data) => {
+    if (err) {
+      console.log(err, err.stack);
+      return (err)
+    }
+    else {
+      console.log("function created -->", data);
+    }
+  })
+  return next();
+}
 
 awsController.listFunctions = (req, res, next) => {
   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
@@ -118,7 +133,7 @@ awsController.loadCode = async (req, res, next) => {
       })
       .pipe(fs.createWriteStream(`users/${req.body.username}/aws/${req.body.funcName}.zip`))
       .on('finish', function () {
-        zipper.sync.unzip(`users/${req.body.username}/aws/${req.body.funcName}.zip`).save(``);
+        zipper.sync.unzip(`users/${req.body.username}/aws/${req.body.funcName}.zip`).save(`users/${req.body.username}/aws/`);
         fs.readFile(`users/${req.body.username}/aws/${req.body.funcName}.js`, 'utf8', (err, data) => {
           if (err) { console.log(err) }
           else {

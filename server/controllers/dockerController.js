@@ -8,7 +8,7 @@ const dockerController = {};
 
 
 dockerController.containerSetup = (req, res, next) => {
-    exec(`cd server/platforms/docker/live; touch Dockerfile; echo "FROM ${req.body.runtimeEnv} \n \n WORKDIR ${req.body.workDir} \n \n COPY package*.json ./ \n \n RUN ${req.body.runtimeCom} \n \n COPY . . \n \n EXPOSE ${req.body.exposePort} \n \n CMD ${req.body.com}" >> Dockerfile; wait`, 
+    exec(`cd server/platforms/docker/live; touch Dockerfile; echo "FROM ${req.body.runtimeEnv} \n \n WORKDIR ${req.body.workDir} \n \n COPY package*.json ./ \n \n RUN ${req.body.runtimeCom} \n \n COPY . . \n \n EXPOSE ${req.body.exposePort} \n \n CMD ${req.body.com}" >> Dockerfile; wait`,
     ['shell'], function(err, stdout, stderr){
     console.log(err || stdout || stderr)
     })
@@ -16,7 +16,7 @@ dockerController.containerSetup = (req, res, next) => {
 }
 
 dockerController.defaultSetup = (req, res, next) => {
-    exec(`cd server/platforms/docker/live; touch Dockerfile; echo "FROM node:10 \n \n WORKDIR /usr/src/app \n \n COPY package*.json ./ \n \n RUN npm install \n \n COPY . . \n \n EXPOSE 3000 \n \n CMD ['npm', 'start']" >> Dockerfile; wait`, 
+    exec(`cd server/platforms/docker/live; touch Dockerfile; echo "FROM node:10 \n \n WORKDIR /usr/src/app \n \n COPY package*.json ./ \n \n RUN npm install \n \n COPY . . \n \n EXPOSE 3000 \n \n CMD ['npm', 'start']" >> Dockerfile; wait`,
     ['shell'], function(err, stdout, stderr){
     console.log(err || stdout || stderr)
     })
@@ -24,13 +24,12 @@ dockerController.defaultSetup = (req, res, next) => {
 }
 
 dockerController.funcSetup = (req, res, next) => {
-    exec(`cd server/platforms/docker/live; touch ${req.body.functionName}.js; echo "${req.body.code}" >> ${req.body.functionName}.js; wait`, 
+    exec(`cd server/platforms/docker/live; touch ${req.body.functionName}.js; echo "${req.body.code}" >> ${req.body.functionName}.js; wait`,
         ['shell'], function(err, stdout, stderr){
         console.log(err || stdout || stderr)
         })
     next();
 }
-
 
 dockerController.dockerDirect = (req, res, next) => {
     let files = req.body.files;
@@ -53,7 +52,7 @@ dockerController.dockerDirect = (req, res, next) => {
         var newPath = path.join(__dirname, `../../users/${req.body.username}/docker${metadata[y].path}`);
         fs.writeFileSync(newPath, `${text[y]}`, function (err, data) {});
     }
-} 
+}
 
 dockerController.buildImage = (req, res, next) => {
     exec(`cd server/platforms/docker/live; docker image build -t ${req.body.functionName} .; wait; docker image ls`,
@@ -68,7 +67,7 @@ dockerController.deployDocker = (req, res, next) => {
     exec(`docker run -p 8888:80 --name ${req.body.functionName} ${req.body.functionName}; curl docker`, ['shell'], function(err, stdout, stderr){
         console.log(err || stdout || stderr)
     })
-    
+
     process.argv.forEach(function (val, index, array) {
         console.log(index + ': ' + val);
       });
