@@ -51,7 +51,7 @@ const AWSFunctionForm = props => {
 
       <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} codeLoaded={props.codeLoaded} />
       <button id="createFuncBtn" onClick={() => props.createFunction()}>Create Function</button>
-      {/* <button id="updateFuncBtn" onClick={() => props.createFunction()}>Update Function[HOLD]</button> */}
+      <button id="updateFuncBtn" onClick={() => props.updateFunction()}>Update Function</button>
 
     </React.Fragment>
   );

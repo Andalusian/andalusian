@@ -305,7 +305,7 @@ hr {
 
 #AWSFunctionInfo {
   position: fixed;
-  top: 20%;
+  top: 5%;
   left: 10%;
   width: 80%;
   background-color: white;
@@ -320,6 +320,8 @@ hr {
   grid-template-columns: 20% 80%;
   justify-items: start;
   justify-content: space-around;
+  overflow:scroll;
+  height: 100%
 }
 
 .myAWSFuncs {
@@ -329,4 +331,17 @@ hr {
 .funcInfoH4, .funcInfoP {
   display: inline-block;
   margin: 0 15px 5px 0
+}
+
+#graph {
+  height: 200px;
+  width: 200px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+#invocationList {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 100px;
 }

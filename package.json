@@ -39,6 +39,7 @@
     "react-dropzone": "^10.2.1",
     "redis": "^2.8.0",
     "superagent": "^5.1.2",
+    "victory": "^33.1.7",
     "zip-local": "^0.3.4"
   },
   "devDependencies": {
