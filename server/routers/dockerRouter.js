@@ -29,4 +29,12 @@ router.post("/dockerDirect", dockerController.dockerDirect, (req, res) => {
 router.post("/stopDocker", dockerController.stopDocker, (req, res) => {
   res.status(200);
 })
+
+router.post("/dockerLogin", dockerController.dockerLogin, (req, res) => {
+  res.status(200);
+})
+
+router.post("/dockerHubDeploy", dockerController.dockerHubDeploy, (req, res) => {
+  res.status(200);
+})
 module.exports = router;

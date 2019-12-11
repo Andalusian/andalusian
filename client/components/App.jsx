@@ -1,7 +1,5 @@
 import React from "react";
 import axios from "axios";
-// import * as V from 'victory';
-// import { VictoryBar } from 'victory';
 import MicroList from "./MicroList.jsx";
 import Login from './Login.jsx';
 import Signup from "./Signup.jsx";
@@ -11,7 +9,7 @@ import AWSFunctionForm from "./AWSFunctionForm.jsx";
 import AWSFunctionInfo from "./AWSFunctionInfo.jsx";
 import AzureFunctionForm from "./AzureFunctionForm.jsx";
 import DockerSetup from "./DockerSetup.jsx";
-
+import GoogleWelcomeForm from "./GoogleWelcomeForm.jsx";
 
 class App extends React.Component {
   constructor(props) {
@@ -26,6 +24,9 @@ class App extends React.Component {
       googleKeyAlias: '',
       runtime: undefined,
       googleProject: '',
+      googleFunctionButtons: [],
+      googleFunctionInfoButtonClicked: false,
+      googleFunctionInfo: {},
       // aws
       awsAccessKey: '',
       awsSecretAccessKey: '',
@@ -43,7 +44,6 @@ class App extends React.Component {
       codeLoaded: '',
       awsPopup: false,
       functionInvocations: [],
-      // graph: '',
       // docker
       dockerUsername: '',
       dockerPassword: '',
@@ -53,6 +53,7 @@ class App extends React.Component {
       exposePort: '',
       com: '',
       copy: '',
+      repository: '',
       //azure
       azureRuntime: '',
       azureTemplate: '',
@@ -80,7 +81,7 @@ class App extends React.Component {
     this.handleSignup = this.handleSignup.bind(this);
     this.handleToggleSignup = this.handleToggleSignup.bind(this);
     this.handleSubmitKey = this.handleSubmitKey.bind(this);
-    // this.googleListFunctions = this.googleListFunctions.bind(this);
+    this.googleListFunctions = this.googleListFunctions.bind(this);
     this.listFunctions = this.listFunctions.bind(this)
     // this.listBuckets = this.listBuckets.bind(this)
     this.createFunction = this.createFunction.bind(this);
@@ -89,6 +90,12 @@ class App extends React.Component {
     this.handleSignout = this.handleSignout.bind(this)
     this.closeFuncInfo = this.closeFuncInfo.bind(this)
     this.updateFunction = this.updateFunction.bind(this)
+    this.updateCode = this.updateCode.bind(this)
+  }
+
+  componentDidMount() {
+    axios.get('/checkLogin')
+      .then(response => this.setState(response.data));
   }
 
   updateInfo(property, value) {
@@ -106,7 +113,11 @@ class App extends React.Component {
       let updateKey = this.state.keys.filter(key => key.keyAlias === value && key.keyType === 'googleKey');
       if (updateKey.length) {
         const project = JSON.parse(updateKey[0].key).project_id;
-        axios.post('/gcloud/auth', { user_name: this.state.username, key_file: updateKey[0].key, project });
+        this.setState({ googleProject: project });
+        axios.post('/gcloud/auth', { user_name: this.state.username, key_file: updateKey[0].key, project })
+          .then((res) => {
+            if (res.status === 200) this.googleListFunctions();
+          });
         updateObj.googleKey = updateKey[0].key;
       }
     }
@@ -137,14 +148,19 @@ class App extends React.Component {
           updateStateObject[updateKey.keyType] = updateKey.key;
           if (updateKey.keyType === 'googleKey') {
             updateStateObject.googleKeyAlias = updateKey.keyAlias;
-          }
-          if (updateKey.keyType === 'awsSecretAccessKey') {
+          } else if (updateKey.keyType === 'awsSecretAccessKey') {
             updateStateObject.awsAccessKey = updateKey.awsAccessKey;
             updateStateObject.awsKeyAlias = updateKey.keyAlias;
+          } else if (updateKey.keyType === 'dockerPassword') {
+            updateStateObject.dockerUsername = updateKey.dockerUsername;
+          } else if (updateKey.keyType === 'azurePass') {
+            updateStateObject.azureUser = updateKey.azureUser;
+            updateStateObject.azureTenant = updateKey.azureTenant;
           }
         });
         this.setState(updateStateObject, () => {
           console.log(this.state);
+          console.log(this.state.dockerUsername)
         });
         this.osChecker()
       });
@@ -241,7 +257,6 @@ class App extends React.Component {
     }
   }
 
-  // componentDidMount() { this.osChecker() }
 
   handleSubmitKey(keyType) {
     const keyObject = {
@@ -262,12 +277,17 @@ class App extends React.Component {
       } else if (switchKey.keyType === 'googleKey') {
         document.getElementById('googleCredentials').reset();
         keyObject.googleKeyAlias = switchKey.keyAlias;
+      } else if (switchKey.keyType === 'azurePass') {
+        document.getElementById('azureCredentials').reset();
+        keyObject.azureUser = switchKey.azureUser;
+        keyObject.azureTenant = switchKey.azureTenant;
       }
       this.setState(keyObject);
     } else {
       switch (keyType) {
         case 'googleKey':
           const project = JSON.parse(this.state.googleKey).project_id;
+          this.setState({ googleProject: project });
           keyObject.key = this.state.googleKey;
           keyObject.keyAlias = this.state.googleKeyAlias;
           axios.post('/gcloud/auth', { user_name: this.state.username, key_file: this.state.googleKey, project })
@@ -291,6 +311,14 @@ class App extends React.Component {
         case 'dockerPassword':
           keyObject.key = this.state.dockerPassword;
           keyObject.dockerUsername = this.state.dockerUsername;
+          axios
+            .post('/db/storeKey', keyObject)
+            .then(response => this.setState({ keys: response.data.keys }));
+          break;
+        case 'azurePass':
+          keyObject.azureUser = this.state.azureUser;
+          keyObject.key = this.state.azurePass;
+          keyObject.azureTenant = this.state.azureTenant;
           axios
             .post('/db/storeKey', keyObject)
             .then(response => this.setState({ keys: response.data.keys }));
@@ -342,50 +370,54 @@ class App extends React.Component {
       });
   }
 
-  // googleListFunctions() {
-  //   console.log('inside googleListFunctions')
-  //   fetch('/gcloud/list')
-  //     .then(data => data.json())
-  //     .then(data => {
-  //       console.log(`Data from list fetch: ${data}`)
-  //       const fnList = data.fn_list;
-  //       const fnButtons = [];
-  //       fnList.forEach((el) => {
-  //         fnButtons.push(<div id={el}>
-  //           <span>{el}</span>
-  //           <button onClick={() => {
-  //             fetch(`/gcloud/info/${el}`)
-  //               .then(data => data.json())
-  //               .then(data => {
-  //                 console.log(data);
-  //               })
-  //           }}>Info</button>
-  //           <button onClick={() => {
-  //             fetch(`/gcloud/call/${el}`)
-  //               .then(data => data.json())
-  //               .then(data => {
-  //                 console.log(data);
-  //               })
-  //           }}>Invoke</button>
-  //           <button onClick={() => {
-  //             fetch(`/gcloud/delete/`, {
-  //               method: 'DELETE',
-  //               headers: {
-  //                   'Content-Type': 'application/json',
-  //               },
-  //               body: JSON.stringify({fn_name: el}),
-  //             })
-  //               .then(data => data.json())
-  //               .then(data => {
-  //                 console.log(data);
-  //               })
-  //           }}>Delete</button>
-  //         </div>);
-  //       });
-  //       console.log(`fnButtons: ${fnButtons}`)
-  //       return fnButtons;
-  //     })
-  // }
+  googleListFunctions() {
+    if (!this.state.googleFunctionButtons[0]) {
+      fetch('/gcloud/list')
+        .then(data => data.json())
+        .then(data => {
+          const fnList = data.fn_list;
+          const fnButtons = [<hr />, <h4>Project's Functions</h4>];
+          fnList.forEach((el) => {
+            fnButtons.push(<div id={el}>
+              <span>{el}</span>
+              <button onClick={() => {
+                fetch(`/gcloud/info/${el}`)
+                  .then(data => data.json())
+                  .then(data => {
+                    this.setState({
+                      googleFunctionInfoButtonClicked: true,
+                      googleFunctionInfo: data,
+                    })
+                  })
+              }}>Info</button>
+              <button onClick={() => {
+                fetch(`/gcloud/call/${el}`)
+                  .then(data => {
+                    if (data.status === 200) {
+                      console.log('do something!');
+                    }
+                  })
+              }}>Invoke</button>
+              <button onClick={() => {
+                fetch(`/gcloud/delete/`, {
+                  method: 'DELETE',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ fn_name: el }),
+                })
+                  .then(data => {
+                    if (data.status === 200) {
+                      document.getElementById(el).remove();
+                    }
+                  })
+              }}>Delete</button>
+            </div>);
+          });
+          this.setState({ googleFunctionButtons: fnButtons });
+        })
+    }
+  }
 
   loadCode(funcName) {
     axios
@@ -398,6 +430,17 @@ class App extends React.Component {
         document.getElementById("codeHere").value = data.data
         document.getElementById("functionName").value = funcName
       })
+      .catch(error => console.log(error))
+  }
+
+  updateCode() {
+    axios.post('/azure/updateCode', {
+      code: this.state.uploadedFunction,
+      username: this.state.username,
+      projectName: this.state.azureProject,
+      functionName: this.state.functionName
+    })
+      .then(data => console.log('Updated'))
       .catch(error => console.log(error))
   }
 
@@ -460,23 +503,6 @@ class App extends React.Component {
       });
   }
 
-  // listBuckets() {
-  //   let allBuckets = [<option defaultValue={"a"}> -- select an option -- </option>]
-  //   axios
-  //     .post("/aws/allBuckets", { username: this.state.username })
-  //     .then(data => {
-  //       for (let i = 0; i < data.data.Buckets.length; i++) {
-  //         let bucketName = data.data.Buckets[i].Name;
-  //         allBuckets.push(<option className="myAWSBuckets" key={i} value={bucketName}>{bucketName}
-  //         </option >)
-  //       }
-  //       this.setState({ currentBuckets: allBuckets })
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // }
-
   createFunction() {
     if (this.state.functionName && this.state.uploadedFunction && this.state.awsRuntime && this.state.awsRole && this.state.awsRegion) {
       axios
@@ -538,22 +564,56 @@ class App extends React.Component {
   //     });
   // }
 
+  // listBuckets() {
+  //   let allBuckets = [<option defaultValue={"a"}> -- select an option -- </option>]
+  //   axios
+  //     .post("/aws/allBuckets", { username: this.state.username })
+  //     .then(data => {
+  //       for (let i = 0; i < data.data.Buckets.length; i++) {
+  //         let bucketName = data.data.Buckets[i].Name;
+  //         allBuckets.push(<option className="myAWSBuckets" key={i} value={bucketName}>{bucketName}
+  //         </option >)
+  //       }
+  //       this.setState({ currentBuckets: allBuckets })
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // }
+
   render() {
     let displayed;
+    // this.osChecker()
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
-      displayed = <GoogleFunctionForm
-        username={this.state.username}
-        submitKey={this.handleSubmitKey}
-        googleProject={this.state.googleProject}
-        runtime={this.state.runtime}
-        functionName={this.state.functionName}
-        googleKey={this.state.googleKey}
-        googleKeyAlias={this.state.googleKeyAlias}
-        updateInfo={this.updateInfo}
-        uploadedFunction={this.state.uploadedFunction}
-        /*googleListFunctions={this.googleListFunctions}*/
-        keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
-      />
+      let filteredkeys = this.state.keys.filter(key => key.keyType === 'googleKey');
+      if (filteredkeys[0] === undefined) {
+        displayed = (<React.Fragment>
+          <h2>GCloud</h2>
+          <GoogleWelcomeForm
+            updateInfo={this.updateInfo}
+            submitKey={this.handleSubmitKey}
+          />
+        </React.Fragment>
+        )
+      } else {
+        displayed = <GoogleFunctionForm
+          username={this.state.username}
+          submitKey={this.handleSubmitKey}
+          googleProject={this.state.googleProject}
+          runtime={this.state.runtime}
+          functionName={this.state.functionName}
+          googleKey={this.state.googleKey}
+          googleKeyAlias={this.state.googleKeyAlias}
+          googleFunctionButtons={this.state.googleFunctionButtons}
+          updateInfo={this.updateInfo}
+          uploadedFunction={this.state.uploadedFunction}
+          googleListFunctions={this.googleListFunctions}
+          googleFunctionInfo={this.state.googleFunctionInfo}
+          googleFunctionInfoButtonClicked={this.state.googleFunctionInfoButtonClicked}
+          keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
+        />
+      }
+
     } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && !this.state.awsPopup) {
       displayed = (<React.Fragment>
         {/* <GraphComponent /> */}
@@ -639,12 +699,15 @@ class App extends React.Component {
         exposePort={this.state.exposePort}
         com={this.state.com}
         updateInfo={this.updateInfo}
-        submitKey={this.submitKey}
+        handleSubmitKey={this.handleSubmitKey}
         functionName={this.state.functionName}
         copy={this.state.copy}
         uploadedFiles={this.state.uploadedFiles}
         pageSelect={this.state.pageSelect}
         username={this.state.username}
+        repository={this.state.repository}
+        dockerUsername={this.state.dockerUsername}
+        dockerPassword={this.state.dockerPassword}
       ></DockerSetup></React.Fragment>)
     } else if (this.state.pageSelect === 'Azure') {
       displayed = (<React.Fragment>
@@ -659,6 +722,10 @@ class App extends React.Component {
           azureUser={this.state.azureUser}
           azurePass={this.state.azurePass}
           azureTenant={this.state.azureTenant}
+          codeHere={this.state.codeHere}
+          submitKey={this.handleSubmitKey}
+          uploadedFunction={this.state.uploadedFunction}
+          updateCode={this.updateCode}
         />
       </React.Fragment>)
     }

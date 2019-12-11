@@ -1,10 +1,10 @@
 import React from 'react';
 import MyDropzone from "./MyDropzone.jsx";
 import GoogleCredentials from "./GoogleCredentials.jsx";
+import GoogleInvokedFunctionModal from './GoogleInvokedFunctionModal.jsx';
 const axios = require('axios');
 
 const GoogleFunctionForm = (props) => {
-
   return (
     <React.Fragment>
       <h2>GCloud</h2>
@@ -15,14 +15,13 @@ const GoogleFunctionForm = (props) => {
         submitKey={props.submitKey}
         keys={props.keys}
       />
-      {/* <div className="googleFunctions">
-        { functionButtons }
-      </div> */}
+      <div id="googleFunctions">
+        { props.googleFunctionButtons }
+        { props.googleFunctionInfoButtonClicked ? <GoogleInvokedFunctionModal info={props.googleFunctionInfo} name={props.googleFunctionInfo.name} updateInfo={props.updateInfo} /> : <React.Fragment/> }
+      </div>
       <div className="googleInfo">
         <hr></hr>
         <h4>Create Function</h4>
-
-        <input id="googleProject" name="googleProject" onChange={(e) => props.updateInfo(e.target.name, e.target.value)} type="text" placeholder="Project Name" />
         <input id="functionName" name="functionName" onChange={(e) => props.updateInfo(e.target.name, e.target.value)} type="text" placeholder="Function Name" />
         <select id="gcRuntime" onChange={(e) => props.updateInfo('runtime', e.target.value)}>
           <option value='1'>Runtime</option>
