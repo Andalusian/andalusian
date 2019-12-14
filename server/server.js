@@ -1,8 +1,9 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-// const expressSession = require('express-session');
-// const { sessionSecret } = require('../config.js');
+const cookieParser = require('cookie-parser');
+const expressSession = require('express-session');
+const { sessionSecret } = require('../config.js');
 // const redis = require('redis');
 
 // let RedisStore = require('connect-redis')(session);
@@ -20,17 +21,17 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // SESSION
-// app.use(expressSession({
-//   store: new redisStore({ redisClient }),
-//   name: 'sid',
-//   resave: false,
-//   saveUninitialized: false,
-//   secret: sessionSecret,
-//   cookie: {
-//     maxAge: 1000 * 60 * 60 * 2, // two hours
-//     sameSite: true,
-//   }
-// }));
+app.use(expressSession({
+  // store: new redisStore({ redisClient }),
+  name: 'sid',
+  resave: false,
+  saveUninitialized: false,
+  secret: sessionSecret,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 2, // two hours
+    // domain: '127.0.0.1:8080',
+  }
+}));
 
 // SERVING THE BUILD FILE
 app.use('/build', express.static(path.join(__dirname, '../build')));
