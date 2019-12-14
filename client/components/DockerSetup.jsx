@@ -86,6 +86,14 @@ const DockerSetup = props => {
             .then((response) => { console.log(response); })
             .catch((error) => { console.log(error); })
     }
+    function deleteContainers() {
+        axios
+            .post('/docker/dockerDeleteContainers', {
+                username: props.username,
+            })
+            .then((response) => { console.log(response); })
+            .catch((error) => { console.log(error); })
+    }
     function dockerHubDeploy() {
         axios
             .post('/docker/dockerHubDeploy', {
@@ -139,15 +147,15 @@ const DockerSetup = props => {
                     <button onClick={() => defaultSetup()}>Default Dockerfile</button>
                 </div>
                 <div>
-                    <input onChange={(e) => props.updateInfo('functionName', e.target.value)} type="text" name="functionName" placeholder="Function Name" />
-                    <MyDropzone uploadedFunction={props.uploadedFunction} updateInfo={props.updateInfo} />
+                    <input onChange={(e) => props.updateInfo('functionName', e.target.value)} type="text" name="functionName" placeholder="Image/Container Name" />
                     <FileDropzone uploadedFiles={props.uploadedFiles} updateInfo={props.updateInfo} pageSelect={props.pageSelect} />
-                    <button onClick={() => funcSetup()}>Set Function</button>
+                    {/* <button onClick={() => funcSetup()}>Set Function</button> */}
                     <button onClick={() => dockerDirect()}>Setup Directory</button>
                     <button onClick={() => buildImage()}>Build Image</button>
                 </div>
                 <button onClick={() => deployDocker()}>Containerize</button>
-                <button onClick={() => stopDocker()}>Stop and Delete</button>
+                <button onClick={() => stopDocker()}>Stop Container</button>
+                <button onClick={() => deleteContainers()}>Delete Containers/Images</button>
                 <div>
                     <div>
                         <input
