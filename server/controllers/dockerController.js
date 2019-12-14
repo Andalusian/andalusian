@@ -9,10 +9,26 @@ const dockerController = {};
 
 
 dockerController.containerSetup = (req, res, next) => {
-    exec(`cd users/${req.body.username}/docker/tmp; touch Dockerfile; echo "FROM ${req.body.runtimeEnv} \n \n WORKDIR ${req.body.workDir} \n \n COPY package*.json ./ \n \n RUN ${req.body.runtimeCom} \n \n COPY . . \n \n EXPOSE ${req.body.exposePort} \n \n CMD ${req.body.com}" >> Dockerfile; wait`,
-        ['shell'], function (err, stdout, stderr) {
-            console.log(err || stdout || stderr)
-        })
+    let dockerfileSetup = ''
+    if(req.body.runtimeEnv !== ''){
+        dockerfileSetup = dockerfileSetup + `FROM ${req.body.runtimeEnv} \n \n`
+    }
+    if(req.body.workDir !== ''){
+        dockerfileSetup = dockerfileSetup + `WORKDIR ${req.body.workDir} \n \n`
+    }
+    if(req.body.runtimeCom !== ''){
+        dockerfileSetup = dockerfileSetup + `RUN ${req.body.runtimeCom} \n \n`
+    }
+    if(req.body.exposePort !== ''){
+        dockerfileSetup = dockerfileSetup + `EXPOSE ${req.body.exposePort} \n \n`
+    }
+    if(req.body.com !== ''){
+        dockerfileSetup = dockerfileSetup + `CMD ${req.body.com} \n \n`
+    }
+    exec(`cd users/${req.body.username}/docker/tmp; touch Dockerfile; echo "${dockerfileSetup}" >> Dockerfile; wait`),
+    ['shell'], function(err, stdout, stderr){
+    console.log(err || stdout || stderr)
+    }
     next();
 }
 
@@ -24,13 +40,13 @@ dockerController.defaultSetup = (req, res, next) => {
     next();
 }
 
-dockerController.funcSetup = (req, res, next) => {
-    exec(`cd users/${req.body.username}/docker/tmp; touch ${req.body.functionName}.js; echo "${req.body.code}" >> ${req.body.functionName}.js; wait`,
-        ['shell'], function (err, stdout, stderr) {
-            console.log(err || stdout || stderr)
-        })
-    next();
-}
+// dockerController.funcSetup = (req, res, next) => {
+//     exec(`cd users/${req.body.username}/docker/tmp; touch ${req.body.functionName}.js; echo "${req.body.code}" >> ${req.body.functionName}.js; wait`, 
+//         ['shell'], function(err, stdout, stderr){
+//         console.log(err || stdout || stderr)
+//         })
+//     next();
+// }
 
 dockerController.dockerDirect = (req, res, next) => {
     let files = req.body.files;
@@ -54,11 +70,11 @@ dockerController.dockerDirect = (req, res, next) => {
 
 dockerController.buildImage = (req, res, next) => {
     exec(`cd users/${req.body.username}/docker/tmp; ls; docker image build -t ${req.body.functionName} .; wait; docker image ls`,
-        ['shell'], function (err, stdout, stderr) {
-            console.log(req.body.functionName)
-            console.log(err || stdout || stderr)
-        })
-    next();
+    ['shell'], function(err, stdout, stderr){
+        // console.log(req.body.functionName)
+       console.log(err || stdout || stderr)
+   })
+   next();
 }
 
 dockerController.deployDocker = (req, res, next) => {
@@ -76,10 +92,13 @@ dockerController.stopDocker = (req, res, next) => {
     exec(`docker stop ${req.body.functionName}; wait;`, ['shell'], function (err, stdout, stderr) {
         console.log(err || stdout || stderr)
     })
-    exec(`docker system prune -a -f;`, ['shell'], function (err, stdout, stderr) {
+}
+
+dockerController.deleteContainers = (req, res, next) => {
+    exec(`docker system prune -a -f;`, ['shell'], function(err, stdout, stderr){
         console.log(err || stdout || stderr)
     })
-    exec(`cd users/${req.body.username}/docker/tmp; rm *;`, ['shell'], function (err, stdout, stderr) {
+    exec(`rm -rfv users/${req.body.username}/docker/tmp/*;`, ['shell'], function(err, stdout, stderr){
         console.log(err || stdout || stderr)
     })
 }
