@@ -124,6 +124,7 @@ class App extends React.Component {
       }
     }
     this.setState(updateObj);
+    return this.state.property
   }
 
   getawsAccountID() {
