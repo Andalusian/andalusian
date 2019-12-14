@@ -8,7 +8,7 @@ const AWSFunctionForm = props => {
   return (
     <React.Fragment>
       <h2>AWS</h2>
-      <h4>Configuration</h4>
+      <h3>Configuration</h3>
       <AWSCredentials
         updateInfo={props.updateInfo}
         submitKey={props.submitKey}
@@ -36,8 +36,8 @@ const AWSFunctionForm = props => {
         defaultValue=":role/"
         onChange={e => props.updateInfo(e.target.name, e.target.value)}
       />
-      <select id="awsRuntime" name="awsRuntime" onChange={e => props.updateInfo(e.target.name, e.target.value)} >
-        <option defaultValue={"a"}> -- select runtime -- </option>
+      <select id="Runtime" name="awsRuntime" onChange={e => props.updateInfo(e.target.name, e.target.value)} >
+        <option defaultValue={"a"}>-- select runtime --</option>
         <option value="nodejs8.10">Node 8</option>
         <option value="nodejs10.x">Node 10</option>
         <option value="java8">Java 8</option>

@@ -15,14 +15,14 @@ const MicroList = (props) => {
         <img id="Lambdaimg" src="https://git.teknik.io/POTM/Mirror-script.module.lambdascrapers/raw/commit/25b20d0adb8afa6d29eba3a0167046cb2e21ea94/icon.png" />
       </label>
       <label>
-        <input onChange={() => props.updateInfo('pageSelect', 'Docker')} type="radio"
-          value="Docker" checked={props.pageSelect === 'Docker'} />
-        <img src="https://cdn.iconscout.com/icon/free/png-256/docker-7-569438.png" />
-      </label>
-      <label>
         <input onChange={() => props.updateInfo('pageSelect', 'Azure')} type="radio"
           value="Azure" checked={props.pageSelect === 'Azure'} />
         <img src="https://abouttmc.com/wp-content/uploads/2019/02/logo_azure.png" />
+      </label>
+      <label>
+        <input onChange={() => props.updateInfo('pageSelect', 'Docker')} type="radio"
+          value="Docker" checked={props.pageSelect === 'Docker'} />
+        <img src="https://cdn.iconscout.com/icon/free/png-256/docker-7-569438.png" />
       </label>
     </div>
   );

@@ -4,6 +4,7 @@ import MicroList from "./MicroList.jsx";
 import Login from './Login.jsx';
 import Signup from "./Signup.jsx";
 import Signout from "./Signout.jsx";
+import AccountPage from "./AccountPage.jsx"
 import GoogleFunctionForm from "./GoogleFunctionForm.jsx";
 import AWSFunctionForm from "./AWSFunctionForm.jsx";
 import AWSFunctionInfo from "./AWSFunctionInfo.jsx";
@@ -64,6 +65,7 @@ class App extends React.Component {
       azureTenant: '',
       // both
       pageSelect: 'Gcloud',
+      // pageSelect: '',
       functionName: '',
       uploadedFunction: '',
       operatingSystem: '',
@@ -223,7 +225,7 @@ class App extends React.Component {
           azurePass: '',
           azureTenant: '',
           // both
-          pageSelect: 'Gcloud',
+          // pageSelect: '',
           functionName: '',
           uploadedFunction: '',
           uploadedFiles: [],
@@ -584,11 +586,17 @@ class App extends React.Component {
   render() {
     let displayed;
     // this.osChecker()
+    // if ((this.state.pageSelect === '' && this.state.isLogin)) {
+    //   displayed = (<React.Fragment>
+    //     <AccountPage />
+    //   </React.Fragment>)
+    // }
+    // else
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       let filteredkeys = this.state.keys.filter(key => key.keyType === 'googleKey');
       if (filteredkeys[0] === undefined) {
         displayed = (<React.Fragment>
-          <h2>GCloud</h2>
+
           <GoogleWelcomeForm
             updateInfo={this.updateInfo}
             submitKey={this.handleSubmitKey}
