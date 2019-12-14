@@ -59,11 +59,13 @@ azureController.createFunc = (req, res, next) => {
         console.log(`stdout: ${stdout}`);
         return next();
     })
-
 }
 
+// azureController.getFuncs = (req, res, next) => {
+//
+// }
+
 azureController.updateCode = (req, res, next) => {
-    console.log('trying to update')
     const { code, username, projectName, functionName } = req.body;
     fs.writeFileSync(`./users/${username}/azure/${projectName}/${functionName}/index.js`, code, 'utf8')
     res.locals = 'success'

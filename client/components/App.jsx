@@ -92,6 +92,7 @@ class App extends React.Component {
     this.closeFuncInfo = this.closeFuncInfo.bind(this)
     // this.updateFunction = this.updateFunction.bind(this)
     this.updateCode = this.updateCode.bind(this)
+    this.listAzure = this.listAzure.bind(this)
   }
 
   updateInfo(property, value) {
@@ -253,8 +254,6 @@ class App extends React.Component {
     }
   }
 
-  // componentDidMount() { this.osChecker() }
-
   handleSubmitKey(keyType) {
     const keyObject = {
       username: this.state.username,
@@ -347,6 +346,12 @@ class App extends React.Component {
         console.log(error);
       });
   }
+
+  // listAzure() {
+  //   const azureFuncs = [];
+  //
+  //   // axios.post('/azure/getFuncs', {projectName: this.state.})
+  // }
 
   listFunctions() {
     let allFuncArray = [];

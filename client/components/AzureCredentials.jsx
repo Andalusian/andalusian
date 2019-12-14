@@ -10,8 +10,10 @@ const AzureCredentials = (props) => {
             <input placeholder={props.azurePass} type="password" name="azurePass" onChange={(e) => props.updateInfo(e.target.name, e.target.value)} />
             <label>Tenant ID: </label>
             <input placeholder={props.azureTenant} type="text" name="azureTenant" onChange={(e) => props.updateInfo(e.target.name, e.target.value)} />
-            <button type="button" className="saveButton" onClick={() => {axios.post('/azure/auth', {azureUser: props.azureUser, azurePass: props.azurePass, azureTenant: props.azureTenant})}}>Submit Credentials</button>
-            <button type="button" className="saveButton" onClick={() => {props.submitKey('azurePass')}}>Save Credentials</button>
+            <div className="azureCredBtns">
+                <button type="button" className="saveButton" onClick={() => {props.submitKey('azurePass')}}>Store Credentials</button>
+                <button type="button" className="saveButton" onClick={() => {axios.post('/azure/auth', {azureUser: props.azureUser, azurePass: props.azurePass, azureTenant: props.azureTenant})}}>Log In</button>
+            </div>
         </ form>
     )
 }
