@@ -6,3 +6,4 @@ build
 /server/platforms
 users
 stepsForward.txt
+package-lock.json

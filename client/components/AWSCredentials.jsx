@@ -29,7 +29,7 @@ const AWSCredentials = (props) => {
       />
       <button type="button" className="saveButton" id="credentialsBtn" onClick={() => props.submitKey('awsSecretAccessKey')}>Add New Key</button>
       <select className="keySelection" name="awsKeyAlias" onChange={e => props.updateInfo(e.target.name, e.target.value)} >
-        <option defaultValue=''> -- select key -- </option>
+        <option defaultValue=''>-- select key --</option>
         {
           props.keys.map((key, i) => {
             return (
@@ -40,7 +40,7 @@ const AWSCredentials = (props) => {
       </select>
       <button type="button" id="regionBtn" onClick={() => { props.configureAWS() }}>Save Config</button>
       <select id="awsRegion" name="awsRegion" onChange={e => props.updateInfo(e.target.name, e.target.value)} >
-        <option defaultValue={"a"}> -- select region -- </option>
+        <option defaultValue={"a"}>-- select region --</option>
         <option value="us-east-1">US East 1</option>
         <option value="us-east-2">US East 2</option>
         <option value="us-west-1">US West 1</option>

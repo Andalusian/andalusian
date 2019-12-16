@@ -54,7 +54,9 @@ dbController.verifyUser = (req, res, next) => {
     fs.mkdir(`users/${username}/gcloud`, { recursive: true }, () => {
       fs.mkdir(`users/${username}/azure`, { recursive: true }, () => {
         fs.mkdir(`users/${username}/docker`, { recursive: true }, () => {
+          fs.mkdir(`users/${username}/docker/tmp`, { recursive: true}, () => {
 
+          });
         });
       });
     });
@@ -106,6 +108,9 @@ dbController.decrypt = (req, res, next) => {
     }
     if (decryptedKeyObject.keyType === 'awsSecretAccessKey') {
       decryptedKeyObject.awsAccessKey = key.awsAccessKey;
+    }
+    if (decryptedKeyObject.keyType === 'dockerPassword') {
+      decryptedKeyObject.dockerUsername = key.dockerUsername;
     }
     if (decryptedKeyObject.keyType === 'azurePass') {
       decryptedKeyObject.azureUser = key.azureUser;

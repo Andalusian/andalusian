@@ -8,6 +8,7 @@ const AzureFunctionForm = (props) => {
     return (
         <React.Fragment>
             <h2>Azure</h2>
+            <h3>Configuration</h3>
             <AzureCredentials
                 updateInfo={props.updateInfo}
                 azureUser={props.azureUser}
@@ -15,10 +16,13 @@ const AzureFunctionForm = (props) => {
                 azureTenant={props.azureTenant}
                 submitKey={props.submitKey} />
             <AzureCurrentFunctions azureFunctions={props.azureFunctions} />
+
+            <hr />
+            <h4>Create Function</h4>
             <div className="azureInfo">
                 <input onChange={(e) => props.updateInfo(e.target.name, e.target.value)} id="azureProject" name="azureProject" type="text" placeholder="Project Name" />
-                <select name="azureRuntime" onChange={(e) => props.updateInfo(e.target.name, e.target.value)}>
-                    <option value='1'>Runtime</option>
+                <select id="Runtime" name="azureRuntime" onChange={(e) => props.updateInfo(e.target.name, e.target.value)}>
+                    <option value='1'>-- select runtime --</option>
                     <option value="--csharp --dotnet">Dotnet</option>
                     <option value="--javascript --node">Node</option>
                     <option value="--python">Python</option>
@@ -27,8 +31,8 @@ const AzureFunctionForm = (props) => {
                 <button className="azureButton" onClick={() => axios.post('/azure/createProj', { username: props.username, projectName: props.azureProject, runtime: props.azureRuntime })}>Create Project</button>
                 <input onChange={(e) => { props.updateInfo(e.target.name, e.target.value) }} name="functionName" type="text" placeholder="Function Name" />
             </div>
-            <select name="azureTemplate" onChange={(e) => props.updateInfo(e.target.name, e.target.value)}>
-                <option value='1'>Template</option>
+            <select id="azureTemplate" name="azureTemplate" onChange={(e) => props.updateInfo(e.target.name, e.target.value)}>
+                <option value='1'>-- select template --</option>
                 <option value="Blob Trigger">Blob Trigger</option>
                 <option value="Cosmos DB Trigger">Cosmos DB Trigger</option>
                 <option value="Event Grid Trigger">Event Grid Trigger</option>
