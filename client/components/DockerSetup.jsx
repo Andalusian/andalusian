@@ -103,7 +103,17 @@ const DockerSetup = props => {
             .then((response) => { console.log(response); })
             .catch((error) => { console.log(error); })
     }
-
+    function deployContToAws(){
+        axios
+        .post('/docker/deployContToAws', {
+            username: props.username,
+            functionName: props.functionName,
+            sshKeyName: props.sshKeyName
+        })
+        .then((response) => { console.log(response); })
+        .catch((error) => { console.log(error); })
+    }
+    
     return (
         <React.Fragment>
             <h2>Docker</h2>
@@ -166,7 +176,15 @@ const DockerSetup = props => {
                         />
                         <button onClick={() => dockerHubDeploy()}>Deploy to Docker Hub</button>
                     </div>
-
+                </div>
+                <div>
+                        <input
+                            type="text"
+                            name="sshKeyName"
+                            placeholder="Enter SSH key name here (in ssh directory)"
+                            onChange={e => props.updateInfo('sshKeyName', e.target.value)}
+                        />
+                    <button onClick={() => deployContToAws()}>Deploy to AWS</button>
                 </div>
             </pre>
         </React.Fragment>

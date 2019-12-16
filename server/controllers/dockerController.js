@@ -115,4 +115,11 @@ dockerController.dockerLogin = (req, res, next) => {
         console.log(err || stdout || stderr)
     })
 }
+
+dockerController.deployContToAws = (req, res, next) => {
+    console.log(req.body.sshKeyName)
+    exec(`cd users/${req.body.username}/docker/tmp; zip -r ${req.body.functionName}.zip .; chmod 400 ~/.ssh/${req.body.sshKeyName}.pem`, ['shell'], function (err, stdout, stderr) {
+        console.log(err || stdout || stderr)
+    })
+}
 module.exports = dockerController;

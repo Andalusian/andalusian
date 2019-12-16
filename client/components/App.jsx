@@ -55,6 +55,7 @@ class App extends React.Component {
       com: '',
       copy: '',
       repository: '',
+      sshKeyName: '',
       //azure
       azureRuntime: '',
       azureTemplate: '',
@@ -717,6 +718,7 @@ class App extends React.Component {
         repository={this.state.repository}
         dockerUsername={this.state.dockerUsername}
         dockerPassword={this.state.dockerPassword}
+        sshKeyName={this.state.sshKeyName}
       ></DockerSetup></React.Fragment>)
     } else if (this.state.pageSelect === 'Azure') {
       displayed = (<React.Fragment>
