@@ -23,6 +23,7 @@ class App extends React.Component {
       // google
       googleKey: '',
       googleKeyAlias: '',
+      googleAddKeyModalClicked: false,
       runtime: undefined,
       googleProject: '',
       googleFunctionButtons: [],
@@ -606,20 +607,21 @@ class App extends React.Component {
         )
       } else {
         displayed = <GoogleFunctionForm
-          username={this.state.username}
-          submitKey={this.handleSubmitKey}
-          googleProject={this.state.googleProject}
-          runtime={this.state.runtime}
-          functionName={this.state.functionName}
-          googleKey={this.state.googleKey}
-          googleKeyAlias={this.state.googleKeyAlias}
-          googleFunctionButtons={this.state.googleFunctionButtons}
-          updateInfo={this.updateInfo}
-          uploadedFunction={this.state.uploadedFunction}
-          googleListFunctions={this.googleListFunctions}
-          googleFunctionInfo={this.state.googleFunctionInfo}
-          googleFunctionInfoButtonClicked={this.state.googleFunctionInfoButtonClicked}
-          keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
+        username={this.state.username}
+        submitKey={this.handleSubmitKey}
+        googleProject={this.state.googleProject}
+        runtime={this.state.runtime}
+        functionName={this.state.functionName}
+        googleKey={this.state.googleKey}
+        googleKeyAlias={this.state.googleKeyAlias}
+        googleFunctionButtons={this.state.googleFunctionButtons}
+        updateInfo={this.updateInfo}
+        uploadedFunction={this.state.uploadedFunction}
+        googleListFunctions={this.googleListFunctions}
+        googleFunctionInfo={this.state.googleFunctionInfo}
+        googleFunctionInfoButtonClicked={this.state.googleFunctionInfoButtonClicked}
+        keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
+        googleAddKeyModalClicked={this.state.googleAddKeyModalClicked}
         />
       }
 
