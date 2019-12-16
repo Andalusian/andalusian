@@ -54,7 +54,9 @@ dbController.verifyUser = (req, res, next) => {
     fs.mkdir(`users/${username}/gcloud`, { recursive: true }, () => {
       fs.mkdir(`users/${username}/azure`, { recursive: true }, () => {
         fs.mkdir(`users/${username}/docker`, { recursive: true }, () => {
+          fs.mkdir(`users/${username}/docker/tmp`, { recursive: true}, () => {
 
+          });
         });
       });
     });
@@ -107,6 +109,13 @@ dbController.decrypt = (req, res, next) => {
     if (decryptedKeyObject.keyType === 'awsSecretAccessKey') {
       decryptedKeyObject.awsAccessKey = key.awsAccessKey;
     }
+    if (decryptedKeyObject.keyType === 'dockerPassword') {
+      decryptedKeyObject.dockerUsername = key.dockerUsername;
+    }
+    if (decryptedKeyObject.keyType === 'azurePass') {
+      decryptedKeyObject.azureUser = key.azureUser;
+      decryptedKeyObject.azureTenant = key.azureTenant;
+    }
 
     decryptedKeys.push(decryptedKeyObject);
   });
@@ -118,6 +127,7 @@ dbController.decrypt = (req, res, next) => {
 
 dbController.encryptKey = (req, res, next) => {
   // console.log('within dbController.encrypt');
+  console.log(req.body)
   const { key } = req.body;
 
   const iv = crypto.randomBytes(8).toString('hex');
@@ -146,6 +156,10 @@ dbController.storeKey = (req, res, next) => {
   }
   if (encryptedKeyObject.keyType === 'dockerPassword') {
     encryptedKeyObject.dockerUsername = req.body.dockerUsername;
+  }
+  if (encryptedKeyObject.keyType === 'azurePass') {
+    encryptedKeyObject.azureUser = req.body.azureUser;
+    encryptedKeyObject.azureTenant = req.body.azureTenant;
   }
 
   User.findOneAndUpdate({ username }, { $push: { keys: encryptedKeyObject } }, { new: true }, function (err, response) {

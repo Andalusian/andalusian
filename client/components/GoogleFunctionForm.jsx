@@ -9,6 +9,7 @@ const GoogleFunctionForm = (props) => {
   return (
     <React.Fragment>
       <h2>GCloud</h2>
+      <h3>Configuration</h3>
       <GoogleCredentials
         updateInfo={props.updateInfo}
         googleKey={props.googleKey}
@@ -17,8 +18,8 @@ const GoogleFunctionForm = (props) => {
         keys={props.keys}
       />
       <div id="googleFunctions">
-        { props.googleFunctionButtons }
-        { props.googleFunctionInfoButtonClicked ? <GoogleInvokedFunctionModal info={props.googleFunctionInfo} name={props.googleFunctionInfo.name} updateInfo={props.updateInfo} /> : <React.Fragment/> }
+        {props.googleFunctionButtons}
+        {props.googleFunctionInfoButtonClicked ? <GoogleInvokedFunctionModal info={props.googleFunctionInfo} name={props.googleFunctionInfo.name} updateInfo={props.updateInfo} /> : <React.Fragment />}
       </div>
       { 
         props.googleProject !== "" ?
@@ -27,7 +28,7 @@ const GoogleFunctionForm = (props) => {
               <hr></hr>
               <h4>Create Function</h4>
               <input id="functionName" name="functionName" onChange={(e) => props.updateInfo(e.target.name, e.target.value)} type="text" placeholder="Function Name" />
-              <select id="gcRuntime" onChange={(e) => props.updateInfo('runtime', e.target.value)}>
+              <select id="Runtime" onChange={(e) => props.updateInfo('runtime', e.target.value)}>
                 <option value='1'>Runtime</option>
                 <option value="nodejs8">Node 8</option>
                 <option value="nodejs10">Node 10</option>
