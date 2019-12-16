@@ -23,6 +23,7 @@ class App extends React.Component {
       // google
       googleKey: '',
       googleKeyAlias: '',
+      googleAddKeyModalClicked: false,
       runtime: undefined,
       googleProject: '',
       googleFunctionButtons: [],
@@ -559,6 +560,7 @@ class App extends React.Component {
         googleFunctionInfo={this.state.googleFunctionInfo}
         googleFunctionInfoButtonClicked={this.state.googleFunctionInfoButtonClicked}
         keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
+        googleAddKeyModalClicked={this.state.googleAddKeyModalClicked}
         />
       }
       
