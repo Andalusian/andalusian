@@ -26,7 +26,7 @@ awsController.createFunction = (req, res, next) => {
     },
     "FunctionName": `${req.body.functionName}`,
     "Handler": `${req.body.functionName}` + ".handler",
-    "Role": "arn:aws:iam::" + `${req.body.awsAccountID}` + `${req.body.awsRole}`,
+    "Role": "arn:aws:iam::" + `${res.locals.awsAccountID.Account}` + `${req.body.awsRole}`,
     "Runtime": `${req.body.awsRuntime}`
   };
   console.log("PARAMS --->", params)
@@ -207,12 +207,16 @@ awsController.getawsAccountID = (req, res, next) => {
   const sts = new AWS.STS();
   const params = {
   };
+  console.log("in awsController.getawsAccountID")
   sts.getCallerIdentity(params, function (err, data) {
+    console.log("in awsController.getawsAccountID step 1")
     if (err) {
-      console.log(err, err.stack);
+      console.log("getawsAccountID error", err, err.stack);
       return (err)
     }
     else {
+      console.log("in awsController.getawsAccountID NO ERROR", data)
+
       res.locals.awsAccountID = data;
       return next();
     }

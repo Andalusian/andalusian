@@ -5,6 +5,12 @@ const MicroList = (props) => {
   return (
     <div className='radio'>
       <label>
+        <input onChange={() => props.updateInfo('pageSelect', '')} type="radio"
+          value="myAccount" checked={props.pageSelect === ''} />
+        <img id="myAccountimg" src="https://unavsa.org/wp-content/uploads/2018/10/profile-icon.png" />
+        {/* <h5>My Account</h5> */}
+      </label>
+      <label>
         <input onChange={() => props.updateInfo('pageSelect', 'Gcloud')} type="radio"
           value="Gcloud" checked={props.pageSelect === 'Gcloud'} />
         <img id="Gcloudimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png" />
@@ -24,6 +30,7 @@ const MicroList = (props) => {
           value="Docker" checked={props.pageSelect === 'Docker'} />
         <img src="https://cdn.iconscout.com/icon/free/png-256/docker-7-569438.png" />
       </label>
+
     </div>
   );
 }

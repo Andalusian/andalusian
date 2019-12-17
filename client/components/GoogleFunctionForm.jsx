@@ -21,7 +21,7 @@ const GoogleFunctionForm = (props) => {
         {props.googleFunctionButtons}
         {props.googleFunctionInfoButtonClicked ? <GoogleInvokedFunctionModal info={props.googleFunctionInfo} name={props.googleFunctionInfo.name} updateInfo={props.updateInfo} /> : <React.Fragment />}
       </div>
-      { 
+      {
         props.googleProject !== "" ?
           <React.Fragment>
             <div className="googleInfo">
@@ -42,17 +42,17 @@ const GoogleFunctionForm = (props) => {
               .then(response => console.log('successfully deployed'))}
             >Deploy</button>
           </React.Fragment>
-        :
-        <React.Fragment/>
+          :
+          <React.Fragment />
       }
       {
-        props.googleAddKeyModalClicked ? 
+        props.googleAddKeyModalClicked ?
           <GoogleCredentialsModal
             updateInfo={props.updateInfo}
             submitKey={props.submitKey}
-          /> 
-        :
-          <React.Fragment/> 
+          />
+          :
+          <React.Fragment />
       }
     </React.Fragment>
   );
