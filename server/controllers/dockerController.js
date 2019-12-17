@@ -2,6 +2,7 @@ const fs = require("fs-extra");
 const path = require('path');
 const { exec } = require("child_process");
 const dockerController = {};
+const AWS = require("aws-sdk");
 
 
 
@@ -69,6 +70,7 @@ dockerController.dockerDirect = (req, res, next) => {
 }
 
 dockerController.buildImage = (req, res, next) => {
+
     exec(`cd users/${req.body.username}/docker/tmp; ls; docker image build -t ${req.body.functionName} .; wait; docker image ls`,
     ['shell'], function(err, stdout, stderr){
         // console.log(req.body.functionName)
@@ -117,9 +119,33 @@ dockerController.dockerLogin = (req, res, next) => {
 }
 
 dockerController.deployContToAws = (req, res, next) => {
-    console.log(req.body.sshKeyName)
-    exec(`cd users/${req.body.username}/docker/tmp; zip -r ${req.body.functionName}.zip .; chmod 400 ~/.ssh/${req.body.sshKeyName}.pem`, ['shell'], function (err, stdout, stderr) {
-        console.log(err || stdout || stderr)
-    })
+    AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
+    const ecr = new AWS.ECR();
+
+    var params = {
+        registryIds: [
+        '691202161934',
+        ]
+    };
+    ecr.getAuthorizationToken(params, function(err, data) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else {
+          let data64 = data.authorizationData[0].authorizationToken;
+          let buff = new Buffer(data64, 'base64')
+          let text = buff.toString('ascii');
+
+          console.log(text); 
+        }          // successful response
+    });
+
+    exec(`docker tag ${req.body.functionName} ${req.body.awsRepoUri}; docker push ${req.body.awsRepoUri}`, ['shell'], function (err, stdout, stderr) {
+            console.log(err || stdout || stderr)
+        })
+
+    
+    // console.log(req.body.sshKeyName)
+    // exec(`cd users/${req.body.username}/docker/tmp; zip -r ${req.body.functionName}.zip .; chmod 400 ~/.ssh/${req.body.sshKeyName}.pem; ssh -i ~/.ssh/${req.body.sshKeyName}.pem ${req.body.ec2User}@${req.body.publicDns}`, ['shell'], function (err, stdout, stderr) {
+    //     console.log(err || stdout || stderr)
+    // })
 }
 module.exports = dockerController;

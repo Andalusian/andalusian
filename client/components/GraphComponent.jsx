@@ -38,5 +38,4 @@ class GraphComponent extends React.Component {
     }
 }
 
-// ReactDOM.render(<GraphComponent />);
 export default GraphComponent

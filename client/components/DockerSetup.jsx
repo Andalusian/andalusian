@@ -4,7 +4,7 @@ import FileDropzone from "./FileDropzone.jsx"
 import DockerCredentials from './DockerCredentials.jsx';
 import axios from "axios";
 
-// const exec = require('child_process').exec;
+
 const DockerSetup = props => {
     function containerSetup() {
         axios
@@ -103,12 +103,15 @@ const DockerSetup = props => {
             .then((response) => { console.log(response); })
             .catch((error) => { console.log(error); })
     }
-    function deployContToAws(){
+    function deployImageToAws(){
         axios
         .post('/docker/deployContToAws', {
             username: props.username,
             functionName: props.functionName,
-            sshKeyName: props.sshKeyName
+            sshKeyName: props.sshKeyName,
+            ec2User: props.ec2User,
+            publicDns: props.publicDns,
+            awsRepoUri: props.awsRepoUri,
         })
         .then((response) => { console.log(response); })
         .catch((error) => { console.log(error); })
@@ -159,7 +162,6 @@ const DockerSetup = props => {
                 <div>
                     <input onChange={(e) => props.updateInfo('functionName', e.target.value)} type="text" name="functionName" placeholder="Image/Container Name" />
                     <FileDropzone uploadedFiles={props.uploadedFiles} updateInfo={props.updateInfo} pageSelect={props.pageSelect} />
-                    {/* <button onClick={() => funcSetup()}>Set Function</button> */}
                     <button onClick={() => dockerDirect()}>Setup Directory</button>
                     <button onClick={() => buildImage()}>Build Image</button>
                 </div>
@@ -180,11 +182,11 @@ const DockerSetup = props => {
                 <div>
                         <input
                             type="text"
-                            name="sshKeyName"
-                            placeholder="Enter SSH key name here (in ssh directory)"
-                            onChange={e => props.updateInfo('sshKeyName', e.target.value)}
+                            name="publicDns"
+                            placeholder="Paste ECR Repo URI here"
+                            onChange={e => props.updateInfo('awsRepoUri', e.target.value)}
                         />
-                    <button onClick={() => deployContToAws()}>Deploy to AWS</button>
+                    <button onClick={() => deployImageToAws()}>Push to AWS ECR</button>
                 </div>
             </pre>
         </React.Fragment>

@@ -56,6 +56,9 @@ class App extends React.Component {
       copy: '',
       repository: '',
       sshKeyName: '',
+      ec2User: '',
+      publicDns: '',
+      awsRepoUri: '',
       //azure
       azureRuntime: '',
       azureTemplate: '',
@@ -218,6 +221,10 @@ class App extends React.Component {
           exposePort: '',
           com: '',
           copy: '',
+          repository: '',
+          sshKeyName: '',
+          ec2User: '',
+          publicDns: '',
           //azure
           azureRuntime: '',
           azureTemplate: '',
@@ -242,6 +249,7 @@ class App extends React.Component {
   }
 
   osChecker() {
+    if (this.state.checkCount === 0) {
     let platform = window.navigator.platform,
       macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
       windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
@@ -253,11 +261,11 @@ class App extends React.Component {
     } else if (!os && /Linux/.test(platform)) {
       os = 'Linux';
     }
-    if (this.state.checkCount === 0) {
-      this.setState({
-        operatingSystem: os,
-        checkCount: this.state.checkCount + 1,
-      })
+    this.setState({
+      operatingSystem: os,
+      checkCount: this.state.checkCount + 1,
+    })
+      console.log(os)
     }
   }
 
@@ -587,13 +595,6 @@ class App extends React.Component {
 
   render() {
     let displayed;
-    // this.osChecker()
-    // if ((this.state.pageSelect === '' && this.state.isLogin)) {
-    //   displayed = (<React.Fragment>
-    //     <AccountPage />
-    //   </React.Fragment>)
-    // }
-    // else
     if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
       let filteredkeys = this.state.keys.filter(key => key.keyType === 'googleKey');
       if (filteredkeys[0] === undefined) {
@@ -719,6 +720,9 @@ class App extends React.Component {
         dockerUsername={this.state.dockerUsername}
         dockerPassword={this.state.dockerPassword}
         sshKeyName={this.state.sshKeyName}
+        ec2User={this.state.ec2User}
+        publicDns={this.state.publicDns}
+        awsRepoUri={this.state.awsRepoUri}
       ></DockerSetup></React.Fragment>)
     } else if (this.state.pageSelect === 'Azure') {
       displayed = (<React.Fragment>
