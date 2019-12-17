@@ -45,4 +45,8 @@ router.post("/dockerDeleteContainers", dockerController.deleteContainers, (req, 
 router.post("/deployContToAws", dockerController.deployContToAws, (req, res) => {
   res.status(200);
 })
+
+router.post("/connectToEcr", dockerController.connectToEcr, (req, res) => {
+  res.status(200);
+})
 module.exports = router;

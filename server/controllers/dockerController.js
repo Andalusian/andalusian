@@ -117,26 +117,32 @@ dockerController.dockerLogin = (req, res, next) => {
         console.log(err || stdout || stderr)
     })
 }
-
-dockerController.deployContToAws = (req, res, next) => {
+dockerController.connectToEcr = (req, res, next) => {
     AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
     const ecr = new AWS.ECR();
-
     var params = {
         registryIds: [
         '691202161934',
         ]
     };
     ecr.getAuthorizationToken(params, function(err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
+      let text
+      let connectUri
+        if (err) console.log(err, err.stack); // an error occurred
       else {
           let data64 = data.authorizationData[0].authorizationToken;
+          connectUri = data.authorizationData[0].proxyEndpoint
           let buff = new Buffer(data64, 'base64')
-          let text = buff.toString('ascii');
-
+          text = buff.toString('ascii');
+          text = /:(.+)/.exec(text)[1];
           console.log(text); 
         }          // successful response
+              exec(`docker login -u AWS --password ${text} ${connectUri};`, ['shell'], function (err, stdout, stderr) {
+                console.log(err || stdout || stderr)
+            })
     });
+}
+dockerController.deployContToAws = (req, res, next) => {
 
     exec(`docker tag ${req.body.functionName} ${req.body.awsRepoUri}; docker push ${req.body.awsRepoUri}`, ['shell'], function (err, stdout, stderr) {
             console.log(err || stdout || stderr)

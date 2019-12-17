@@ -61,6 +61,7 @@ class App extends React.Component {
       ec2User: '',
       publicDns: '',
       awsRepoUri: '',
+
       //azure
       azureRuntime: '',
       azureTemplate: '',
@@ -70,7 +71,6 @@ class App extends React.Component {
       azurePass: '',
       azureTenant: '',
       // both
-      // pageSelect: 'Gcloud',
       pageSelect: '',
       functionName: '',
       uploadedFunction: '',
@@ -240,6 +240,7 @@ class App extends React.Component {
           sshKeyName: '',
           ec2User: '',
           publicDns: '',
+          awsRepoUri: '',
           //azure
           azureRuntime: '',
           azureTemplate: '',
@@ -249,7 +250,6 @@ class App extends React.Component {
           azurePass: '',
           azureTenant: '',
           // both
-          // pageSelect: 'Gcloud',
           pageSelect: '',
           functionName: '',
           uploadedFunction: '',
@@ -665,7 +665,6 @@ class App extends React.Component {
             googleFunctionInfoButtonClicked={this.state.googleFunctionInfoButtonClicked}
             keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
             googleAddKeyModalClicked={this.state.googleAddKeyModalClicked}
-
           />
         }
 
@@ -763,6 +762,7 @@ class App extends React.Component {
           repository={this.state.repository}
           dockerUsername={this.state.dockerUsername}
           dockerPassword={this.state.dockerPassword}
+          awsRepoUri={this.state.awsRepoUri}
         ></DockerSetup></React.Fragment>)
       } else if (this.state.pageSelect === 'Azure') {
         displayed = (<React.Fragment>
@@ -816,4 +816,3 @@ class App extends React.Component {
 }
 
 export default App;
-// module.exports = App;

@@ -116,6 +116,20 @@ const DockerSetup = props => {
         .then((response) => { console.log(response); })
         .catch((error) => { console.log(error); })
     }
+    function connectToEcr(){
+        axios
+        .post('/docker/connectToEcr', {
+            username: props.username,
+            functionName: props.functionName,
+            sshKeyName: props.sshKeyName,
+            ec2User: props.ec2User,
+            publicDns: props.publicDns,
+            awsRepoUri: props.awsRepoUri,
+        })
+        .then((response) => { console.log(response); })
+        .catch((error) => { console.log(error); })
+    }
+    
     
     return (
         <React.Fragment>
@@ -182,10 +196,12 @@ const DockerSetup = props => {
                 <div>
                         <input
                             type="text"
-                            name="publicDns"
+                            name="awsRepoUri"
                             placeholder="Paste ECR Repo URI here"
                             onChange={e => props.updateInfo('awsRepoUri', e.target.value)}
                         />
+                    
+                    <button onClick={() => connectToEcr()}>Connect to ECR Instance</button>
                     <button onClick={() => deployImageToAws()}>Push to AWS ECR</button>
                 </div>
             </pre>
