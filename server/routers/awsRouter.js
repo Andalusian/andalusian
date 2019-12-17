@@ -24,9 +24,9 @@ router.post("/getFuncInfo", awsController.getFuncInfo, awsController.getInvocati
 //   res.sendStatus(200);
 // })
 
-router.post("/createFunction", awsController.createFunction, (req, res) => {
-  res.sendStatus(200);
-})
+// router.post("/createFunction", awsController.createFunction, (req, res) => {
+//   res.sendStatus(200);
+// })
 
 router.post("/deleteFunc", awsController.deleteFunc, (req, res) => {
   res.sendStatus(200);
@@ -36,7 +36,11 @@ router.post("/invokeFunc", awsController.invokeFunc, (req, res) => {
   res.sendStatus(200);
 })
 
-router.post("/getawsAccountID", awsController.getawsAccountID, (req, res) => {
+// router.post("/getawsAccountID", awsController.getawsAccountID, (req, res) => {
+//   res.status(200).send(res.locals.awsAccountID);
+// })
+
+router.post("/createFunction", awsController.getawsAccountID, awsController.createFunction, (req, res) => {
   res.status(200).send(res.locals.awsAccountID);
 })
 
