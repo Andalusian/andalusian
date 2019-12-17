@@ -171,9 +171,6 @@ class App extends React.Component {
           console.log(this.state.dockerUsername)
         });
         this.osChecker();
-        this.configureAWS();
-        // setTimeout(() => this.listFunctions(), 2000);
-
       })
   }
 

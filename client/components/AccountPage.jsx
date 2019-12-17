@@ -27,7 +27,7 @@ const AccountPage = props => {
                 props.updateInfo(e.target.name, e.target.value);
                 // props.configureAWS();
                 // props.listFunctions();
-                setTimeout(() => props.configureAWS(), 1000)
+                setTimeout(() => props.configureAWS(), 500)
                 // setTimeout(() => props.listFunctions(), 2000);
             }} >
                 <option defaultValue={"a"}>-- select region --</option>
