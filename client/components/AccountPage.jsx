@@ -1,6 +1,4 @@
 import React from "react";
-import AWSCurrentFunctions from './AWSCurrentFunctions.jsx';
-
 
 const AccountPage = props => {
 
@@ -13,22 +11,15 @@ const AccountPage = props => {
                 props.googleListFunctions()
             }} >
                 <option defaultValue=''> -- select project -- </option>
-                {
-                    props.keys.map((key, i) => {
-                        return (
-                            <option key={i} value={key.keyAlias} >{key.keyAlias}</option>
-                        )
-                    })
-                }
+                {props.keys.map((key, i) => {
+                    return (<option key={i} value={key.keyAlias} >{key.keyAlias}</option>)
+                })}
             </select>
             {props.googleFunctionNames}
             <h3>AWS</h3>
             <select id="awsRegionAcct" name="awsRegion" onChange={function (e) {
                 props.updateInfo(e.target.name, e.target.value);
-                // props.configureAWS();
-                // props.listFunctions();
-                setTimeout(() => props.configureAWS(), 1000)
-                // setTimeout(() => props.listFunctions(), 2000);
+                setTimeout(() => props.configureAWS(), 500)
             }} >
                 <option defaultValue={"a"}>-- select region --</option>
                 <option value="us-east-1">US East 1</option>
@@ -51,7 +42,7 @@ const AccountPage = props => {
                 <option value="sa-east-1">SA East 1</option>
             </select>
             {props.shortCurrentFunctions}
-            {/* <h3>Azure</h3> */}
+            <h3>Azure</h3>
         </React.Fragment>
     );
 };

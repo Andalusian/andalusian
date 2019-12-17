@@ -2,7 +2,6 @@ import React from "react";
 import MyDropzone from "./MyDropzone.jsx";
 import AWSCredentials from './AWSCredentials.jsx';
 import AWSCurrentFunctions from './AWSCurrentFunctions.jsx';
-import axios from "axios";
 
 const AWSFunctionForm = props => {
   return (
