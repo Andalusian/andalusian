@@ -8,7 +8,10 @@ const AccountPage = props => {
         <React.Fragment>
             <h2>Account Overview</h2>
             <h3>GCloud</h3>
-            <select className="keySelection" name="googleKeyAlias" onChange={e => props.updateInfo(e.target.name, e.target.value)} >
+            <select id="GKeySelect" className="keySelection" name="googleKeyAlias" onChange={function (e) {
+                props.updateInfo(e.target.name, e.target.value);
+                props.googleListFunctions()
+            }} >
                 <option defaultValue=''> -- select project -- </option>
                 {
                     props.keys.map((key, i) => {
@@ -18,8 +21,9 @@ const AccountPage = props => {
                     })
                 }
             </select>
+            {props.googleFunctionNames}
             <h3>AWS</h3>
-            <select id="awsRegion" name="awsRegion" onChange={function (e) {
+            <select id="awsRegionAcct" name="awsRegion" onChange={function (e) {
                 props.updateInfo(e.target.name, e.target.value);
                 // props.configureAWS();
                 // props.listFunctions();
@@ -47,7 +51,7 @@ const AccountPage = props => {
                 <option value="sa-east-1">SA East 1</option>
             </select>
             {props.shortCurrentFunctions}
-            <h3>Azure</h3>
+            {/* <h3>Azure</h3> */}
         </React.Fragment>
     );
 };

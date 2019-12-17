@@ -29,6 +29,7 @@ class App extends React.Component {
       googleFunctionButtons: [],
       googleFunctionInfoButtonClicked: false,
       googleFunctionInfo: {},
+      googleFunctionNames: '',
       // aws
       awsAccessKey: '',
       awsSecretAccessKey: '',
@@ -189,32 +190,39 @@ class App extends React.Component {
     axios.post('db/deleteUserFiles', { username: this.state.username })
       .then(() => {
         this.setState({
+
+          // shinobi
           username: '',
           password: '',
+          keys: [],
           // google
           googleKey: '',
+          googleKeyAlias: '',
+          googleAddKeyModalClicked: false,
           runtime: undefined,
           googleProject: '',
+          googleFunctionButtons: [],
+          googleFunctionInfoButtonClicked: false,
+          googleFunctionInfo: {},
+          googleFunctionNames: '',
           // aws
           awsAccessKey: '',
           awsSecretAccessKey: '',
-          S3BucketName: '',
-          newBucketRegion: "",
-          currRegion: "",
-          currentBuckets: [],
+          awsKeyAlias: '',
+          // S3BucketName: '',
+          // newBucketRegion: "",
+          // currRegion: "",
+          // currentBuckets: [],
           codeHere: "",
           currentFunctions: [],
-          shortCurrentFunctions: [],
-          // awsRegion: '',
-          awsRuntime: '',
           awsRegion: '',
+          awsRuntime: '',
           awsRole: '',
           awsAccountID: '',
           codeLoaded: '',
-          awsFuncState: '',
-          awsFuncRuntime: '',
-          awsFuncLastModified: '',
-          awsFuncRole: '',
+          awsPopup: false,
+          functionInvocations: [],
+          shortCurrentFunctions: [],
           // docker
           dockerUsername: '',
           dockerPassword: '',
@@ -224,6 +232,7 @@ class App extends React.Component {
           exposePort: '',
           com: '',
           copy: '',
+          repository: '',
           //azure
           azureRuntime: '',
           azureTemplate: '',
@@ -233,15 +242,18 @@ class App extends React.Component {
           azurePass: '',
           azureTenant: '',
           // both
+          // pageSelect: 'Gcloud',
           pageSelect: '',
           functionName: '',
           uploadedFunction: '',
-          uploadedFiles: [],
           operatingSystem: '',
           checkCount: 0,
+          //Dropzone prop for file data and text
+          uploadedFiles: [],
           // render states
           isLogin: false,
-          isSignup: false
+          isSignup: false,
+
         })
       })
       .then(setTimeout(() => console.log(this.state), 2000))
@@ -390,6 +402,10 @@ class App extends React.Component {
         .then(data => {
           const fnList = data.fn_list;
           const fnButtons = [<hr />, <h4>Project's Functions</h4>];
+          const fnNames = [];
+          fnList.forEach((el) => {
+            fnNames.push(<div id={el} className="myGoogleFuncsShort">{el}</div>)
+          })
           fnList.forEach((el) => {
             fnButtons.push(<div id={el}>
               <span>{el}</span>
@@ -427,7 +443,10 @@ class App extends React.Component {
               }}>Delete</button>
             </div>);
           });
-          this.setState({ googleFunctionButtons: fnButtons });
+          this.setState({
+            googleFunctionButtons: fnButtons,
+            googleFunctionNames: fnNames
+          });
         })
     }
   }
@@ -604,6 +623,9 @@ class App extends React.Component {
           updateInfo={this.updateInfo}
           configureAWS={this.configureAWS}
           shortCurrentFunctions={this.state.shortCurrentFunctions}
+          googleFunctionNames={this.state.googleFunctionNames}
+          googleListFunctions={this.googleListFunctions}
+
         />
       </React.Fragment>)
     }
