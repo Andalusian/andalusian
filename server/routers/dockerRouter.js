@@ -37,7 +37,16 @@ router.post("/dockerLogin", dockerController.dockerLogin, (req, res) => {
 router.post("/dockerHubDeploy", dockerController.dockerHubDeploy, (req, res) => {
   res.status(200);
 })
+
 router.post("/dockerDeleteContainers", dockerController.deleteContainers, (req, res) => {
+  res.status(200);
+})
+
+router.post("/deployContToAws", dockerController.deployContToAws, (req, res) => {
+  res.status(200);
+})
+
+router.post("/connectToEcr", dockerController.connectToEcr, (req, res) => {
   res.status(200);
 })
 module.exports = router;

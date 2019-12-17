@@ -57,6 +57,11 @@ class App extends React.Component {
       com: '',
       copy: '',
       repository: '',
+      sshKeyName: '',
+      ec2User: '',
+      publicDns: '',
+      awsRepoUri: '',
+
       //azure
       azureRuntime: '',
       azureTemplate: '',
@@ -66,7 +71,6 @@ class App extends React.Component {
       azurePass: '',
       azureTenant: '',
       // both
-      // pageSelect: 'Gcloud',
       pageSelect: '',
       functionName: '',
       uploadedFunction: '',
@@ -233,6 +237,10 @@ class App extends React.Component {
           com: '',
           copy: '',
           repository: '',
+          sshKeyName: '',
+          ec2User: '',
+          publicDns: '',
+          awsRepoUri: '',
           //azure
           azureRuntime: '',
           azureTemplate: '',
@@ -242,7 +250,6 @@ class App extends React.Component {
           azurePass: '',
           azureTenant: '',
           // both
-          // pageSelect: 'Gcloud',
           pageSelect: '',
           functionName: '',
           uploadedFunction: '',
@@ -260,6 +267,7 @@ class App extends React.Component {
   }
 
   osChecker() {
+    if (this.state.checkCount === 0) {
     let platform = window.navigator.platform,
       macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
       windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
@@ -271,11 +279,11 @@ class App extends React.Component {
     } else if (!os && /Linux/.test(platform)) {
       os = 'Linux';
     }
-    if (this.state.checkCount === 0) {
-      this.setState({
-        operatingSystem: os,
-        checkCount: this.state.checkCount + 1,
-      })
+    this.setState({
+      operatingSystem: os,
+      checkCount: this.state.checkCount + 1,
+    })
+      console.log(os)
     }
   }
 
@@ -615,7 +623,6 @@ class App extends React.Component {
 
   render() {
     let displayed;
-    // this.osChecker()
     if ((this.state.pageSelect === '' && this.state.isLogin)) {
       displayed = (<React.Fragment>
         <AccountPage
@@ -658,7 +665,6 @@ class App extends React.Component {
             googleFunctionInfoButtonClicked={this.state.googleFunctionInfoButtonClicked}
             keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
             googleAddKeyModalClicked={this.state.googleAddKeyModalClicked}
-
           />
         }
 
@@ -756,6 +762,7 @@ class App extends React.Component {
           repository={this.state.repository}
           dockerUsername={this.state.dockerUsername}
           dockerPassword={this.state.dockerPassword}
+          awsRepoUri={this.state.awsRepoUri}
         ></DockerSetup></React.Fragment>)
       } else if (this.state.pageSelect === 'Azure') {
         displayed = (<React.Fragment>
@@ -809,4 +816,3 @@ class App extends React.Component {
 }
 
 export default App;
-// module.exports = App;
