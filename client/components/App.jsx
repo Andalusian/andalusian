@@ -11,6 +11,8 @@ import AWSFunctionInfo from "./AWSFunctionInfo.jsx";
 import AzureFunctionForm from "./AzureFunctionForm.jsx";
 import DockerSetup from "./DockerSetup.jsx";
 import GoogleWelcomeForm from "./GoogleWelcomeForm.jsx";
+import Header from './Header.jsx';
+import Sidebar from './Sidebar.jsx';
 
 class App extends React.Component {
   constructor(props) {
@@ -164,7 +166,6 @@ class App extends React.Component {
         });
         this.setState(updateStateObject, () => {
           console.log(this.state);
-          console.log(this.state.dockerUsername)
         });
         this.osChecker()
       });
@@ -626,9 +627,7 @@ class App extends React.Component {
       }
 
     } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && !this.state.awsPopup) {
-      displayed = (<React.Fragment>
-        {/* <GraphComponent /> */}
-        <AWSFunctionForm id="AWSFunctionForm"
+      displayed = (<AWSFunctionForm id="AWSFunctionForm"
           currentFunctions={this.state.currentFunctions}
           currRegion={this.state.currRegion}
           submitKey={this.handleSubmitKey}
@@ -656,7 +655,7 @@ class App extends React.Component {
           codeLoaded={this.state.codeLoaded}
           awsPopup={this.state.awsPopup}
           updateFunction={this.updateFunction}
-        /></React.Fragment>)
+        />)
     } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && this.state.awsPopup) {
       displayed = (<React.Fragment>
         <AWSFunctionForm id="AWSFunctionForm"
@@ -702,7 +701,7 @@ class App extends React.Component {
         />
       </React.Fragment>)
     } else if ((this.state.pageSelect === 'Docker' && this.state.isLogin)) {
-      displayed = (<React.Fragment><DockerSetup id="DockerSetup"
+      displayed = (<DockerSetup id="DockerSetup"
         code={this.state.uploadedFunction}
         runtimeEnv={this.state.runtimeEnv}
         workDir={this.state.workDir}
@@ -719,10 +718,9 @@ class App extends React.Component {
         repository={this.state.repository}
         dockerUsername={this.state.dockerUsername}
         dockerPassword={this.state.dockerPassword}
-      ></DockerSetup></React.Fragment>)
+       />)
     } else if (this.state.pageSelect === 'Azure') {
-      displayed = (<React.Fragment>
-        <AzureFunctionForm
+      displayed = (<AzureFunctionForm
           username={this.state.username}
           updateInfo={this.updateInfo}
           azureRuntime={this.state.azureRuntime}
@@ -737,33 +735,32 @@ class App extends React.Component {
           submitKey={this.handleSubmitKey}
           uploadedFunction={this.state.uploadedFunction}
           updateCode={this.updateCode}
-        />
-      </React.Fragment>)
+        />)
     }
 
     return (
-      <div className="mainContainer">
-        <h1>Shinobi</h1>
-        {!this.state.isLogin && !this.state.isSignup && (
-          <Login
-            updateInfo={this.updateInfo}
-            handleLogin={this.handleLogin}
-            handleToggleSignup={this.handleToggleSignup}
-          />
+      <div className="appContainer">
+        {/* <Sidebar /> */}
+        <Header handleSignout={this.handleSignout} isLogin={this.state.isLogin} isSignup={this.state.isSignup} />
+        { !this.state.isLogin && (
+          <div className="grid">
+            {!this.state.isLogin && !this.state.isSignup && (
+              <Login
+                updateInfo={this.updateInfo}
+                handleLogin={this.handleLogin}
+                handleToggleSignup={this.handleToggleSignup}
+              />
+            )}
+            {this.state.isSignup && (
+              <Signup
+                updateInfo={this.updateInfo}
+                handleSignup={this.handleSignup}
+                handleToggleSignup={this.handleToggleSignup}
+              />
+            )}
+          </div>
         )}
-        {this.state.isSignup && (
-          <Signup
-            updateInfo={this.updateInfo}
-            handleSignup={this.handleSignup}
-            handleToggleSignup={this.handleToggleSignup}
-          />
-        )}
-        {this.state.isLogin && !this.state.isSignup && (
-          <Signout
-            handleSignout={this.handleSignout}
-          />
-        )}
-
+        
         {this.state.isLogin && <MicroList pageSelect={this.state.pageSelect} updateInfo={this.updateInfo} />}
         {displayed}
       </div>

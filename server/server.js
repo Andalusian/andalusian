@@ -63,7 +63,7 @@ app.use('/azure', azureRouter);
 app.use('/db', dbRouter);
 
 app.get('/checkLogin', (req, res) => {
-  console.log(req.session);
+  // console.log(req.session);
   let isLoggedIn = false;
   // let isLoggedIn = (req.session.userId) ? true : false;
   res.status(200).json({ isLogin: isLoggedIn });

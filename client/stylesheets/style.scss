@@ -5,6 +5,23 @@
     // border: 1px solid #2668bd;
   }
 }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-gap: 20px;
+  margin: 25px;
+}
+
+.grid h2 {
+  grid-column: span 12;
+  text-align: center;
+}
+
+#headerGrid {
+  margin: 0;
+}
+
 body, html {
   background: #FAFBFD;
   color: #333;
@@ -12,14 +29,15 @@ body, html {
   // color: #d07d02;
   margin: 0;
   padding: 0;
+  padding-top: 40px;
   font-family: 'Lato', sans-serif;;
   font-size: 16px;
-  display: flex;
-  justify-content: center;
 }
+
 textarea {
   width: 100%;
 }
+
 input, textarea, .dropzone, .microList {
   display: block;
   background: white;
@@ -40,10 +58,14 @@ input, textarea, .dropzone, .microList {
     color: #bbb;
   }
 }
+#andalusianTitle {
+  grid-column: 6 / span 2;
+  text-align: center;
+}
 input[type="text"], input[type="password"] {
   width: 100%;
 }
-#loginForm {
+#loginForm, #signupForm {
   position: relative;
   width: 76%;
   left: 50%;
@@ -51,6 +73,10 @@ input[type="text"], input[type="password"] {
 }
 #loginForm input {
   width: 100%;
+}
+form h2 {
+  text-align: center;
+  margin-top: 0;
 }
 // input[name="functionName"] {
 //   display: inline-block;
@@ -83,44 +109,87 @@ select {
   border: 1px solid #eee;
   border-radius: 2px;
 }
-.mainContainer {
+.container {
   background: #ffffff;
   // background: #002235;
-  width: 550px;
   padding: 3rem;
   text-align: left;
-  margin: 3rem 0;
   border-radius: 4px;
   box-shadow: 0 0 20px rgba(0,0,0,.1);
-  h1 {
-    text-align: center;
-    margin: 0 0 1em 0;
-    font-family: 'Lato', sans-serif;
-  }
 }
 button, .dropzone {
   border-radius: 2px;
-  // background: #eee;
-  // background: #7dd866;
   background: #E4EBF6;
   border: none;
-  // background: #338ec3;
   margin: 10px 5px 10px 0;
   padding: 1em 1.5em;
-  transition: .25s ease all;
+  transition: 1s ease all;
   font-family: 'Lato', sans-serif;
-  // color: #f0f0f0;
+  width: 8rem;
+  box-shadow: 0 0 0 rgba(0,0,0,0);
   &:hover {
     background: #EEA822;
-    // border-color: #e88014;
-    // background: #83dc6d;
-      //  background: #4c4d4c;
-    color: white;
+    background: linear-gradient(135deg, #ffad34, #ff7021);
+    // color: white;
+  }
+  &:active {
+    // background: #72cc20;
+    background: #ff7021;
+    box-shadow: inset 0 0 10px rgba(0,0,0,.25);
   }
 }
 
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 25px;
+  background: white;
+  box-shadow: 5px 0 10px rgba(0,0,0,.125);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 999;
+  h1 {
+    display: inline;
+    margin: 0;
+  }
+  #iconHolder {
+    height: 50px;
+    width: 50px;
+    border-radius: 2px;
+    // background: #eee;
+    background-image: url('https://icon-library.net/images/horse-icon-png/horse-icon-png-2.jpg');
+    background-size: cover;
+  }
+}
+
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100px;
+  background: #bbb;
+  box-shadow: 5px 0 10px rgba(0,0,0,.125);
+}
+
 #signoutButton {
-  border: none;
+  margin: 0;
+  grid-column: 12;
+  width: 100%;
+}
+
+#loginContainer, #signupContainer {
+  grid-column: 5 / span 4;
+}
+
+.leftColumn {
+  grid-column: 1 / span 4;
+}
+.mainColumn {
+  grid-column: 5 / span 8;
 }
 
 #loginButton {
@@ -138,24 +207,13 @@ button, .dropzone {
 
 #drop1 {
   margin-top: 15px;
+  width: auto;
 }
 
 #codeHere, #googleKey {
 margin: 0 auto;
 width: 98%;
 }
-
-// .dropzone {
-//   transition: .25s ease all;
-//   &:hover {
-//     background: #8fcc52;
-//   }
-//   border-style: solid;
-//   border-color: #a8a6a6;
-//   &:focus {
-//     outline: 0;
-//   }
-// }
 
 .functionName {
   margin-bottom: 15px;
@@ -230,7 +288,7 @@ h5 {
 //   margin-right: 5px;
 // }
 
-#awsCredentials, #googleCredentials, #azureCredentials, #dockerCredentials {
+#awsCredentials, #azureCredentials, #dockerCredentials {
   display: grid;
   grid-template-columns: calc(30% - 3px) calc(70% - 3px);
   grid-gap: 6px;
@@ -244,10 +302,6 @@ h5 {
 }
 
 #awsCredentials input, #googleCredentials input {
-  margin: 0;
-}
-
-#googleCredentials button {
   margin: 0;
 }
 
