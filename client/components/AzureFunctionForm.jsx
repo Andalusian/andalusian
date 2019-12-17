@@ -10,12 +10,15 @@ const AzureFunctionForm = (props) => {
             <h2>Azure</h2>
             <h3>Configuration</h3>
             <AzureCredentials
+                username={props.username}
                 updateInfo={props.updateInfo}
                 azureUser={props.azureUser}
                 azurePass={props.azurePass}
                 azureTenant={props.azureTenant}
                 submitKey={props.submitKey} />
-            <AzureCurrentFunctions azureFunctions={props.azureFunctions} />
+            <AzureCurrentFunctions
+                listAzure={props.listAzure}
+                azureFunctions={props.azureFunctions} />
 
             <hr />
             <h4>Create Function</h4>

@@ -5,7 +5,7 @@ const MicroList = (props) => {
   return (
     <div className='radio'>
       <label>
-        <input onChange={() => props.updateInfo('pageSelect', 'Gcloud')} type="radio"
+        <input id="googleRadio" onChange={() => props.updateInfo('pageSelect', 'Gcloud')} type="radio"
           value="Gcloud" checked={props.pageSelect === 'Gcloud'} />
         <img id="Gcloudimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png" />
       </label>

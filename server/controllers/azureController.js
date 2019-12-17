@@ -61,9 +61,18 @@ azureController.createFunc = (req, res, next) => {
     })
 }
 
-// azureController.getFuncs = (req, res, next) => {
-//
-// }
+azureController.getFuncs = (req, res, next) => {
+    const { projectName } = req.body;
+
+    exec(`az functionapp list`, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return res.sendStatus(500);
+        }
+        res.locals = stdout;
+        return next();
+    })
+}
 
 azureController.updateCode = (req, res, next) => {
     const { code, username, projectName, functionName } = req.body;

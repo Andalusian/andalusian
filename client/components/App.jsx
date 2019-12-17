@@ -357,11 +357,16 @@ class App extends React.Component {
       });
   }
 
-  // listAzure() {
-  //   const azureFuncs = [];
-  //
-  //   // axios.post('/azure/getFuncs', {projectName: this.state.})
-  // }
+  listAzure() {
+    const azureFuncArr = [];
+
+    axios.post('/azure/getFuncs', {projectName: this.state.azureProject})
+        .then(data => {
+          azureFuncArr.push(<div className="myAzureFuncs">{data.data[0].name} <button>Get Info</button> <button>Start</button> <button>Stop</button> </div>)
+          this.setState({azureFunctions: azureFuncArr})
+          console.log(this.state.azureFunctions)
+        })
+  }
 
   listFunctions() {
     let allFuncArray = [];
@@ -746,6 +751,7 @@ class App extends React.Component {
           uploadedFunction={this.state.uploadedFunction}
           updateCode={this.updateCode}
           azureFunctions={this.state.azureFunctions}
+          listAzure={this.listAzure}
         />
       </React.Fragment>)
     }
