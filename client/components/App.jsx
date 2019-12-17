@@ -23,6 +23,7 @@ class App extends React.Component {
       // google
       googleKey: '',
       googleKeyAlias: '',
+      googleAddKeyModalClicked: false,
       runtime: undefined,
       googleProject: '',
       googleFunctionButtons: [],
@@ -38,7 +39,7 @@ class App extends React.Component {
       // currentBuckets: [],
       codeHere: "",
       currentFunctions: [],
-      awsRegion: 'us-east-1',
+      awsRegion: '',
       awsRuntime: '',
       awsRole: '',
       awsAccountID: '',
@@ -124,7 +125,6 @@ class App extends React.Component {
       }
     }
     this.setState(updateObj);
-    return this.state.property
   }
 
   getawsAccountID() {
@@ -170,8 +170,6 @@ class App extends React.Component {
         this.osChecker();
         this.configureAWS();
         // setTimeout(() => this.listFunctions(), 2000);
-        setTimeout(() => console.log(this.state.currentFunctions), 3000);
-
 
       })
   }
@@ -207,8 +205,9 @@ class App extends React.Component {
           codeHere: "",
           currentFunctions: [],
           shortCurrentFunctions: [],
-          awsRegion: '',
+          // awsRegion: '',
           awsRuntime: '',
+          awsRegion: '',
           awsRole: '',
           awsAccountID: '',
           codeLoaded: '',
@@ -244,8 +243,8 @@ class App extends React.Component {
           isLogin: false,
           isSignup: false
         })
-      });
-    console.log(this.state);
+      })
+      .then(setTimeout(() => console.log(this.state), 2000))
   }
 
   osChecker() {
@@ -597,14 +596,14 @@ class App extends React.Component {
 
   render() {
     let displayed;
+    // this.osChecker()
     if ((this.state.pageSelect === '' && this.state.isLogin)) {
       displayed = (<React.Fragment>
         <AccountPage
+          keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
           updateInfo={this.updateInfo}
           configureAWS={this.configureAWS}
-          listFunctions={this.listFunctions}
           shortCurrentFunctions={this.state.shortCurrentFunctions}
-          keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
         />
       </React.Fragment>)
     }
@@ -636,6 +635,8 @@ class App extends React.Component {
             googleFunctionInfo={this.state.googleFunctionInfo}
             googleFunctionInfoButtonClicked={this.state.googleFunctionInfoButtonClicked}
             keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
+            googleAddKeyModalClicked={this.state.googleAddKeyModalClicked}
+
           />
         }
 

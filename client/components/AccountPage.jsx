@@ -26,8 +26,8 @@ const AccountPage = props => {
                 setTimeout(() => props.configureAWS(), 1000)
                 // setTimeout(() => props.listFunctions(), 2000);
             }} >
-                {/* <option defaultValue={"us-east-1"}>-- select region --</option> */}
-                <option defaultValue="us-east-1">US East 1</option>
+                <option defaultValue={"a"}>-- select region --</option>
+                <option value="us-east-1">US East 1</option>
                 <option value="us-east-2">US East 2</option>
                 <option value="us-west-1">US West 1</option>
                 <option value="us-west-2">US West 2</option>

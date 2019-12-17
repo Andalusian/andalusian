@@ -26,7 +26,7 @@ awsController.createFunction = (req, res, next) => {
     },
     "FunctionName": `${req.body.functionName}`,
     "Handler": `${req.body.functionName}` + ".handler",
-    "Role": "arn:aws:iam::" + `${req.body.awsAccountID}` + `${req.body.awsRole}`,
+    "Role": "arn:aws:iam::" + `${res.locals.awsAccountID.Account}` + `${req.body.awsRole}`,
     "Runtime": `${req.body.awsRuntime}`
   };
   console.log("PARAMS --->", params)

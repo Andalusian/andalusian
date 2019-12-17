@@ -7,7 +7,8 @@ const MicroList = (props) => {
       <label>
         <input onChange={() => props.updateInfo('pageSelect', '')} type="radio"
           value="myAccount" checked={props.pageSelect === ''} />
-        <h5>My Account</h5>
+        <img id="myAccountimg" src="https://unavsa.org/wp-content/uploads/2018/10/profile-icon.png" />
+        {/* <h5>My Account</h5> */}
       </label>
       <label>
         <input onChange={() => props.updateInfo('pageSelect', 'Gcloud')} type="radio"
