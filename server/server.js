@@ -62,7 +62,7 @@ app.use('/azure', azureRouter);
 app.use('/db', dbRouter);
 
 app.get('/checkLogin', (req, res) => {
-  console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, req.session);
+  console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} | server/checkLogin `, req.session);
   let isLoggedIn = false;
   // let isLoggedIn = (req.session.userId) ? true : false;
   res.status(200).json({ isLogin: isLoggedIn });
@@ -75,7 +75,7 @@ app.use('*', (req, res) => {
 
 // GLOBAL ERROR HANDLER
 app.use((err, req, res, next) => {
-  console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, err);
+  console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} | server/err `, err);
   res.status(500).send('Internal Server Error');
 });
 

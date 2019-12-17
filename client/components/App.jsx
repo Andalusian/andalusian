@@ -58,6 +58,11 @@ class App extends React.Component {
       com: '',
       copy: '',
       repository: '',
+      sshKeyName: '',
+      ec2User: '',
+      publicDns: '',
+      awsRepoUri: '',
+
       //azure
       azureRuntime: '',
       azureTemplate: '',
@@ -150,8 +155,6 @@ class App extends React.Component {
           }
         });
         this.setState(updateStateObject, () => {
-          console.log(this.state);
-          console.log(this.state.dockerUsername)
         });
         this.osChecker();
       })
@@ -214,6 +217,10 @@ class App extends React.Component {
           com: '',
           copy: '',
           repository: '',
+          sshKeyName: '',
+          ec2User: '',
+          publicDns: '',
+          awsRepoUri: '',
           //azure
           azureRuntime: '',
           azureTemplate: '',
@@ -223,7 +230,6 @@ class App extends React.Component {
           azurePass: '',
           azureTenant: '',
           // both
-          // pageSelect: 'Gcloud',
           pageSelect: '',
           functionName: '',
           uploadedFunction: '',
@@ -240,18 +246,18 @@ class App extends React.Component {
   }
 
   osChecker() {
-    let platform = window.navigator.platform,
-      macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
-      windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
-      os = null;
-    if (macosPlatforms.indexOf(platform) !== -1) {
-      os = 'Mac OS';
-    } else if (windowsPlatforms.indexOf(platform) !== -1) {
-      os = 'Windows';
-    } else if (!os && /Linux/.test(platform)) {
-      os = 'Linux';
-    }
     if (this.state.checkCount === 0) {
+      let platform = window.navigator.platform,
+        macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+        windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+        os = null;
+      if (macosPlatforms.indexOf(platform) !== -1) {
+        os = 'Mac OS';
+      } else if (windowsPlatforms.indexOf(platform) !== -1) {
+        os = 'Windows';
+      } else if (!os && /Linux/.test(platform)) {
+        os = 'Linux';
+      }
       this.setState({
         operatingSystem: os,
         checkCount: this.state.checkCount + 1,
@@ -656,7 +662,7 @@ class App extends React.Component {
             codeLoaded={this.state.codeLoaded}
             awsPopup={this.state.awsPopup}
             updateFunction={this.updateFunction}
-            // listFunctions={this.listFunctions}
+          // listFunctions={this.listFunctions}
           /></React.Fragment>)
       } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && this.state.awsPopup) {
         displayed = (<React.Fragment>
@@ -687,7 +693,7 @@ class App extends React.Component {
             codeLoaded={this.state.codeLoaded}
             awsPopup={this.state.awsPopup}
             updateFunction={this.updateFunction}
-            // listFunctions={this.listFunctions}
+          // listFunctions={this.listFunctions}
           />
           <AWSFunctionInfo closeFuncInfo={this.closeFuncInfo}
             functionName={this.state.functionName}
@@ -720,6 +726,7 @@ class App extends React.Component {
           repository={this.state.repository}
           dockerUsername={this.state.dockerUsername}
           dockerPassword={this.state.dockerPassword}
+          awsRepoUri={this.state.awsRepoUri}
         ></DockerSetup></React.Fragment>)
       } else if (this.state.pageSelect === 'Azure') {
         displayed = (<React.Fragment>
