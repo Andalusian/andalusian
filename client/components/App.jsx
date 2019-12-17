@@ -38,7 +38,7 @@ class App extends React.Component {
       // currentBuckets: [],
       codeHere: "",
       currentFunctions: [],
-      awsRegion: '',
+      awsRegion: 'us-east-1',
       awsRuntime: '',
       awsRole: '',
       awsAccountID: '',
@@ -64,8 +64,8 @@ class App extends React.Component {
       azurePass: '',
       azureTenant: '',
       // both
-      pageSelect: 'Gcloud',
-      // pageSelect: '',
+      // pageSelect: 'Gcloud',
+      pageSelect: '',
       functionName: '',
       uploadedFunction: '',
       operatingSystem: '',
@@ -134,7 +134,9 @@ class App extends React.Component {
       })
       .then(data => {
         this.setState({ awsAccountID: data.data.Account });
+
       })
+      .then(console.log(this.awsAccountID))
       .catch(function (error) {
         console.log(error);
       });
@@ -165,8 +167,13 @@ class App extends React.Component {
           console.log(this.state);
           console.log(this.state.dockerUsername)
         });
-        this.osChecker()
-      });
+        this.osChecker();
+        this.configureAWS();
+        // setTimeout(() => this.listFunctions(), 2000);
+        setTimeout(() => console.log(this.state.currentFunctions), 3000);
+
+
+      })
   }
 
   handleSignup() {
@@ -199,6 +206,7 @@ class App extends React.Component {
           currentBuckets: [],
           codeHere: "",
           currentFunctions: [],
+          shortCurrentFunctions: [],
           awsRegion: '',
           awsRuntime: '',
           awsRole: '',
@@ -226,7 +234,7 @@ class App extends React.Component {
           azurePass: '',
           azureTenant: '',
           // both
-          // pageSelect: '',
+          pageSelect: '',
           functionName: '',
           uploadedFunction: '',
           uploadedFiles: [],
@@ -346,6 +354,7 @@ class App extends React.Component {
       })
       .then((response) => {
         setTimeout(() => this.listFunctions(), 2000);
+        // this.getawsAccountID();
         // setTimeout(() => this.listBuckets(), 4000)
 
       })
@@ -356,6 +365,7 @@ class App extends React.Component {
 
   listFunctions() {
     let allFuncArray = [];
+    let shortAllFuncArray = [];
     axios
       .post("/aws/listFunctions", {
         username: this.state.username
@@ -363,10 +373,11 @@ class App extends React.Component {
       .then(data => {
         for (let i = 0; i < data.data.Functions.length; i++) {
           let funcName = data.data.Functions[i].FunctionName;
-          allFuncArray.push(<div className="myAWSFuncs" key={i}>{funcName} <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>)
+          allFuncArray.push(<div className="myAWSFuncs" key={i}>{funcName} <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>);
+          shortAllFuncArray.push(<div className="myAWSFuncsShort" key={i}>{funcName} </div>)
         }
         this.setState({ currentFunctions: allFuncArray });
-        this.getawsAccountID();
+        this.setState({ shortCurrentFunctions: shortAllFuncArray });
       })
       .catch(function (error) {
         console.log(error);
@@ -586,162 +597,167 @@ class App extends React.Component {
 
   render() {
     let displayed;
-    // this.osChecker()
-    // if ((this.state.pageSelect === '' && this.state.isLogin)) {
-    //   displayed = (<React.Fragment>
-    //     <AccountPage />
-    //   </React.Fragment>)
-    // }
-    // else
-    if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
-      let filteredkeys = this.state.keys.filter(key => key.keyType === 'googleKey');
-      if (filteredkeys[0] === undefined) {
-        displayed = (<React.Fragment>
-
-          <GoogleWelcomeForm
-            updateInfo={this.updateInfo}
-            submitKey={this.handleSubmitKey}
-          />
-        </React.Fragment>
-        )
-      } else {
-        displayed = <GoogleFunctionForm
-          username={this.state.username}
-          submitKey={this.handleSubmitKey}
-          googleProject={this.state.googleProject}
-          runtime={this.state.runtime}
-          functionName={this.state.functionName}
-          googleKey={this.state.googleKey}
-          googleKeyAlias={this.state.googleKeyAlias}
-          googleFunctionButtons={this.state.googleFunctionButtons}
+    if ((this.state.pageSelect === '' && this.state.isLogin)) {
+      displayed = (<React.Fragment>
+        <AccountPage
           updateInfo={this.updateInfo}
-          uploadedFunction={this.state.uploadedFunction}
-          googleListFunctions={this.googleListFunctions}
-          googleFunctionInfo={this.state.googleFunctionInfo}
-          googleFunctionInfoButtonClicked={this.state.googleFunctionInfoButtonClicked}
+          configureAWS={this.configureAWS}
+          listFunctions={this.listFunctions}
+          shortCurrentFunctions={this.state.shortCurrentFunctions}
           keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
-        />
-      }
-
-    } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && !this.state.awsPopup) {
-      displayed = (<React.Fragment>
-        {/* <GraphComponent /> */}
-        <AWSFunctionForm id="AWSFunctionForm"
-          currentFunctions={this.state.currentFunctions}
-          currRegion={this.state.currRegion}
-          submitKey={this.handleSubmitKey}
-          uploadedFunction={this.state.uploadedFunction}
-          S3BucketName={this.state.S3BucketName}
-          newBucketRegion={this.state.newBucketRegion}
-          awsAccessKey={this.state.awsAccessKey}
-          awsSecretAccessKey={this.state.awsSecretAccessKey}
-          awsRegion={this.state.awsRegion}
-          updateInfo={this.updateInfo}
-          functionName={this.state.functionName}
-          codeHere={this.state.codeHere}
-          currentBuckets={this.state.currentBuckets}
-          awsRuntime={this.state.awsRuntime}
-          awsRole={this.state.awsRole}
-          awsAccountID={this.state.awsAccountID}
-          listFunctions={this.listFunctions}
-          listBuckets={this.listBuckets}
-          createFunction={this.createFunction}
-          configureAWS={this.configureAWS}
-          createBucket={this.createBucket}
-          awsKeyAlias={this.state.awsKeyAlias}
-          keys={this.state.keys}
-          keys={this.state.keys.filter(key => key.keyType === 'awsSecretAccessKey')}
-          codeLoaded={this.state.codeLoaded}
-          awsPopup={this.state.awsPopup}
-          updateFunction={this.updateFunction}
-        /></React.Fragment>)
-    } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && this.state.awsPopup) {
-      displayed = (<React.Fragment>
-        <AWSFunctionForm id="AWSFunctionForm"
-          currentFunctions={this.state.currentFunctions}
-          currRegion={this.state.currRegion}
-          submitKey={this.handleSubmitKey}
-          uploadedFunction={this.state.uploadedFunction}
-          S3BucketName={this.state.S3BucketName}
-          newBucketRegion={this.state.newBucketRegion}
-          awsAccessKey={this.state.awsAccessKey}
-          awsSecretAccessKey={this.state.awsSecretAccessKey}
-          awsRegion={this.state.awsRegion}
-          updateInfo={this.updateInfo}
-          functionName={this.state.functionName}
-          codeHere={this.state.codeHere}
-          currentBuckets={this.state.currentBuckets}
-          awsRuntime={this.state.awsRuntime}
-          awsRole={this.state.awsRole}
-          awsAccountID={this.state.awsAccountID}
-          listFunctions={this.listFunctions}
-          listBuckets={this.listBuckets}
-          createFunction={this.createFunction}
-          configureAWS={this.configureAWS}
-          createBucket={this.createBucket}
-          awsKeyAlias={this.state.awsKeyAlias}
-          keys={this.state.keys}
-          keys={this.state.keys.filter(key => key.keyType === 'awsSecretAccessKey')}
-          codeLoaded={this.state.codeLoaded}
-          awsPopup={this.state.awsPopup}
-          updateFunction={this.updateFunction}
-        />
-        <AWSFunctionInfo closeFuncInfo={this.closeFuncInfo}
-          functionName={this.state.functionName}
-          awsFuncState={this.state.awsFuncState}
-          awsFuncRuntime={this.state.awsFuncRuntime}
-          awsFuncLastModified={this.state.awsFuncLastModified}
-          awsFuncRole={this.state.awsFuncRole}
-          awsRegion={this.state.awsRegion}
-          awsAccountID={this.state.awsAccountID}
-          functionInvocations={this.state.functionInvocations}
-          codeLoaded={this.state.codeLoaded}
-          graph={this.state.graph}
-        />
-      </React.Fragment>)
-    } else if ((this.state.pageSelect === 'Docker' && this.state.isLogin)) {
-      displayed = (<React.Fragment><DockerSetup id="DockerSetup"
-        code={this.state.uploadedFunction}
-        runtimeEnv={this.state.runtimeEnv}
-        workDir={this.state.workDir}
-        runtimeCom={this.state.runtimeCom}
-        exposePort={this.state.exposePort}
-        com={this.state.com}
-        updateInfo={this.updateInfo}
-        handleSubmitKey={this.handleSubmitKey}
-        functionName={this.state.functionName}
-        copy={this.state.copy}
-        uploadedFiles={this.state.uploadedFiles}
-        pageSelect={this.state.pageSelect}
-        username={this.state.username}
-        repository={this.state.repository}
-        dockerUsername={this.state.dockerUsername}
-        dockerPassword={this.state.dockerPassword}
-      ></DockerSetup></React.Fragment>)
-    } else if (this.state.pageSelect === 'Azure') {
-      displayed = (<React.Fragment>
-        <AzureFunctionForm
-          username={this.state.username}
-          updateInfo={this.updateInfo}
-          azureRuntime={this.state.azureRuntime}
-          azureTemplate={this.state.azureTemplate}
-          azureApp={this.state.azureApp}
-          azureProject={this.state.azureProject}
-          functionName={this.state.functionName}
-          azureUser={this.state.azureUser}
-          azurePass={this.state.azurePass}
-          azureTenant={this.state.azureTenant}
-          codeHere={this.state.codeHere}
-          submitKey={this.handleSubmitKey}
-          uploadedFunction={this.state.uploadedFunction}
-          updateCode={this.updateCode}
         />
       </React.Fragment>)
     }
+    else
+      if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
+        let filteredkeys = this.state.keys.filter(key => key.keyType === 'googleKey');
+        if (filteredkeys[0] === undefined) {
+          displayed = (<React.Fragment>
+
+            <GoogleWelcomeForm
+              updateInfo={this.updateInfo}
+              submitKey={this.handleSubmitKey}
+            />
+          </React.Fragment>
+          )
+        } else {
+          displayed = <GoogleFunctionForm
+            username={this.state.username}
+            submitKey={this.handleSubmitKey}
+            googleProject={this.state.googleProject}
+            runtime={this.state.runtime}
+            functionName={this.state.functionName}
+            googleKey={this.state.googleKey}
+            googleKeyAlias={this.state.googleKeyAlias}
+            googleFunctionButtons={this.state.googleFunctionButtons}
+            updateInfo={this.updateInfo}
+            uploadedFunction={this.state.uploadedFunction}
+            googleListFunctions={this.googleListFunctions}
+            googleFunctionInfo={this.state.googleFunctionInfo}
+            googleFunctionInfoButtonClicked={this.state.googleFunctionInfoButtonClicked}
+            keys={this.state.keys.filter(key => key.keyType === 'googleKey')}
+          />
+        }
+
+      } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && !this.state.awsPopup) {
+        displayed = (<React.Fragment>
+          {/* <GraphComponent /> */}
+          <AWSFunctionForm id="AWSFunctionForm"
+            currentFunctions={this.state.currentFunctions}
+            currRegion={this.state.currRegion}
+            submitKey={this.handleSubmitKey}
+            uploadedFunction={this.state.uploadedFunction}
+            S3BucketName={this.state.S3BucketName}
+            newBucketRegion={this.state.newBucketRegion}
+            awsAccessKey={this.state.awsAccessKey}
+            awsSecretAccessKey={this.state.awsSecretAccessKey}
+            awsRegion={this.state.awsRegion}
+            updateInfo={this.updateInfo}
+            functionName={this.state.functionName}
+            codeHere={this.state.codeHere}
+            currentBuckets={this.state.currentBuckets}
+            awsRuntime={this.state.awsRuntime}
+            awsRole={this.state.awsRole}
+            awsAccountID={this.state.awsAccountID}
+            listFunctions={this.listFunctions}
+            listBuckets={this.listBuckets}
+            createFunction={this.createFunction}
+            configureAWS={this.configureAWS}
+            createBucket={this.createBucket}
+            awsKeyAlias={this.state.awsKeyAlias}
+            keys={this.state.keys}
+            keys={this.state.keys.filter(key => key.keyType === 'awsSecretAccessKey')}
+            codeLoaded={this.state.codeLoaded}
+            awsPopup={this.state.awsPopup}
+            updateFunction={this.updateFunction}
+          /></React.Fragment>)
+      } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && this.state.awsPopup) {
+        displayed = (<React.Fragment>
+          <AWSFunctionForm id="AWSFunctionForm"
+            currentFunctions={this.state.currentFunctions}
+            currRegion={this.state.currRegion}
+            submitKey={this.handleSubmitKey}
+            uploadedFunction={this.state.uploadedFunction}
+            S3BucketName={this.state.S3BucketName}
+            newBucketRegion={this.state.newBucketRegion}
+            awsAccessKey={this.state.awsAccessKey}
+            awsSecretAccessKey={this.state.awsSecretAccessKey}
+            awsRegion={this.state.awsRegion}
+            updateInfo={this.updateInfo}
+            functionName={this.state.functionName}
+            codeHere={this.state.codeHere}
+            currentBuckets={this.state.currentBuckets}
+            awsRuntime={this.state.awsRuntime}
+            awsRole={this.state.awsRole}
+            awsAccountID={this.state.awsAccountID}
+            listFunctions={this.listFunctions}
+            listBuckets={this.listBuckets}
+            createFunction={this.createFunction}
+            configureAWS={this.configureAWS}
+            createBucket={this.createBucket}
+            awsKeyAlias={this.state.awsKeyAlias}
+            keys={this.state.keys}
+            keys={this.state.keys.filter(key => key.keyType === 'awsSecretAccessKey')}
+            codeLoaded={this.state.codeLoaded}
+            awsPopup={this.state.awsPopup}
+            updateFunction={this.updateFunction}
+          />
+          <AWSFunctionInfo closeFuncInfo={this.closeFuncInfo}
+            functionName={this.state.functionName}
+            awsFuncState={this.state.awsFuncState}
+            awsFuncRuntime={this.state.awsFuncRuntime}
+            awsFuncLastModified={this.state.awsFuncLastModified}
+            awsFuncRole={this.state.awsFuncRole}
+            awsRegion={this.state.awsRegion}
+            awsAccountID={this.state.awsAccountID}
+            functionInvocations={this.state.functionInvocations}
+            codeLoaded={this.state.codeLoaded}
+            graph={this.state.graph}
+          />
+        </React.Fragment>)
+      } else if ((this.state.pageSelect === 'Docker' && this.state.isLogin)) {
+        displayed = (<React.Fragment><DockerSetup id="DockerSetup"
+          code={this.state.uploadedFunction}
+          runtimeEnv={this.state.runtimeEnv}
+          workDir={this.state.workDir}
+          runtimeCom={this.state.runtimeCom}
+          exposePort={this.state.exposePort}
+          com={this.state.com}
+          updateInfo={this.updateInfo}
+          handleSubmitKey={this.handleSubmitKey}
+          functionName={this.state.functionName}
+          copy={this.state.copy}
+          uploadedFiles={this.state.uploadedFiles}
+          pageSelect={this.state.pageSelect}
+          username={this.state.username}
+          repository={this.state.repository}
+          dockerUsername={this.state.dockerUsername}
+          dockerPassword={this.state.dockerPassword}
+        ></DockerSetup></React.Fragment>)
+      } else if (this.state.pageSelect === 'Azure') {
+        displayed = (<React.Fragment>
+          <AzureFunctionForm
+            username={this.state.username}
+            updateInfo={this.updateInfo}
+            azureRuntime={this.state.azureRuntime}
+            azureTemplate={this.state.azureTemplate}
+            azureApp={this.state.azureApp}
+            azureProject={this.state.azureProject}
+            functionName={this.state.functionName}
+            azureUser={this.state.azureUser}
+            azurePass={this.state.azurePass}
+            azureTenant={this.state.azureTenant}
+            codeHere={this.state.codeHere}
+            submitKey={this.handleSubmitKey}
+            uploadedFunction={this.state.uploadedFunction}
+            updateCode={this.updateCode}
+          />
+        </React.Fragment>)
+      }
 
     return (
       <div className="mainContainer">
-        <h1>Shinobi</h1>
+        <h1>Andalusian</h1>
         {!this.state.isLogin && !this.state.isSignup && (
           <Login
             updateInfo={this.updateInfo}
@@ -770,3 +786,4 @@ class App extends React.Component {
 }
 
 export default App;
+// module.exports = App;

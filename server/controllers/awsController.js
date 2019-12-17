@@ -207,12 +207,16 @@ awsController.getawsAccountID = (req, res, next) => {
   const sts = new AWS.STS();
   const params = {
   };
+  console.log("in awsController.getawsAccountID")
   sts.getCallerIdentity(params, function (err, data) {
+    console.log("in awsController.getawsAccountID step 1")
     if (err) {
-      console.log(err, err.stack);
+      console.log("getawsAccountID error", err, err.stack);
       return (err)
     }
     else {
+      console.log("in awsController.getawsAccountID NO ERROR", data)
+
       res.locals.awsAccountID = data;
       return next();
     }
