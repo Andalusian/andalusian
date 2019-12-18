@@ -1,6 +1,4 @@
 import React from "react";
-import AWSCurrentFunctions from './AWSCurrentFunctions.jsx';
-
 
 const AccountPage = props => {
 

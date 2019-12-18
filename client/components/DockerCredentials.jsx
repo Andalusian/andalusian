@@ -25,7 +25,6 @@ const DockerCredentials = props => {
           type="text"
           id="dockerUsername"
           name="dockerUsername"
-          // placeholder="Docker Username"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <label >Password: </label>
@@ -33,7 +32,6 @@ const DockerCredentials = props => {
           type="password"
           id="dockerPassword"
           name="dockerPassword"
-          // placeholder="Docker Password"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <button type="button" className="saveButton" onClick={() => props.handleSubmitKey('dockerPassword', 'dockerUsername')}>Save Credentials</button>

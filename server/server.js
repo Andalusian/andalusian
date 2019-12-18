@@ -1,9 +1,8 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const expressSession = require('express-session');
-const { sessionSecret } = require('../config.js');
+// const expressSession = require('express-session');
+// const { sessionSecret } = require('../config.js');
 // const redis = require('redis');
 
 // let RedisStore = require('connect-redis')(session);
@@ -14,24 +13,24 @@ const app = express();
 const PORT = 3000;
 
 // BODY PARSING (EXPRESS' BUILT IN PARSER)
-app.use(express.json({limit: '50mb'}));
+app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // SESSION
-app.use(expressSession({
-  // store: new redisStore({ redisClient }),
-  name: 'sid',
-  resave: false,
-  saveUninitialized: false,
-  secret: sessionSecret,
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 2, // two hours
-    // domain: '127.0.0.1:8080',
-  }
-}));
+// app.use(expressSession({
+//   store: new redisStore({ redisClient }),
+//   name: 'sid',
+//   resave: false,
+//   saveUninitialized: false,
+//   secret: sessionSecret,
+//   cookie: {
+//     maxAge: 1000 * 60 * 60 * 2, // two hours
+//     sameSite: true,
+//   }
+// }));
 
 // SERVING THE BUILD FILE
 app.use('/build', express.static(path.join(__dirname, '../build')));
@@ -63,7 +62,7 @@ app.use('/azure', azureRouter);
 app.use('/db', dbRouter);
 
 app.get('/checkLogin', (req, res) => {
-  // console.log(req.session);
+  console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} | server/checkLogin `, req.session);
   let isLoggedIn = false;
   // let isLoggedIn = (req.session.userId) ? true : false;
   res.status(200).json({ isLogin: isLoggedIn });
@@ -76,13 +75,13 @@ app.use('*', (req, res) => {
 
 // GLOBAL ERROR HANDLER
 app.use((err, req, res, next) => {
-  console.log(err);
+  console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })} | server/err `, err);
   res.status(500).send('Internal Server Error');
 });
 
 // INITIALIZE SERVER
 app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}...`);
+  console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, `Server listening on port ${PORT}...`);
 });
 
 module.exports = app;
