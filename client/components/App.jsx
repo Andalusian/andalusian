@@ -384,7 +384,7 @@ class App extends React.Component {
 
   googleListFunctions() {
     if (!this.state.googleFunctionButtons[0]) {
-      fetch('/gcloud/list')
+      fetch(`/gcloud/list/${this.state.username}`)
         .then(data => data.json())
         .then(data => {
           const fnList = data.fn_list;
@@ -397,7 +397,7 @@ class App extends React.Component {
             fnButtons.push(<div id={el}>
               <span>{el}</span>
               <button onClick={() => {
-                fetch(`/gcloud/info/${el}`)
+                fetch(`/gcloud/info/${el}/${this.state.username}`)
                   .then(data => data.json())
                   .then(data => {
                     this.setState({
@@ -407,7 +407,7 @@ class App extends React.Component {
                   })
               }}>Info</button>
               <button onClick={() => {
-                fetch(`/gcloud/call/${el}`)
+                fetch(`/gcloud/call/${el}/${this.state.username}`)
                   .then(data => {
                     if (data.status === 200) {
                       console.log('do something!');
@@ -420,7 +420,7 @@ class App extends React.Component {
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  body: JSON.stringify({ fn_name: el }),
+                  body: JSON.stringify({ fn_name: el, user_name: this.state.username }),
                 })
                   .then(data => {
                     if (data.status === 200) {
