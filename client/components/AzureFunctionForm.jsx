@@ -2,18 +2,24 @@ import React from 'react';
 import MyDropzone from "./MyDropzone.jsx";
 const axios = require('axios')
 import AzureCredentials from './AzureCredentials.jsx'
+import AzureCurrentFunctions from "./AzureCurrentFunctions.jsx";
 
 const AzureFunctionForm = (props) => {
     return (
+
       <div id="azureGrid" className="grid">
         <h2 className="container">Azure</h2>
         <div className="leftColumn">
           <AzureCredentials
+              username={props.username}
               updateInfo={props.updateInfo}
               azureUser={props.azureUser}
               azurePass={props.azurePass}
               azureTenant={props.azureTenant}
               submitKey={props.submitKey} />
+            <AzureCurrentFunctions
+                listAzure={props.listAzure}
+                azureFunctions={props.azureFunctions} />
         </div>
         <div className="mainColumn container">
             <h3>Create Function</h3>
@@ -42,10 +48,12 @@ const AzureFunctionForm = (props) => {
                 <option value="Timer Trigger">Timer Trigger</option>
             </select>
             <button className="azureButton" onClick={() => axios.post('/azure/createFunc', { username: props.username, projectName: props.azureProject, functionName: props.functionName, template: props.azureTemplate })
-                .then(data => props.updateInfo('uploadedFunction', data.data))
+                .then(data => {
+                    props.updateInfo('uploadedFunction', data.data);
+                    document.getElementById('azureCode').value = data.data;})
             }>Create Function</button>
             <pre>
-                <textarea onChange={(e) => props.updateInfo('uploadedFunction', e.target.value)} id="codeHere" defaultValue={props.uploadedFunction} spellCheck="false" rows="25"></textarea>
+                <textarea onChange={(e) => props.updateInfo('uploadedFunction', e.target.value)} id="azureCode" defaultValue={props.uploadedFunction} spellCheck="false" rows="25"></textarea>
             </pre>
             <button onClick={props.updateCode}>Save Changes</button>
             <input onChange={(e) => props.updateInfo(e.target.name, e.target.value)} name="azureApp" type="text" placeholder="App to Deploy to" />

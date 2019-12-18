@@ -5,7 +5,7 @@ const MicroList = (props) => {
   return (
     <div className="radio container">
       <label>
-        <input onChange={() => props.updateInfo('pageSelect', '')} type="radio"
+        <input id="googleRadio" onChange={() => props.updateInfo('pageSelect', '')} type="radio"
           value="myAccount" checked={props.pageSelect === ''} />
         <img id="myAccountimg" src="https://unavsa.org/wp-content/uploads/2018/10/profile-icon.png" />
         {/* <h5>My Account</h5> */}
