@@ -105,74 +105,71 @@ const DockerSetup = props => {
     }
 
     return (
-        <React.Fragment>
-            <h2>Docker</h2>
-            <h3>Configuration</h3>
-            <DockerCredentials dockerUsername={props.dockerUsername} dockerPassword={props.dockerPassword} updateInfo={props.updateInfo} handleSubmitKey={props.handleSubmitKey} />
-            <hr />
-            <pre>
-                <h4>Container Setup</h4>
-                <input
-                    type="text"
-                    name="runtimeEnv"
-                    placeholder="FROM"
-                    onChange={e => props.updateInfo(e.target.name, e.target.value)}
-                />
-                <input
-                    type="text"
-                    name="workDir"
-                    placeholder="WORKDIR"
-                    onChange={e => props.updateInfo(e.target.name, e.target.value)}
-                />
-                <input
-                    type="text"
-                    name="runtimeCom"
-                    placeholder="RUN"
-                    onChange={e => props.updateInfo(e.target.name, e.target.value)}
-                />
-                <input
-                    type="text"
-                    name="exposePort"
-                    placeholder="EXPOSE"
-                    onChange={e => props.updateInfo(e.target.name, e.target.value)}
-                />
-                <input
-                    type="text"
-                    name="com"
-                    placeholder="CMD [string, ...]"
-                    onChange={e => props.updateInfo(e.target.name, e.target.value)}
-                />
+      <div id="accountGrid" className="grid">
+        <h2 className="container">Docker</h2>
+        <div className="leftColumn">
+          <DockerCredentials dockerUsername={props.dockerUsername} dockerPassword={props.dockerPassword} updateInfo={props.updateInfo} handleSubmitKey={props.handleSubmitKey} />
+        </div>
+        <div className="mainColumn container">
+            <h3>Container Setup</h3>
+            <input
+                type="text"
+                name="runtimeEnv"
+                placeholder="FROM"
+                onChange={e => props.updateInfo(e.target.name, e.target.value)}
+            />
+            <input
+                type="text"
+                name="workDir"
+                placeholder="WORKDIR"
+                onChange={e => props.updateInfo(e.target.name, e.target.value)}
+            />
+            <input
+                type="text"
+                name="runtimeCom"
+                placeholder="RUN"
+                onChange={e => props.updateInfo(e.target.name, e.target.value)}
+            />
+            <input
+                type="text"
+                name="exposePort"
+                placeholder="EXPOSE"
+                onChange={e => props.updateInfo(e.target.name, e.target.value)}
+            />
+            <input
+                type="text"
+                name="com"
+                placeholder="CMD [string, ...]"
+                onChange={e => props.updateInfo(e.target.name, e.target.value)}
+            />
+            <div>
+                <button onClick={() => containerSetup()}>Set Dockerfile</button>
+                <button onClick={() => defaultSetup()}>Default Dockerfile</button>
+            </div>
+            <div>
+                <input onChange={(e) => props.updateInfo('functionName', e.target.value)} type="text" name="functionName" placeholder="Image/Container Name" />
+                <FileDropzone uploadedFiles={props.uploadedFiles} updateInfo={props.updateInfo} pageSelect={props.pageSelect} />
+                {/* <button onClick={() => funcSetup()}>Set Function</button> */}
+                <button onClick={() => dockerDirect()}>Setup Directory</button>
+                <button onClick={() => buildImage()}>Build Image</button>
+            </div>
+            <button onClick={() => deployDocker()}>Containerize</button>
+            <button onClick={() => stopDocker()}>Stop Container</button>
+            <button onClick={() => deleteContainers()}>Delete Containers/Images</button>
+            <div>
                 <div>
-                    <button onClick={() => containerSetup()}>Set Dockerfile</button>
-                    <button onClick={() => defaultSetup()}>Default Dockerfile</button>
+                    <input
+                        type="text"
+                        name="respository"
+                        placeholder="Paste Docker Hub Repository and Tag Here"
+                        onChange={e => props.updateInfo('repository', e.target.value)}
+                    />
+                    <button onClick={() => dockerHubDeploy()}>Deploy to Docker Hub</button>
                 </div>
-                <div>
-                    <input onChange={(e) => props.updateInfo('functionName', e.target.value)} type="text" name="functionName" placeholder="Image/Container Name" />
-                    <FileDropzone uploadedFiles={props.uploadedFiles} updateInfo={props.updateInfo} pageSelect={props.pageSelect} />
-                    {/* <button onClick={() => funcSetup()}>Set Function</button> */}
-                    <button onClick={() => dockerDirect()}>Setup Directory</button>
-                    <button onClick={() => buildImage()}>Build Image</button>
-                </div>
-                <button onClick={() => deployDocker()}>Containerize</button>
-                <button onClick={() => stopDocker()}>Stop Container</button>
-                <button onClick={() => deleteContainers()}>Delete Containers/Images</button>
-                <div>
-                    <div>
-                        <input
-                            type="text"
-                            name="respository"
-                            placeholder="Paste Docker Hub Repository and Tag Here"
-                            onChange={e => props.updateInfo('repository', e.target.value)}
-                        />
-                        <button onClick={() => dockerHubDeploy()}>Deploy to Docker Hub</button>
-                    </div>
-
-                </div>
-            </pre>
-        </React.Fragment>
-    )
-
-
+            </div>
+        </div>
+    </div>
+  )
 }
 
 export default DockerSetup;

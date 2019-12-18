@@ -1,9 +1,20 @@
 * {
   box-sizing: border-box;
+  font-family: 'Nunito', sans-serif;
   &:focus {
     outline: none;
     // border: 1px solid #2668bd;
   }
+}
+
+h1 {
+  font-family: 'Roboto';
+  font-weight: 700;
+}
+
+h2, h3, h4, h5 {
+  font-family: 'Roboto';
+  font-weight: 400;
 }
 
 .grid {
@@ -16,6 +27,8 @@
 .grid h2 {
   grid-column: span 12;
   text-align: center;
+  margin: 0;
+  padding: 1rem;
 }
 
 #headerGrid {
@@ -23,15 +36,35 @@
 }
 
 body, html {
-  background: #FAFBFD;
+  // background: #FAFBFD;
+  // background: url('https://images.pexels.com/photos/812958/pexels-photo-812958.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940');
   color: #333;
   // background: #050f19;
   // color: #d07d02;
   margin: 0;
   padding: 0;
   padding-top: 40px;
-  font-family: 'Lato', sans-serif;;
   font-size: 16px;
+}
+
+html {
+  // background: url('https://images.pexels.com/photos/1179229/pexels-photo-1179229.jpeg');
+  // background: url('https://images.pexels.com/photos/414122/pexels-photo-414122.jpeg');
+  background: url('https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg');
+  // background: url('https://images.pexels.com/photos/2175952/pexels-photo-2175952.jpeg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+#appContainer {
+  width: 90%;
+  margin-left: 5%;
+}
+
+#microGrid {
+  position: fixed;
+  margin-top: 0;
+  left: 1.25%;
 }
 
 textarea {
@@ -49,7 +82,7 @@ input, textarea, .dropzone, .microList {
   // border: 1px solid #1c3d67;
   padding: .5em 1em;
   margin: 5px 0;
-  font-family: monospace;
+  // font-family: monospace;
   font-size: 1rem;
   border-radius: 2px;
   padding: .75em 1em;
@@ -61,6 +94,9 @@ input, textarea, .dropzone, .microList {
 #andalusianTitle {
   grid-column: 6 / span 2;
   text-align: center;
+}
+input {
+  letter-spacing: .035rem;
 }
 input[type="text"], input[type="password"] {
   width: 100%;
@@ -97,17 +133,12 @@ form h2 {
 }
 select {
   background: white;
-  // background: #356096;
-  // border: 1px solid #356096;
-  // color: #8dbae8;
-  // color: #333;
-  padding: .5em 1em;
-  width: 25%;
-  margin-left: 10px;
-  font-family: monospace;
-  font-size: 9pt;
+  padding: 1em;
+  margin: 10px 0;
+  font-size: 10pt;
   border: 1px solid #eee;
   border-radius: 2px;
+  width: 100%;
 }
 .container {
   background: #ffffff;
@@ -125,7 +156,7 @@ button, .dropzone {
   padding: 1em 1.5em;
   transition: 1s ease all;
   font-family: 'Lato', sans-serif;
-  width: 8rem;
+  // width: 8rem;
   box-shadow: 0 0 0 rgba(0,0,0,0);
   &:hover {
     background: #EEA822;
@@ -182,14 +213,14 @@ header {
 }
 
 #loginContainer, #signupContainer {
-  grid-column: 5 / span 4;
+  grid-column: 4 / span 6;
 }
 
 .leftColumn {
-  grid-column: 1 / span 4;
+  grid-column: 1 / span 5;
 }
 .mainColumn {
-  grid-column: 5 / span 8;
+  grid-column: 6 / span 7;
 }
 
 #loginButton {
@@ -221,7 +252,9 @@ width: 98%;
 
 .radio {
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
+  padding: 1rem;
 }
 
 #bucketsDropdown {
@@ -244,9 +277,9 @@ width: 98%;
   border-radius: 2px;
 }
 
-img {
-  margin-right: 10px;
-  margin-bottom: 10px;
+.radio label img {
+  // margin-right: 10px;
+  // margin-bottom: 10px;
   margin-top: 10px;
   height: 25px;
   width: 25px;
@@ -281,25 +314,12 @@ h5 {
   color: rgb(83, 83, 83)
 }
 
-// #awsRegion, #awsAccessKey, #awsSecretAccessKey, #functionName, #awsRole {
-//   display: inline-block;
-//   margin-bottom: 1px;
-//   width: 200px;
-//   margin-right: 5px;
+// #awsCredentials, #azureCredentials, #dockerCredentials {
+//   display: grid;
+//   grid-template-columns: calc(30% - 3px) calc(70% - 3px);
+//   grid-gap: 6px;
+//   align-items: center;
 // }
-
-#awsCredentials, #azureCredentials, #dockerCredentials {
-  display: grid;
-  grid-template-columns: calc(30% - 3px) calc(70% - 3px);
-  grid-gap: 6px;
-  align-items: center;
-}
-
-#googleCredentials pre, #googleCredentials textarea {
-  grid-column: 1 / span 2;
-  margin: 0;
-  width: 100%;
-}
 
 #awsCredentials input, #googleCredentials input {
   margin: 0;
@@ -310,7 +330,7 @@ h5 {
   font-size: .8rem;
   font-weight: 600;
   letter-spacing: -.0125em;
-  font-family: monospace;
+  // font-family: monospace;
 }
 
 #dockerCredentials input, #azureCredentials input{
@@ -325,10 +345,17 @@ h5 {
   margin: 0;
 }
 
-.keySelection, #awsRegion {
+// .keySelection, #awsRegion {
+//   width: 100%;
+//   height: 100%;
+//   margin: 0;
+// }
+
+#awsRegionAcct, #GKeySelect {
   width: 100%;
   height: 100%;
   margin: 0;
+  margin-bottom: 15px;
 }
 
 #regionBtn, #credentialsBtn, #createFuncBtn, #createBucketBtn {
@@ -341,15 +368,6 @@ margin-left: 0;
   margin-left: 0;
   margin-top: 5px
 }
-
-h4 {
-  margin: 5px 0;
-  font-family: monospace;
-}
-
-// #functionName, #googleProject {
-//   width: 200px;
-// }
 
 #Runtime, #azureTemplate {
   width: 200px
@@ -390,6 +408,13 @@ hr {
 
 .myAWSFuncs {
   font-size: 12px;
+}
+
+.myAWSFuncsShort, .myGoogleFuncsShort {
+  margin-top: 5px;
+  margin-left: 5px;
+  font-size: 16px;
+
 }
 
 .funcInfoH4, .funcInfoP {

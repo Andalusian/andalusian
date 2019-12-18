@@ -7,7 +7,7 @@ const GoogleCredentials = props => {
       <form id="googleCredentials">
         { !props.googleAddKeyModalClicked ? (<div>
           <select className="keySelection" name="googleKeyAlias" onChange={e => props.updateInfo(e.target.name, e.target.value)} >
-            <option defaultValue=''> -- select project -- </option>
+            <option defaultValue=''>select project</option>
             {
               props.keys.map((key, i) => {
                 return (
