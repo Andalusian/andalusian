@@ -24,12 +24,9 @@ User must have the following in order to use the service:
 Upon signup to our service you are requested to enter your key_file. This is used to authorize you and allow us to deploy your functions on your behalf. The key will be saved for future use under the alias you give for it.
 
 ### Project's Functions
-This portal will display all deployed AWS Lambda functions within the selected region.
-
-**Info** will display a number of properties of the function.
-
-**Invoke** will call the endpoint of that function.
-
+This portal will display all deployed AWS Lambda functions within the selected region.  
+**Info** will display a number of properties of the function.  
+**Invoke** will call the endpoint of that function.  
 **Delete** will remove the function from your project.
 
 ### Create Function
