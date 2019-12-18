@@ -7,3 +7,4 @@ build
 users
 stepsForward.txt
 package-lock.json
+/test/server
