@@ -13,6 +13,8 @@ import DockerSetup from "./DockerSetup.jsx";
 import GoogleWelcomeForm from "./GoogleWelcomeForm.jsx";
 import Header from './Header.jsx';
 import Sidebar from './Sidebar.jsx';
+import Loading from "./Loading.jsx";
+
 
 class App extends React.Component {
   constructor(props) {
@@ -81,6 +83,7 @@ class App extends React.Component {
       uploadedFunction: '',
       operatingSystem: '',
       checkCount: 0,
+      loading: false,
       //Dropzone prop for file data and text
       uploadedFiles: [],
       // render states
@@ -113,9 +116,9 @@ class App extends React.Component {
   componentDidMount() {
     axios.get('/checkLogin')
       .then(response => this.setState(response.data))
-        .catch(function(error) {
-          console.error('componentDidMount error');
-        });
+      .catch(function (error) {
+        console.error('componentDidMount error');
+      });
   }
 
   updateInfo(property, value) {
@@ -138,9 +141,9 @@ class App extends React.Component {
           .then((res) => {
             if (res.status === 200) this.googleListFunctions();
           })
-            .catch(function(error) {
-              console.error(error);
-            });
+          .catch(function (error) {
+            console.error(error);
+          });
         updateObj.googleKey = updateKey[0].key;
       }
     }
@@ -173,9 +176,9 @@ class App extends React.Component {
         this.setState(updateStateObject);
         this.osChecker();
       })
-        .catch(function(error) {
-          console.error(error);
-        });
+      .catch(function (error) {
+        console.error(error);
+      });
   }
 
   handleSignup(e) {
@@ -188,9 +191,9 @@ class App extends React.Component {
         });
         this.osChecker()
       })
-  .catch(function(error) {
-      console.error(error);
-    });
+      .catch(function (error) {
+        console.error(error);
+      });
   }
 
   handleSignout() {
@@ -259,6 +262,7 @@ class App extends React.Component {
           uploadedFunction: '',
           operatingSystem: '',
           checkCount: 0,
+          loading: false,
           //Dropzone prop for file data and text
           uploadedFiles: [],
           // render states
@@ -267,9 +271,9 @@ class App extends React.Component {
         })
       })
       .then(setTimeout(() => console.log(this.state), 2000))
-        .catch(function(error) {
-          console.error('handle sign out error');
-        });
+      .catch(function (error) {
+        console.error('handle sign out error');
+      });
   }
 
   osChecker() {
@@ -330,9 +334,9 @@ class App extends React.Component {
                 axios
                   .post('/db/storeKey', keyObject)
                   .then(response => this.setState({ keys: response.data.keys }))
-                    .catch(function(error) {
-                  console.error(error);
-                });
+                  .catch(function (error) {
+                    console.error(error);
+                  });
               }
             });
           break;
@@ -343,9 +347,9 @@ class App extends React.Component {
           axios
             .post('/db/storeKey', keyObject)
             .then(response => this.setState({ keys: response.data.keys }))
-              .catch(function(error) {
-                console.error(error);
-              });
+            .catch(function (error) {
+              console.error(error);
+            });
 
           break;
         case 'dockerPassword':
@@ -354,9 +358,9 @@ class App extends React.Component {
           axios
             .post('/db/storeKey', keyObject)
             .then(response => this.setState({ keys: response.data.keys }))
-              .catch(function(error) {
-                console.error(error);
-              });
+            .catch(function (error) {
+              console.error(error);
+            });
           break;
         case 'azurePass':
           keyObject.azureUser = this.state.azureUser;
@@ -365,9 +369,9 @@ class App extends React.Component {
           axios
             .post('/db/storeKey', keyObject)
             .then(response => this.setState({ keys: response.data.keys }))
-              .catch(function(error) {
-                console.error(error);
-              });
+            .catch(function (error) {
+              console.error(error);
+            });
           break;
       }
     }
@@ -380,6 +384,8 @@ class App extends React.Component {
   }
 
   configureAWS() {
+    this.setState({ loading: true })
+
     axios
       .post("/aws/configureAWS", {
         awsAccessKey: this.state.awsAccessKey,
@@ -399,17 +405,17 @@ class App extends React.Component {
     const azureFuncArr = [];
     const azureNameArr = [];
 
-    axios.post('/azure/getFuncs', {projectName: this.state.azureProject})
-        .then(data => {
-          for (let i = 0; i < data.data.length; i += 1) {
-            azureFuncArr.push(<div id={data.data[0].name} className="myAzureFuncs">{data.data[i].name} <button>Get Info</button> <button>Start</button> <button>Stop</button> </div>)
+    axios.post('/azure/getFuncs', { projectName: this.state.azureProject })
+      .then(data => {
+        for (let i = 0; i < data.data.length; i += 1) {
+          azureFuncArr.push(<div id={data.data[0].name} className="myAzureFuncs">{data.data[i].name} <button>Get Info</button> <button>Start</button> <button>Stop</button> </div>)
           azureNameArr.push(data.data[i].name)
-          }
-          this.setState({azureFunctions: azureFuncArr, azureNames: azureNameArr})
-        })
-        .catch(function(error) {
-          console.error(error);
-        });
+        }
+        this.setState({ azureFunctions: azureFuncArr, azureNames: azureNameArr })
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
   }
 
   listFunctions() {
@@ -427,8 +433,11 @@ class App extends React.Component {
           allFuncArray.push(funcName); //<div className="container short function" key={i}><h4>{funcName}</h4> <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke Function</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>
           shortAllFuncArray.push(<div className="myAWSFuncsShort" key={i}>{funcName} </div>)
         }
-        this.setState({ currentFunctions: allFuncArray });
-        this.setState({ shortCurrentFunctions: shortAllFuncArray });
+        this.setState({
+          currentFunctions: allFuncArray,
+          shortCurrentFunctions: shortAllFuncArray,
+          loading: false
+        });
       })
       .catch(function (error) {
         console.log('list functions error');
@@ -436,6 +445,8 @@ class App extends React.Component {
   }
 
   googleListFunctions() {
+    this.setState({ loading: true })
+
     if (!this.state.googleFunctionButtons[0]) {
       fetch(`/gcloud/list/${this.state.username}`)
         .then(data => data.json())
@@ -487,12 +498,13 @@ class App extends React.Component {
           });
           this.setState({
             googleFunctionButtons: fnButtons,
-            googleFunctionNames: fnNames
+            googleFunctionNames: fnNames,
+            loading: false
           });
         })
-          .catch(function(error) {
-            console.error(error);
-          });
+        .catch(function (error) {
+          console.error(error);
+        });
     }
   }
 
@@ -508,7 +520,7 @@ class App extends React.Component {
         document.getElementById("codeHere").value = data.data
         document.getElementById("functionName").value = funcName
       })
-      .catch(error => {})
+      .catch(error => { })
   }
 
   updateCode() {
@@ -583,6 +595,8 @@ class App extends React.Component {
 
   createFunction() {
     if (this.state.functionName && this.state.uploadedFunction && this.state.awsRuntime && this.state.awsRole && this.state.awsRegion) {
+      this.setState({ loading: true })
+
       axios
         .post("aws/createFunction", {
           functionName: this.state.functionName,
@@ -622,6 +636,9 @@ class App extends React.Component {
 
   render() {
     let displayed;
+    let loadStatus;
+    if (this.state.loading) loadStatus = (<Loading />)
+    if (!this.state.loading) loadStatus = (<span></span>)
     if ((this.state.pageSelect === '' && this.state.isLogin)) {
       displayed = (<React.Fragment>
         <AccountPage
@@ -765,23 +782,23 @@ class App extends React.Component {
         />)
       } else if (this.state.pageSelect === 'Azure') {
         displayed = (<AzureFunctionForm
-            username={this.state.username}
-            updateInfo={this.updateInfo}
-            azureRuntime={this.state.azureRuntime}
-            azureTemplate={this.state.azureTemplate}
-            azureApp={this.state.azureApp}
-            azureProject={this.state.azureProject}
-            functionName={this.state.functionName}
-            azureUser={this.state.azureUser}
-            azurePass={this.state.azurePass}
-            azureTenant={this.state.azureTenant}
-            codeHere={this.state.codeHere}
-            submitKey={this.handleSubmitKey}
-            uploadedFunction={this.state.uploadedFunction}
-            updateCode={this.updateCode}
-            azureFunctions={this.state.azureFunctions}
-            listAzure={this.listAzure}
-          />)
+          username={this.state.username}
+          updateInfo={this.updateInfo}
+          azureRuntime={this.state.azureRuntime}
+          azureTemplate={this.state.azureTemplate}
+          azureApp={this.state.azureApp}
+          azureProject={this.state.azureProject}
+          functionName={this.state.functionName}
+          azureUser={this.state.azureUser}
+          azurePass={this.state.azurePass}
+          azureTenant={this.state.azureTenant}
+          codeHere={this.state.codeHere}
+          submitKey={this.handleSubmitKey}
+          uploadedFunction={this.state.uploadedFunction}
+          updateCode={this.updateCode}
+          azureFunctions={this.state.azureFunctions}
+          listAzure={this.listAzure}
+        />)
       }
 
     return (
@@ -813,6 +830,7 @@ class App extends React.Component {
           </div>
         )}
         {displayed}
+        {loadStatus}
       </div>
     );
   }
