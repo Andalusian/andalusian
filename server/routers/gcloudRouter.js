@@ -13,7 +13,7 @@ router.post('/deploy', gcloudController.deploy, (req, res) => {
 });
 
 // GET FUNCTIONS ASSOCIATED WITH THE PROJECT
-router.get('/list', gcloudController.list, (req, res) => {
+router.get('/list/:user_name', gcloudController.list, (req, res) => {
   res.status(200).json(res.locals.list);
 });
 
@@ -23,17 +23,17 @@ router.delete('/delete', gcloudController.deleteFunction, (req, res) => {
 });
 
 // CALL FUNCTION
-router.get('/call/:fn_name', gcloudController.callFunction, (req, res) => {
+router.get('/call/:fn_name/:user_name', gcloudController.callFunction, (req, res) => {
   res.sendStatus(200);
 });
 
 // GET INFORMATION ABOUT FUNCTION
-router.get('/info/:fn_name', gcloudController.getinformation, (req, res) => {
+router.get('/info/:fn_name/:user_name', gcloudController.getinformation, (req, res) => {
   res.status(200).json(res.locals.info);
 });
 
 // GET FUNCTION CODE
-router.get('/source/:fn_name', gcloudController.getCode, (req, res) => {
+router.get('/source/:fn_name/:user_name', gcloudController.getCode, (req, res) => {
   res.status(200).json(res.locals.endpoint);
 });
 

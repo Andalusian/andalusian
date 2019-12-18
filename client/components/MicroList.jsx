@@ -3,7 +3,13 @@ import React from "react";
 const MicroList = (props) => {
 
   return (
-    <div className='radio'>
+    <div className="radio container">
+      <label>
+        <input onChange={() => props.updateInfo('pageSelect', '')} type="radio"
+          value="myAccount" checked={props.pageSelect === ''} />
+        <img id="myAccountimg" src="https://unavsa.org/wp-content/uploads/2018/10/profile-icon.png" />
+        {/* <h5>My Account</h5> */}
+      </label>
       <label>
         <input onChange={() => props.updateInfo('pageSelect', 'Gcloud')} type="radio"
           value="Gcloud" checked={props.pageSelect === 'Gcloud'} />
@@ -24,6 +30,7 @@ const MicroList = (props) => {
           value="Docker" checked={props.pageSelect === 'Docker'} />
         <img src="https://cdn.iconscout.com/icon/free/png-256/docker-7-569438.png" />
       </label>
+
     </div>
   );
 }

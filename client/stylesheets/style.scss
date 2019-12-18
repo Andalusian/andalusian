@@ -1,67 +1,127 @@
 * {
   box-sizing: border-box;
+  font-family: 'Nunito', sans-serif;
   &:focus {
     outline: none;
     // border: 1px solid #2668bd;
   }
 }
+
+h1 {
+  font-family: 'Roboto';
+  font-weight: 700;
+}
+
+h2, h3, h4, h5 {
+  font-family: 'Roboto';
+  font-weight: 400;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-gap: 20px;
+  margin: 25px;
+}
+
+.grid h2 {
+  grid-column: span 12;
+  text-align: center;
+  margin: 0;
+  padding: 1rem;
+}
+
+#headerGrid {
+  margin: 0;
+}
+
 body, html {
-  background: #FAFBFD;
   color: #333;
-  // background: #050f19;
-  // color: #d07d02;
   margin: 0;
   padding: 0;
-  font-family: 'Lato', sans-serif;;
+  padding-top: 40px;
   font-size: 16px;
-  display: flex;
-  justify-content: center;
 }
+
+#backgroundImage {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #151f2b;
+  background-image: url('https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg');
+  background-repeat: no-repeat;
+  background-size: 100%;
+  z-index: -1;
+}
+
+#appContainer {
+  width: 90%;
+  margin-left: 5%;
+}
+
+#microGrid {
+  position: fixed;
+  margin-top: 0;
+  left: 1.25%;
+}
+
 textarea {
   width: 100%;
 }
+
 input, textarea, .dropzone, .microList {
   display: block;
   background: white;
-  // color: #f0f0f0;
-  // background: #f7f7f7;
   border: 1px solid #eee;
-  // color: #15bcef;
-  // background: #1c3d67;
-  // border: 1px solid #1c3d67;
   padding: .5em 1em;
-  margin: 5px 0;
-  font-family: monospace;
+  margin: 0 0 10px 0;
   font-size: 1rem;
   border-radius: 2px;
   padding: .75em 1em;
   &::placeholder {
-    // color: #3c75af;
     color: #bbb;
   }
 }
+
+#andalusianTitle {
+  grid-column: 6 / span 2;
+  text-align: center;
+}
+
+input {
+  letter-spacing: .035rem;
+}
+
 input[type="text"], input[type="password"] {
   width: 100%;
 }
-#loginForm {
+
+input[type="radio"] {
+  margin: 0;
+}
+
+#loginForm, #signupForm {
   position: relative;
   width: 76%;
   left: 50%;
   margin-left: -38%;
 }
+
 #loginForm input {
   width: 100%;
 }
-// input[name="functionName"] {
-//   display: inline-block;
-//   width: 65%;
-// }
-.saveButton {
-  display: block;
+
+form h2 {
+  text-align: center;
+  margin-top: 0;
 }
+
 .coupledInputs {
   margin: 0;
 }
+
 .toggleSignup {
   display: inline-block;
   margin-left: 1rem;
@@ -69,58 +129,109 @@ input[type="text"], input[type="password"] {
     cursor: pointer;
   }
 }
+
 select {
   background: white;
-  // background: #356096;
-  // border: 1px solid #356096;
-  // color: #8dbae8;
-  // color: #333;
-  padding: .5em 1em;
-  width: 25%;
-  margin-left: 10px;
-  font-family: monospace;
-  font-size: 9pt;
+  padding: 1em;
+  margin: 10px 0;
+  font-size: 10pt;
   border: 1px solid #eee;
   border-radius: 2px;
+  width: 100%;
 }
-.mainContainer {
-  background: #ffffff;
+.container {
+  background: rgba(255,255,255,.85);
   // background: #002235;
-  width: 550px;
   padding: 3rem;
+  margin-bottom: 25px;
   text-align: left;
-  margin: 3rem 0;
   border-radius: 4px;
   box-shadow: 0 0 20px rgba(0,0,0,.1);
-  h1 {
-    text-align: center;
-    margin: 0 0 1em 0;
-    font-family: 'Lato', sans-serif;
-  }
 }
+
+.short {
+  padding: 1rem 3rem;
+}
+
+h3.container {
+  text-align: center;
+}
+
+.container h4 {
+  margin-top: 0;
+}
+
 button, .dropzone {
   border-radius: 2px;
-  // background: #eee;
-  // background: #7dd866;
-  background: #E4EBF6;
+  background: #80a9b9;
+  color: white;
   border: none;
-  // background: #338ec3;
   margin: 10px 5px 10px 0;
   padding: 1em 1.5em;
-  transition: .25s ease all;
+  transition: .5s ease all;
   font-family: 'Lato', sans-serif;
-  // color: #f0f0f0;
+  box-shadow: 0 0 0 rgba(0,0,0,0);
   &:hover {
-    background: #EEA822;
-    // border-color: #e88014;
-    // background: #83dc6d;
-      //  background: #4c4d4c;
-    color: white;
+    background: #ffad34;
+    cursor: pointer;
+  }
+  &:active {
+    background: #ffad34;
+    box-shadow: inset 0 0 10px rgba(0,0,0,.25);
   }
 }
 
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 25px;
+  background: white;
+  box-shadow: 5px 0 10px rgba(0,0,0,.125);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 999;
+  h1 {
+    display: inline;
+    margin: 0;
+  }
+  #iconHolder {
+    height: 50px;
+    width: 50px;
+    border-radius: 2px;
+    // background: #eee;
+    background-image: url('https://icon-library.net/images/horse-icon-png/horse-icon-png-2.jpg');
+    background-size: cover;
+  }
+}
+
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100px;
+  background: #bbb;
+  box-shadow: 5px 0 10px rgba(0,0,0,.125);
+}
+
 #signoutButton {
-  border: none;
+  margin: 0;
+  grid-column: 12;
+  width: 100%;
+}
+
+#loginContainer, #signupContainer {
+  grid-column: 4 / span 6;
+}
+
+.leftColumn {
+  grid-column: 1 / span 5;
+}
+.mainColumn {
+  grid-column: 6 / span 7;
 }
 
 #loginButton {
@@ -138,6 +249,7 @@ button, .dropzone {
 
 #drop1 {
   margin-top: 15px;
+  width: auto;
 }
 
 #codeHere, #googleKey {
@@ -145,25 +257,15 @@ margin: 0 auto;
 width: 98%;
 }
 
-// .dropzone {
-//   transition: .25s ease all;
-//   &:hover {
-//     background: #8fcc52;
-//   }
-//   border-style: solid;
-//   border-color: #a8a6a6;
-//   &:focus {
-//     outline: 0;
-//   }
-// }
-
 .functionName {
   margin-bottom: 15px;
 }
 
 .radio {
   display: flex;
+  flex-direction: column;
   justify-content: flex-start;
+  padding: 1rem;
 }
 
 #bucketsDropdown {
@@ -186,9 +288,7 @@ width: 98%;
   border-radius: 2px;
 }
 
-img {
-  margin-right: 10px;
-  margin-bottom: 10px;
+.radio label img {
   margin-top: 10px;
   height: 25px;
   width: 25px;
@@ -200,18 +300,9 @@ img {
   margin-bottom: 20px;
 }
 
-// .googleInfo {
-//   display: flex;
-//   justify-content: space-around;
-// }
-
 #googleProject {
   margin-right: 5px;
 }
-
-// .azureButton {
-//   margin-left: 10px;
-// }
 
 h5 {
   display: inline-block;
@@ -223,58 +314,18 @@ h5 {
   color: rgb(83, 83, 83)
 }
 
-// #awsRegion, #awsAccessKey, #awsSecretAccessKey, #functionName, #awsRole {
-//   display: inline-block;
-//   margin-bottom: 1px;
-//   width: 200px;
-//   margin-right: 5px;
-// }
-
-#awsCredentials, #googleCredentials, #azureCredentials, #dockerCredentials {
-  display: grid;
-  grid-template-columns: calc(30% - 3px) calc(70% - 3px);
-  grid-gap: 6px;
-  align-items: center;
-}
-
-#googleCredentials pre, #googleCredentials textarea {
-  grid-column: 1 / span 2;
-  margin: 0;
-  width: 100%;
-}
-
-#awsCredentials input, #googleCredentials input {
-  margin: 0;
-}
-
-#googleCredentials button {
-  margin: 0;
-}
-
 #awsCredentials label, #azureCredentials label, #dockerCredentials label {
   grid-column: 1;
   font-size: .8rem;
   font-weight: 600;
   letter-spacing: -.0125em;
-  font-family: monospace;
 }
 
-#dockerCredentials input, #azureCredentials input{
-  margin: 0
-}
-
-#awsCredentials input {
-  grid-column: 2;
-}
-
-#awsCredentials button {
-  margin: 0;
-}
-
-.keySelection, #awsRegion {
+#awsRegionAcct, #GKeySelect {
   width: 100%;
   height: 100%;
   margin: 0;
+  margin-bottom: 15px;
 }
 
 #regionBtn, #credentialsBtn, #createFuncBtn, #createBucketBtn {
@@ -287,15 +338,6 @@ margin-left: 0;
   margin-left: 0;
   margin-top: 5px
 }
-
-h4 {
-  margin: 5px 0;
-  font-family: monospace;
-}
-
-// #functionName, #googleProject {
-//   width: 200px;
-// }
 
 #Runtime, #azureTemplate {
   width: 200px
@@ -336,6 +378,13 @@ hr {
 
 .myAWSFuncs {
   font-size: 12px;
+}
+
+.myAWSFuncsShort, .myGoogleFuncsShort {
+  margin-top: 5px;
+  margin-left: 5px;
+  font-size: 16px;
+
 }
 
 .funcInfoH4, .funcInfoP {
