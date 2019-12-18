@@ -325,6 +325,25 @@ hr {
   margin: 0;
 }
 
+#loading iframe {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  top: 35%;
+  left: 40%;
+  height: 230px;
+  width: 20%;
+  // padding: 30px;
+  margin: 0 auto;
+}
+
+#loading {
+  background-color: #FFFEFF;
+  border: 1px solid rgb(223, 223, 223);
+  border-radius: 5px;
+
+}
+
 #AWSFunctionInfoGrid {
   display: grid;
   grid-template-columns: 20% 80%;

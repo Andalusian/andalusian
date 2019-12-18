@@ -41,7 +41,7 @@ const AccountPage = props => {
                 <option value="me-south-1">ME South 1</option>
                 <option value="sa-east-1">SA East 1</option>
             </select>
-            {props.shortCurrentFunctions}
+            {props.awsShortCurrentFunctions}
             <h3>Azure</h3>
         </React.Fragment>
     );

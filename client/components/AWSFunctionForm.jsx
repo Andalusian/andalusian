@@ -20,7 +20,7 @@ const AWSFunctionForm = props => {
       <hr />
       <AWSCurrentFunctions
         id="AWSCurrentFunctions"
-        currentFunctions={props.currentFunctions}
+        awsCurrentFunctions={props.awsCurrentFunctions}
         currRegion={props.currRegion}
         functionName={props.functionName}
         codeHere={props.codeHere}
