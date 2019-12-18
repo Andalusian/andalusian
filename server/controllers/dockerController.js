@@ -11,38 +11,38 @@ const AWS = require("aws-sdk");
 
 dockerController.containerSetup = (req, res, next) => {
     let dockerfileSetup = ''
-    if(req.body.runtimeEnv !== ''){
+    if (req.body.runtimeEnv !== '') {
         dockerfileSetup = dockerfileSetup + `FROM ${req.body.runtimeEnv} \n \n`
     }
-    if(req.body.workDir !== ''){
+    if (req.body.workDir !== '') {
         dockerfileSetup = dockerfileSetup + `WORKDIR ${req.body.workDir} \n \n`
     }
-    if(req.body.runtimeCom !== ''){
+    if (req.body.runtimeCom !== '') {
         dockerfileSetup = dockerfileSetup + `RUN ${req.body.runtimeCom} \n \n`
     }
-    if(req.body.exposePort !== ''){
+    if (req.body.exposePort !== '') {
         dockerfileSetup = dockerfileSetup + `EXPOSE ${req.body.exposePort} \n \n`
     }
-    if(req.body.com !== ''){
+    if (req.body.com !== '') {
         dockerfileSetup = dockerfileSetup + `CMD ${req.body.com} \n \n`
     }
     exec(`cd users/${req.body.username}/docker/tmp; touch Dockerfile; echo "${dockerfileSetup}" >> Dockerfile; wait`),
-    ['shell'], function(err, stdout, stderr){
-    console.log(err || stdout || stderr)
-    }
+        ['shell'], function (err, stdout, stderr) {
+            console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| dockerController.containerSetup | ", err || stdout || stderr)
+        }
     next();
 }
 
 dockerController.defaultSetup = (req, res, next) => {
     exec(`cd users/${req.body.username}/docker/tmp; touch Dockerfile; echo "FROM node:10 \n \n WORKDIR /usr/src/app \n \n COPY package*.json ./ \n \n RUN npm install \n \n COPY . . \n \n EXPOSE 3000 \n \n CMD ['npm', 'start']" >> Dockerfile; wait`,
         ['shell'], function (err, stdout, stderr) {
-            console.log(err || stdout || stderr)
+            console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| dockerController.defaultSetup | ", err || stdout || stderr)
         })
     next();
 }
 
 // dockerController.funcSetup = (req, res, next) => {
-//     exec(`cd users/${req.body.username}/docker/tmp; touch ${req.body.functionName}.js; echo "${req.body.code}" >> ${req.body.functionName}.js; wait`, 
+//     exec(`cd users/${req.body.username}/docker/tmp; touch ${req.body.functionName}.js; echo "${req.body.code}" >> ${req.body.functionName}.js; wait`,
 //         ['shell'], function(err, stdout, stderr){
 //         console.log(err || stdout || stderr)
 //         })
@@ -72,16 +72,16 @@ dockerController.dockerDirect = (req, res, next) => {
 dockerController.buildImage = (req, res, next) => {
 
     exec(`cd users/${req.body.username}/docker/tmp; ls; docker image build -t ${req.body.functionName} .; wait; docker image ls`,
-    ['shell'], function(err, stdout, stderr){
-        // console.log(req.body.functionName)
-       console.log(err || stdout || stderr)
-   })
-   next();
+        ['shell'], function (err, stdout, stderr) {
+            console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| dockerController.buildImage | ", err || stdout || stderr)
+        })
+    next();
 }
 
 dockerController.deployDocker = (req, res, next) => {
+    // JOURDAN TO PULL USERNAME
     exec(`docker run -p 8888:80 --name ${req.body.functionName} ${req.body.functionName}; curl docker`, ['shell'], function (err, stdout, stderr) {
-        console.log(err || stdout || stderr)
+        console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| dockerController.deployDocker | ", err || stdout || stderr)
     })
 
     process.argv.forEach(function (val, index, array) {
@@ -91,30 +91,32 @@ dockerController.deployDocker = (req, res, next) => {
 }
 
 dockerController.stopDocker = (req, res, next) => {
+    // JOURDAN TO PULL USERNAME
     exec(`docker stop ${req.body.functionName}; wait;`, ['shell'], function (err, stdout, stderr) {
-        console.log(err || stdout || stderr)
+        console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| dockerController.stopDocker | ", err || stdout || stderr)
     })
 }
 
 dockerController.deleteContainers = (req, res, next) => {
-    exec(`docker system prune -a -f;`, ['shell'], function(err, stdout, stderr){
-        console.log(err || stdout || stderr)
+    // JOURDAN TO PULL USERNAME
+    exec(`docker system prune -a -f;`, ['shell'], function (err, stdout, stderr) {
+        console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| dockerController.deleteContainers 1 | ", err || stdout || stderr)
     })
-    exec(`rm -rfv users/${req.body.username}/docker/tmp/*;`, ['shell'], function(err, stdout, stderr){
-        console.log(err || stdout || stderr)
+    exec(`rm -rfv users/${req.body.username}/docker/tmp/*;`, ['shell'], function (err, stdout, stderr) {
+        console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| dockerController.deleteContainers 2 | ", err || stdout || stderr)
     })
 }
 
 dockerController.dockerHubDeploy = (req, res, next) => {
+    // JOURDAN TO PULL USERNAME
     exec(`docker tag ${req.body.functionName} ${req.body.repository}; docker push ${req.body.repository}`, ['shell'], function (err, stdout, stderr) {
-        console.log(err || stdout || stderr)
+        console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| dockerController.dockerHubDeploy | ", err || stdout || stderr)
     })
 }
 
 dockerController.dockerLogin = (req, res, next) => {
-    // console.log(req)
     exec(`docker login -u ${req.body.dockerUsername} -p ${req.body.dockerPassword}`, ['shell'], function (err, stdout, stderr) {
-        console.log(err || stdout || stderr)
+        console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| dockerController.dockerLogin | ", err || stdout || stderr)
     })
 }
 dockerController.connectToEcr = (req, res, next) => {

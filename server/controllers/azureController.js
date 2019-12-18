@@ -20,14 +20,14 @@ azureController.createProj = (req, res, next) => {
         return res.status(400).json('Name Your Project');
     }
 
-    exec(`func init ${projectName} ${runtime}`, {cwd: `./users/${username}/azure`}, (error, stdout, stderr) => {
+    exec(`func init ${projectName} ${runtime}`, { cwd: `./users/${username}/azure` }, (error, stdout, stderr) => {
         if (error) {
-            console.error(`exec error: ${error}`);
+            console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| azureController.createProj | exec error: ", `${error}`);
             return res.sendStatus(500);
         }
 
-        console.error(`stderr: ${stderr}`);
-        console.log(`stdout: ${stdout}`);
+        console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| azureController.createProj | stderr: ", `${stderr}`);
+        console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| azureController.createProj | stdout: ", `${stdout}`);
         res.locals = stdout;
         return next();
     })
@@ -49,21 +49,19 @@ azureController.createFunc = (req, res, next) => {
         return res.status(400).json('Name your function')
     }
 
-    exec(`func new --template "${template}" --name ${functionName}`, {cwd: `./users/${username}/azure/${projectName}`}, (error, stdout, stderr) => {
+    exec(`func new --template "${template}" --name ${functionName}`, { cwd: `./users/${username}/azure/${projectName}` }, (error, stdout, stderr) => {
         if (error) {
-            console.error(`exec error: ${error}`);
+            console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| azureController.createFunc | exec error: ", `${error}`);
             return res.sendStatus(500);
         }
         res.locals = fs.readFileSync(`./users/${username}/azure/${projectName}/${functionName}/index.js`, 'utf8')
-        console.error(`stderr: ${stderr}`);
-        console.log(`stdout: ${stdout}`);
-        return next();
+        console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| azureController.createFunc | stderr: ", `${stderr}`);
+        console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| azureController.createFunc | stdout: ", `${stdout}`);
+        res.locals = stdout; return next();
     })
-
 }
 
 azureController.updateCode = (req, res, next) => {
-    console.log('trying to update')
     const { code, username, projectName, functionName } = req.body;
     fs.writeFileSync(`./users/${username}/azure/${projectName}/${functionName}/index.js`, code, 'utf8')
     res.locals = 'success'
@@ -81,22 +79,21 @@ azureController.deployFunc = (req, res, next) => {
         return res.status(400).json('Must provide app name')
     }
 
-    console.log('deploying')
-    exec(`func azure functionapp publish ${app}`, {cwd: `./users/${username}/azure/${projectName}`}, (error, stdout, stderr) => {
+    exec(`func azure functionapp publish ${app}`, { cwd: `./users/${username}/azure/${projectName}` }, (error, stdout, stderr) => {
         if (error) {
-            console.error(`exec error: ${error}`);
+            console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| azureController.deployFunc | exec error: ", `${error}`);
             return res.sendStatus(500);
         }
 
-        console.error(`stderr: ${stderr}`);
-        console.log(`stdout: ${stdout}`);
+        console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| azureController.deployFunc | stderr: ", `${stderr}`);
+        console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| azureController.deployFunc | stdout: ", `${stdout}`);
         res.locals = stdout;
         return next();
     })
 }
 
 azureController.auth = (req, res, next) => {
-    const { azureUser, azurePass, azureTenant } = req.body;
+    const { username, azureUser, azurePass, azureTenant } = req.body;
 
     for (let i = 0; i < azureUser.length; i++) {
         if (!/[a-z0-9A-Z-_@.]/gm.test(azureUser[i])) return res.status(400).json('Username formatted incorrectly.\nMust only contain letters, numbers, underscores, hyphens, periods, and @s.');
@@ -119,30 +116,24 @@ azureController.auth = (req, res, next) => {
     if (azureTenant === '') {
         exec(`az login -u ${azureUser} -p ${azurePass}`, (error, stdout, stderr) => {
             if (error) {
-                console.error(`exec error: ${error}`);
+                console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| azureController.auth | exec error: ", `${error}`);
                 return res.sendStatus(500);
             }
-
-            console.error(`stderr: ${stderr}`);
-            console.log(`stdout: ${stdout}`);
             res.locals = stdout;
             return next();
         })
     } else {
         exec(`az login --service-principal --username ${azureUser} --password ${azurePass} --tenant ${azureTenant}`, (error, stdout, stderr) => {
             if (error) {
-                console.error(`exec error: ${error}`);
-                return res.sendStatus(500);
+                console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| azureController.auth | exec error: ", `${error}`); return res.sendStatus(500);
             }
-
-            console.error(`stderr: ${stderr}`);
-            console.log(`stdout: ${stdout}`);
+            console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| azureController.auth | stderr: ", `${stderr}`);
+            console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| azureController.auth | stdout: ", `${stdout}`);
             res.locals = stdout;
             return next();
         })
     }
 }
-
 
 module.exports = azureController;
 

@@ -16,7 +16,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // shinobi
+      // andalusian
       username: '',
       password: '',
       keys: [],
@@ -34,10 +34,6 @@ class App extends React.Component {
       awsAccessKey: '',
       awsSecretAccessKey: '',
       awsKeyAlias: '',
-      // S3BucketName: '',
-      // newBucketRegion: "",
-      // currRegion: "",
-      // currentBuckets: [],
       codeHere: "",
       currentFunctions: [],
       awsRegion: '',
@@ -47,6 +43,11 @@ class App extends React.Component {
       codeLoaded: '',
       awsPopup: false,
       functionInvocations: [],
+      shortCurrentFunctions: [],
+      // S3BucketName: '',
+      // newBucketRegion: "",
+      // currRegion: "",
+      // currentBuckets: [],
       // docker
       dockerUsername: '',
       dockerPassword: '',
@@ -91,14 +92,14 @@ class App extends React.Component {
     this.handleSubmitKey = this.handleSubmitKey.bind(this);
     this.googleListFunctions = this.googleListFunctions.bind(this);
     this.listFunctions = this.listFunctions.bind(this)
-    // this.listBuckets = this.listBuckets.bind(this)
     this.createFunction = this.createFunction.bind(this);
     this.configureAWS = this.configureAWS.bind(this);
-    // this.createBucket = this.createBucket.bind(this)
     this.handleSignout = this.handleSignout.bind(this)
     this.closeFuncInfo = this.closeFuncInfo.bind(this)
     this.updateFunction = this.updateFunction.bind(this)
     this.updateCode = this.updateCode.bind(this)
+    // this.createBucket = this.createBucket.bind(this)
+    // this.listBuckets = this.listBuckets.bind(this)
   }
 
   componentDidMount() {
@@ -132,21 +133,6 @@ class App extends React.Component {
     this.setState(updateObj);
   }
 
-  getawsAccountID() {
-    axios
-      .post("/aws/getawsAccountID", {
-        username: this.state.username
-      })
-      .then(data => {
-        this.setState({ awsAccountID: data.data.Account });
-
-      })
-      .then(console.log(this.awsAccountID))
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
-
   handleLogin() {
     axios.post('/db/login', { username: this.state.username, password: this.state.password })
       .then(response => {
@@ -169,13 +155,8 @@ class App extends React.Component {
           }
         });
         this.setState(updateStateObject, () => {
-          console.log(this.state);
-          console.log(this.state.dockerUsername)
         });
         this.osChecker();
-        this.configureAWS();
-        // setTimeout(() => this.listFunctions(), 2000);
-
       })
   }
 
@@ -194,8 +175,7 @@ class App extends React.Component {
     axios.post('db/deleteUserFiles', { username: this.state.username })
       .then(() => {
         this.setState({
-
-          // shinobi
+          // andalusian
           username: '',
           password: '',
           keys: [],
@@ -213,10 +193,6 @@ class App extends React.Component {
           awsAccessKey: '',
           awsSecretAccessKey: '',
           awsKeyAlias: '',
-          // S3BucketName: '',
-          // newBucketRegion: "",
-          // currRegion: "",
-          // currentBuckets: [],
           codeHere: "",
           currentFunctions: [],
           awsRegion: '',
@@ -227,6 +203,10 @@ class App extends React.Component {
           awsPopup: false,
           functionInvocations: [],
           shortCurrentFunctions: [],
+          // S3BucketName: '',
+          // newBucketRegion: "",
+          // currRegion: "",
+          // currentBuckets: [],
           // docker
           dockerUsername: '',
           dockerPassword: '',
@@ -260,7 +240,6 @@ class App extends React.Component {
           // render states
           isLogin: false,
           isSignup: false,
-
         })
       })
       .then(setTimeout(() => console.log(this.state), 2000))
@@ -268,25 +247,23 @@ class App extends React.Component {
 
   osChecker() {
     if (this.state.checkCount === 0) {
-    let platform = window.navigator.platform,
-      macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
-      windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
-      os = null;
-    if (macosPlatforms.indexOf(platform) !== -1) {
-      os = 'Mac OS';
-    } else if (windowsPlatforms.indexOf(platform) !== -1) {
-      os = 'Windows';
-    } else if (!os && /Linux/.test(platform)) {
-      os = 'Linux';
-    }
-    this.setState({
-      operatingSystem: os,
-      checkCount: this.state.checkCount + 1,
-    })
-      console.log(os)
+      let platform = window.navigator.platform,
+        macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+        windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+        os = null;
+      if (macosPlatforms.indexOf(platform) !== -1) {
+        os = 'Mac OS';
+      } else if (windowsPlatforms.indexOf(platform) !== -1) {
+        os = 'Windows';
+      } else if (!os && /Linux/.test(platform)) {
+        os = 'Linux';
+      }
+      this.setState({
+        operatingSystem: os,
+        checkCount: this.state.checkCount + 1,
+      })
     }
   }
-
 
   handleSubmitKey(keyType) {
     const keyObject = {
@@ -373,9 +350,6 @@ class App extends React.Component {
       })
       .then((response) => {
         setTimeout(() => this.listFunctions(), 2000);
-        // this.getawsAccountID();
-        // setTimeout(() => this.listBuckets(), 4000)
-
       })
       .catch((error) => {
         console.log(error);
@@ -557,10 +531,6 @@ class App extends React.Component {
         })
         .then((response) => {
           setTimeout(() => this.listFunctions(), 2000);
-          // document.getElementById("functionName").value = ""
-          // document.getElementById("awsRuntime").value = "{"a"}> -- select runtime -- "
-          // document.getElementById("codeHere").value = ""
-          // document.getElementById("awsRole").value = ":role/"
         })
         .catch((error) => {
           console.log(error);
@@ -580,10 +550,6 @@ class App extends React.Component {
       })
       .then((response) => {
         setTimeout(() => this.listFunctions(), 2000);
-        // document.getElementById("functionName").value = ""
-        // document.getElementById("awsRuntime").value = "{"a"}> -- select runtime -- "
-        // document.getElementById("codeHere").value = ""
-        // document.getElementById("awsRole").value = ":role/"
       })
       .catch((error) => {
         console.log(error);
@@ -632,7 +598,6 @@ class App extends React.Component {
           shortCurrentFunctions={this.state.shortCurrentFunctions}
           googleFunctionNames={this.state.googleFunctionNames}
           googleListFunctions={this.googleListFunctions}
-
         />
       </React.Fragment>)
     }
@@ -670,7 +635,6 @@ class App extends React.Component {
 
       } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && !this.state.awsPopup) {
         displayed = (<React.Fragment>
-          {/* <GraphComponent /> */}
           <AWSFunctionForm id="AWSFunctionForm"
             currentFunctions={this.state.currentFunctions}
             currRegion={this.state.currRegion}
@@ -688,7 +652,6 @@ class App extends React.Component {
             awsRuntime={this.state.awsRuntime}
             awsRole={this.state.awsRole}
             awsAccountID={this.state.awsAccountID}
-            listFunctions={this.listFunctions}
             listBuckets={this.listBuckets}
             createFunction={this.createFunction}
             configureAWS={this.configureAWS}
@@ -699,6 +662,7 @@ class App extends React.Component {
             codeLoaded={this.state.codeLoaded}
             awsPopup={this.state.awsPopup}
             updateFunction={this.updateFunction}
+          // listFunctions={this.listFunctions}
           /></React.Fragment>)
       } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && this.state.awsPopup) {
         displayed = (<React.Fragment>
@@ -719,7 +683,6 @@ class App extends React.Component {
             awsRuntime={this.state.awsRuntime}
             awsRole={this.state.awsRole}
             awsAccountID={this.state.awsAccountID}
-            listFunctions={this.listFunctions}
             listBuckets={this.listBuckets}
             createFunction={this.createFunction}
             configureAWS={this.configureAWS}
@@ -730,6 +693,7 @@ class App extends React.Component {
             codeLoaded={this.state.codeLoaded}
             awsPopup={this.state.awsPopup}
             updateFunction={this.updateFunction}
+          // listFunctions={this.listFunctions}
           />
           <AWSFunctionInfo closeFuncInfo={this.closeFuncInfo}
             functionName={this.state.functionName}
