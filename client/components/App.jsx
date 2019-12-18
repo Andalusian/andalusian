@@ -11,6 +11,8 @@ import AWSFunctionInfo from "./AWSFunctionInfo.jsx";
 import AzureFunctionForm from "./AzureFunctionForm.jsx";
 import DockerSetup from "./DockerSetup.jsx";
 import GoogleWelcomeForm from "./GoogleWelcomeForm.jsx";
+import Header from './Header.jsx';
+import Sidebar from './Sidebar.jsx';
 
 class App extends React.Component {
   constructor(props) {
@@ -133,7 +135,8 @@ class App extends React.Component {
     this.setState(updateObj);
   }
 
-  handleLogin() {
+  handleLogin(e) {
+    e.preventDefault();
     axios.post('/db/login', { username: this.state.username, password: this.state.password })
       .then(response => {
         const updateStateObject = {
@@ -154,13 +157,13 @@ class App extends React.Component {
             updateStateObject.azureTenant = updateKey.azureTenant;
           }
         });
-        this.setState(updateStateObject, () => {
-        });
+        this.setState(updateStateObject);
         this.osChecker();
       })
   }
 
-  handleSignup() {
+  handleSignup(e) {
+    e.preventDefault();
     axios.post('/db/createNewUser', { username: this.state.username, password: this.state.password })
       .then(() => {
         this.setState({
@@ -349,7 +352,7 @@ class App extends React.Component {
         username: this.state.username
       })
       .then((response) => {
-        setTimeout(() => this.listFunctions(), 2000);
+        setTimeout(() => this.listFunctions(), 3000);
       })
       .catch((error) => {
         console.log(error);
@@ -357,16 +360,18 @@ class App extends React.Component {
   }
 
   listFunctions() {
+    // console.log(this.state.username);
     let allFuncArray = [];
     let shortAllFuncArray = [];
     axios
-      .post("/aws/listFunctions", {
+      .post('/aws/listFunctions', {
         username: this.state.username
       })
       .then(data => {
+        console.log(data);
         for (let i = 0; i < data.data.Functions.length; i++) {
           let funcName = data.data.Functions[i].FunctionName;
-          allFuncArray.push(<div className="myAWSFuncs" key={i}>{funcName} <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>);
+          allFuncArray.push(<div className="container short" key={i}><h4>{funcName}</h4> <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>);
           shortAllFuncArray.push(<div className="myAWSFuncsShort" key={i}>{funcName} </div>)
         }
         this.setState({ currentFunctions: allFuncArray });
@@ -556,37 +561,6 @@ class App extends React.Component {
       });
   }
 
-  // createBucket() {
-  //   axios.post("/aws/createBucket", {
-  //     S3BucketName: this.state.S3BucketName,
-  //     newBucketRegion: this.state.newBucketRegion,
-  //     username: this.state.username
-  //   })
-  //     .then(data => {
-  //       console.log(data)
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }
-
-  // listBuckets() {
-  //   let allBuckets = [<option defaultValue={"a"}> -- select an option -- </option>]
-  //   axios
-  //     .post("/aws/allBuckets", { username: this.state.username })
-  //     .then(data => {
-  //       for (let i = 0; i < data.data.Buckets.length; i++) {
-  //         let bucketName = data.data.Buckets[i].Name;
-  //         allBuckets.push(<option className="myAWSBuckets" key={i} value={bucketName}>{bucketName}
-  //         </option >)
-  //       }
-  //       this.setState({ currentBuckets: allBuckets })
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // }
-
   render() {
     let displayed;
     if ((this.state.pageSelect === '' && this.state.isLogin)) {
@@ -632,7 +606,6 @@ class App extends React.Component {
             googleAddKeyModalClicked={this.state.googleAddKeyModalClicked}
           />
         }
-
       } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && !this.state.awsPopup) {
         displayed = (<React.Fragment>
           <AWSFunctionForm id="AWSFunctionForm"
@@ -709,7 +682,7 @@ class App extends React.Component {
           />
         </React.Fragment>)
       } else if ((this.state.pageSelect === 'Docker' && this.state.isLogin)) {
-        displayed = (<React.Fragment><DockerSetup id="DockerSetup"
+        displayed = (<DockerSetup id="DockerSetup"
           code={this.state.uploadedFunction}
           runtimeEnv={this.state.runtimeEnv}
           workDir={this.state.workDir}
@@ -727,10 +700,9 @@ class App extends React.Component {
           dockerUsername={this.state.dockerUsername}
           dockerPassword={this.state.dockerPassword}
           awsRepoUri={this.state.awsRepoUri}
-        ></DockerSetup></React.Fragment>)
+        />)
       } else if (this.state.pageSelect === 'Azure') {
-        displayed = (<React.Fragment>
-          <AzureFunctionForm
+        displayed = (<AzureFunctionForm
             username={this.state.username}
             updateInfo={this.updateInfo}
             azureRuntime={this.state.azureRuntime}
@@ -745,34 +717,37 @@ class App extends React.Component {
             submitKey={this.handleSubmitKey}
             uploadedFunction={this.state.uploadedFunction}
             updateCode={this.updateCode}
-          />
-        </React.Fragment>)
+          />)
       }
 
     return (
-      <div className="mainContainer">
-        <h1>Andalusian</h1>
-        {!this.state.isLogin && !this.state.isSignup && (
-          <Login
-            updateInfo={this.updateInfo}
-            handleLogin={this.handleLogin}
-            handleToggleSignup={this.handleToggleSignup}
-          />
+      <div id="appContainer">
+        {/* <Sidebar /> */}
+        <Header handleSignout={this.handleSignout} isLogin={this.state.isLogin} isSignup={this.state.isSignup} />
+        {!this.state.isLogin && (
+          <div className="grid">
+            {!this.state.isSignup ? (
+              <Login
+                updateInfo={this.updateInfo}
+                handleLogin={this.handleLogin}
+                handleToggleSignup={this.handleToggleSignup}
+              />
+            ) : (
+                <Signup
+                  updateInfo={this.updateInfo}
+                  handleSignup={this.handleSignup}
+                  handleToggleSignup={this.handleToggleSignup}
+                />
+              )
+            }
+          </div>
         )}
-        {this.state.isSignup && (
-          <Signup
-            updateInfo={this.updateInfo}
-            handleSignup={this.handleSignup}
-            handleToggleSignup={this.handleToggleSignup}
-          />
+        
+        {this.state.isLogin && (
+          <div id="microGrid">
+            <MicroList pageSelect={this.state.pageSelect} updateInfo={this.updateInfo} />
+          </div>
         )}
-        {this.state.isLogin && !this.state.isSignup && (
-          <Signout
-            handleSignout={this.handleSignout}
-          />
-        )}
-
-        {this.state.isLogin && <MicroList pageSelect={this.state.pageSelect} updateInfo={this.updateInfo} />}
         {displayed}
       </div>
     );

@@ -28,7 +28,7 @@ function MyDropzone(props) {
             <div id="dropz" {...getRootProps()}>
                 <div id="drop1" className="dropzone">
                     <input name="uploadedFunction" {...getInputProps()} />
-                    <p>Upload your Function</p>
+                    <p>Upload Function Files</p>
                 </div>
             </div>
             <pre>

@@ -205,8 +205,7 @@ awsController.createBucket = (req, res, next) => {
 awsController.getawsAccountID = (req, res, next) => {
   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
   const sts = new AWS.STS();
-  const params = {
-  };
+  const params = {};
   sts.getCallerIdentity(params, function (err, data) {
     if (err) {
       console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| awsController.getawsAccountID | ERROR: ", err, err.stack);
