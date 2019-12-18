@@ -1,2 +1,2 @@
 import '@babel/polyfill'
-jest.setTimeout(30000);
+jest.setTimeout(120000);
