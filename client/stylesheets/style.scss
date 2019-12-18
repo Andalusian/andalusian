@@ -241,8 +241,19 @@ header {
 .leftColumn {
   grid-column: 1 / span 5;
 }
+
 .mainColumn {
   grid-column: 6 / span 7;
+}
+
+.thirdColumn {
+  grid-column: span 4;
+  display: flex;
+  flex-direction: column;
+}
+
+.thirdColumn select {
+  height: auto !important;
 }
 
 #loginButton {
