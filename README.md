@@ -14,10 +14,30 @@ Functions will only be displayed if the user has added GCloud, AWS, Azure config
 
 ## GCloud -----> AUSTIN TO EDIT THIS
 ### Configuration
-User must create a key-file and enable the CLOUD RESOURCE MANAGER API in order to use this service.
+User must have the following in order to use the service:
+1. A project on the Google Cloud Platform,
+2. Cloud Functions API enabled,
+3. Cloud Resource Manager API enabled,
+4. A key_file for the App Engine default service account.
+
+### Landing Page
+Upon signup to our service you are requested to enter your key_file. This is used to authorize you and allow us to deploy your functions on your behalf. The key will be saved for future use under the alias you give for it.
+
+### Project's Functions
+This portal will display all deployed AWS Lambda functions within the selected region.
+
+**Info** will display a number of properties of the function.
+
+**Invoke** will call the endpoint of that function.
+
+**Delete** will remove the function from your project.
 
 ### Create Function
-
+To deploy a function, it needs:
+1. **Function Name:** This needs to be the name of the function from the file you upload or the function you write.
+2. **Runtime:** Choose the runtime you would like to use.
+3. **Upload Function Files DropZone:** You can click or drag to upload your file to be deployed. It will then be displayed inside the field below. Alternatively, you can write your own function inside the field.
+4. **Deploy:** After everything is filled out, this button will deploy your function. It can take up to 2 minutes to deploy.
 
 ## AWS
 ### Configuration
