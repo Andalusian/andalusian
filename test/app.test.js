@@ -98,11 +98,4 @@ describe('App component', () => {
     //     expect(wrapper.state("awsRuntime")).toBe('node');
     // });
 
-
-    it('blah', function () {
-        const result = shallow(<AWSFunctionForm />);
-        const wrapper = shallow(<App />);
-        result.find('select').simulate('change', { target: { value: 'node' } });
-        expect(wrapper.state("awsRuntime").value).to.equal("node");
-    });
 });

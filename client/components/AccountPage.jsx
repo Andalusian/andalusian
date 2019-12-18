@@ -1,8 +1,13 @@
 import React from "react";
+import { useEffect } from 'react';
 import AWSCurrentFunctions from './AWSCurrentFunctions.jsx';
 
 
 const AccountPage = props => {
+
+    useEffect(() => {
+        props.listAzure();
+    }, [])
 
     return (
         <React.Fragment>
@@ -51,7 +56,8 @@ const AccountPage = props => {
                 <option value="sa-east-1">SA East 1</option>
             </select>
             {props.shortCurrentFunctions}
-            {/* <h3>Azure</h3> */}
+             <h3>Azure</h3>
+            {props.azureNames}
         </React.Fragment>
     );
 };

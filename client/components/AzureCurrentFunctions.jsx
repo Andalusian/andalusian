@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 
 const AzureCurrentFunctions = props => {
     useEffect(() => {
-        console.log('running use effect')
         props.listAzure();
     }, [])
 
