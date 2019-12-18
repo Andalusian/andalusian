@@ -3,7 +3,7 @@ import React from "react";
 const MicroList = (props) => {
 
   return (
-    <div className='radio'>
+    <div className="radio container">
       <label>
         <input id="googleRadio" onChange={() => props.updateInfo('pageSelect', '')} type="radio"
           value="myAccount" checked={props.pageSelect === ''} />

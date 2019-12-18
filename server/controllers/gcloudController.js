@@ -16,13 +16,13 @@ gcloudController.authUser = (req, res, next) => {
   exec(`gcloud auth activate-service-account --key-file ${path.join(__dirname, `../../users/${user_name}/gcloud/keyfile.json`)} --project=${project} --quiet`, (error, stdout, stderr) => {
     // OUTPUT HANDLING
     if (error) {
-      console.error(`exec error: ${error}`);
+      console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.authUser | exec error: ", `${error}`);
       return res.sendStatus(500);
     }
-    console.error(`stderr: ${stderr}`);
-    console.log(`stdout: ${stdout}`);
+    console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.authUser | stderr: ", `${stderr}`);
+    console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.authUser | stdout: ", `${stdout}`);
     return next();
-  }); 
+  });
 }
 
 // DEPLOY THE FUNCTION
@@ -44,7 +44,7 @@ gcloudController.deploy = (req, res, next) => {
   for (let i = 0; i < project.length; i++) {
     if (!/[a-z0-9A-Z-_]/gm.test(project[i])) return res.status(400).json('Project Name formatted incorrectly.\nMust only contain letters, numbers, underscores, and hyphens.');
   }
-  
+
 
   // BUILD FUNCTION FILE
   if (runtime === 'nodejs8' || runtime === 'nodejs10') {
@@ -59,14 +59,14 @@ gcloudController.deploy = (req, res, next) => {
   exec(`gcloud functions deploy ${fn_name} --runtime ${runtime} --project ${project} --source ${path.join(__dirname, (`../../users/${user_name}/gcloud/`))} --trigger-http --format=json --quiet`, (error, stdout, stderr) => {
     // OUTPUT HANDLING
     if (error) {
-      console.error(`exec error: ${error}`);
+      console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.deploy | exec error: ", `${error}`);
       return res.sendStatus(500);
     }
-    console.error(`stderr: ${stderr}`);
-    console.log(`stdout: ${stdout}`);
+    console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.deploy | stderr: ", `${stderr}`);
+    console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.deploy | stdout: ", `${stdout}`);
 
     // RESPOND WITH ENDPOINT
-    res.locals.endpoint = {endpoint: JSON.parse(stdout).httpsTrigger.url};
+    res.locals.endpoint = { endpoint: JSON.parse(stdout).httpsTrigger.url };
     return next();
   });
 }
@@ -76,11 +76,11 @@ gcloudController.list = (req, res, next) => {
   exec(`gcloud functions list --format=json`, (error, stdout, stderr) => {
     // OUTPUT HANDLING
     if (error) {
-      console.error(`exec error: ${error}`);
+      console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.list | exec error: ", `${error}`);
       return res.sendStatus(500);
     }
-    console.error(`stderr: ${stderr}`);
-    console.log(`stdout: ${stdout}`);
+    console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.list | stderr: ", `${stderr}`);
+    console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.list | stdout: ", `${stdout}`);
 
     // PARSE RESPONSE
     const response = JSON.parse(stdout);
@@ -112,11 +112,11 @@ gcloudController.deleteFunction = (req, res, next) => {
   exec(`gcloud functions delete ${fn_name} --quiet`, (error, stdout, stderr) => {
     // OUTPUT HANDLING
     if (error) {
-      console.error(`exec error: ${error}`);
+      console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.deleteFunction | exec error: ", `${error}`);
       return res.sendStatus(500);
     }
-    console.error(`stderr: ${stderr}`);
-    console.log(`stdout: ${stdout}`);
+    console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.deleteFunction | stderr: ", `${stderr}`);
+    console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.deleteFunction | stdout: ", `${stdout}`);
 
     // RESPOND WITH 200 STATUS
     return next();
@@ -137,11 +137,11 @@ gcloudController.callFunction = (req, res, next) => {
   exec(`gcloud functions call ${fn_name}`, (error, stdout, stderr) => {
     // OUTPUT HANDLING
     if (error) {
-      console.error(`exec error: ${error}`);
+      console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.callFunction | exec error: ", `${error}`);
       return res.sendStatus(500);
     }
-    console.error(`stderr: ${stderr}`);
-    console.log(`stdout: ${stdout}`);
+    console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.callFunction | stderr: ", `${stderr}`);
+    console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.callFunction | stdout: ", `${stdout}`);
 
     // RESPOND WITH 200 STATUS
     return next();
@@ -163,11 +163,11 @@ gcloudController.getinformation = (req, res, next) => {
   exec(`gcloud functions describe ${fn_name} --format=json`, (error, stdout, stderr) => {
     // OUTPUT HANDLING
     if (error) {
-      console.error(`exec error: ${error}`);
+      console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.getinformation | exec error: ", `${error}`);
       return res.sendStatus(500);
     }
-    console.error(`stderr: ${stderr}`);
-    console.log(`stdout: ${stdout}`);
+    console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.getinformation | stderr: ", `${stderr}`);
+    console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.getinformation | stdout: ", `${stdout}`);
 
     // PARSE RESPONSE
     const response = JSON.parse(stdout);

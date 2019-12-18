@@ -17,14 +17,14 @@ const DockerCredentials = props => {
       })
   }
   return (
-    <React.Fragment>
+    <div id="azureCredentialsContainer" className="container">
+      <h3>Configuration</h3>
       <pre id="dockerCredentials">
         <label >Username: </label>
         <input
           type="text"
           id="dockerUsername"
           name="dockerUsername"
-          // placeholder="Docker Username"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <label >Password: </label>
@@ -32,13 +32,12 @@ const DockerCredentials = props => {
           type="password"
           id="dockerPassword"
           name="dockerPassword"
-          // placeholder="Docker Password"
           onChange={e => props.updateInfo(e.target.name, e.target.value)}
         />
         <button type="button" className="saveButton" onClick={() => props.handleSubmitKey('dockerPassword', 'dockerUsername')}>Save Credentials</button>
         <button type="button" onClick={() => dockerLogin()}>Login</button>
       </pre>
-    </React.Fragment>
+    </div>
   );
 }
 

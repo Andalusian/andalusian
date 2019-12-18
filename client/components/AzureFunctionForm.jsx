@@ -6,26 +6,27 @@ import AzureCurrentFunctions from "./AzureCurrentFunctions.jsx";
 
 const AzureFunctionForm = (props) => {
     return (
-        <React.Fragment>
-            <h2>Azure</h2>
-            <h3>Configuration</h3>
-            <AzureCredentials
-                username={props.username}
-                updateInfo={props.updateInfo}
-                azureUser={props.azureUser}
-                azurePass={props.azurePass}
-                azureTenant={props.azureTenant}
-                submitKey={props.submitKey} />
+
+      <div id="azureGrid" className="grid">
+        <h2 className="container">Azure</h2>
+        <div className="leftColumn">
+          <AzureCredentials
+              username={props.username}
+              updateInfo={props.updateInfo}
+              azureUser={props.azureUser}
+              azurePass={props.azurePass}
+              azureTenant={props.azureTenant}
+              submitKey={props.submitKey} />
             <AzureCurrentFunctions
                 listAzure={props.listAzure}
                 azureFunctions={props.azureFunctions} />
-
-            <hr />
-            <h4>Create Function</h4>
+        </div>
+        <div className="mainColumn container">
+            <h3>Create Function</h3>
             <div className="azureInfo">
                 <input onChange={(e) => props.updateInfo(e.target.name, e.target.value)} id="azureProject" name="azureProject" type="text" placeholder="Project Name" />
                 <select id="Runtime" name="azureRuntime" onChange={(e) => props.updateInfo(e.target.name, e.target.value)}>
-                    <option value='1'>-- select runtime --</option>
+                    <option value='1'>select runtime</option>
                     <option value="--csharp --dotnet">Dotnet</option>
                     <option value="--javascript --node">Node</option>
                     <option value="--python">Python</option>
@@ -35,7 +36,7 @@ const AzureFunctionForm = (props) => {
                 <input onChange={(e) => { props.updateInfo(e.target.name, e.target.value) }} name="functionName" type="text" placeholder="Function Name" />
             </div>
             <select id="azureTemplate" name="azureTemplate" onChange={(e) => props.updateInfo(e.target.name, e.target.value)}>
-                <option value='1'>-- select template --</option>
+                <option value='1'>select template</option>
                 <option value="Blob Trigger">Blob Trigger</option>
                 <option value="Cosmos DB Trigger">Cosmos DB Trigger</option>
                 <option value="Event Grid Trigger">Event Grid Trigger</option>
@@ -58,7 +59,8 @@ const AzureFunctionForm = (props) => {
             <input onChange={(e) => props.updateInfo(e.target.name, e.target.value)} name="azureApp" type="text" placeholder="App to Deploy to" />
             <button onClick={() =>
                 axios.post('/azure/deployFunc', { username: props.username, projectName: props.azureProject, app: props.azureApp })}>Deploy</button>
-        </React.Fragment>
+        </div>
+      </div>
     )
 }
 
