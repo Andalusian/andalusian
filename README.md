@@ -12,7 +12,7 @@ The Account Overview page displays:
 
 Functions will only be displayed if the user has added GCloud, AWS, Azure configurations to authenticate user accounts with these cloud services.
 
-## GCloud -----> AUSTIN TO EDIT THIS
+## GCloud
 ### Configuration
 User must have the following in order to use the service:
 1. A project on the Google Cloud Platform,
@@ -53,10 +53,24 @@ To deploy a function to AWS Lambda, the user will enter a function name, an AWS 
 ### Update Function
 To update the code of a previously deployed function, the user will click on **Load Code** which will populate function name and function code field. Once the code is edited in the textbox, user will click on **Update Function** to update the deployed function.
 
-## Azure -----> JUSTIN TO EDIT THIS
+## Azure
 ### Configuration
+Upon logging in for the first time, the user will configure the account to authenticate with Azure. To do so, the user should enter their Azure Username, Password, and (if applicable) their Tenant ID. This information will get encrypted before being saved in the database. Clicking the Store Credentials Button will save this encrypted information in the database, and clicking the Log In Button will actually submit the stored credentials and log the user in to Microsoft Azure.
+
+### My Azure Functions
+This portal will display all deployed Microsoft Azure functionapps tied to the user's account.
+
+### Create Project
+To begin the process of deploying a function to your Azure functionapp, please enter a project name and select a runtime. Once both fields are entered, clicking the **Create Project** button will create all necessary boilerplate files in a directory associated with your account. This directory will be deleted upon logout as a security measure.
 
 ### Create Function
+To create a function to deploy to your functionapp, please enter a name for the function and optionally select a template to use. Upon selection of the template, click the Create Function to create this function in your already created Project directory.
+
+### Save Changes
+Upon creation of the function, the selected template's code will load in a text display field. Feel free to edit this code as you wish, as any changes will be immediately reflected in the code to be deployed. After making any changes, click the Save Changes button to write those changes to the actual code files.
+
+### Deploy Function
+To finally deploy the newly created function to your functionapp, simply enter the name of your functionapp's resource group in the supplied input field and then click the Deploy button. Within seconds, the deployed function will be found with your functionapp in Microsoft Azure.
 
 ## Docker
 ### Configuration
