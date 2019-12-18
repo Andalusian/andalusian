@@ -88,6 +88,9 @@ class App extends React.Component {
 
     this.updateInfo = this.updateInfo.bind(this);
     this.getFuncInfo = this.getFuncInfo.bind(this);
+    this.loadCode = this.loadCode.bind(this);
+    this.invokeFunc = this.invokeFunc.bind(this);
+    this.deleteFunc = this.deleteFunc.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignup = this.handleSignup.bind(this);
     this.handleToggleSignup = this.handleToggleSignup.bind(this);
@@ -371,7 +374,7 @@ class App extends React.Component {
         console.log(data);
         for (let i = 0; i < data.data.Functions.length; i++) {
           let funcName = data.data.Functions[i].FunctionName;
-          allFuncArray.push(<div className="container short" key={i}><h4>{funcName}</h4> <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>);
+          allFuncArray.push(funcName); //<div className="container short function" key={i}><h4>{funcName}</h4> <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke Function</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>
           shortAllFuncArray.push(<div className="myAWSFuncsShort" key={i}>{funcName} </div>)
         }
         this.setState({ currentFunctions: allFuncArray });
@@ -439,6 +442,7 @@ class App extends React.Component {
   }
 
   loadCode(funcName) {
+    console.log(this);
     axios
       .post("/aws/loadCode", {
         funcName,
@@ -610,6 +614,7 @@ class App extends React.Component {
         displayed = (<React.Fragment>
           <AWSFunctionForm id="AWSFunctionForm"
             currentFunctions={this.state.currentFunctions}
+            currentFunctionFunctions={{getFuncInfo: this.getFuncInfo, loadCode: this.loadCode, invokeFunc: this.invokeFunc, deleteFunc: this.deleteFunc}}
             currRegion={this.state.currRegion}
             submitKey={this.handleSubmitKey}
             uploadedFunction={this.state.uploadedFunction}
@@ -630,7 +635,6 @@ class App extends React.Component {
             configureAWS={this.configureAWS}
             createBucket={this.createBucket}
             awsKeyAlias={this.state.awsKeyAlias}
-            keys={this.state.keys}
             keys={this.state.keys.filter(key => key.keyType === 'awsSecretAccessKey')}
             codeLoaded={this.state.codeLoaded}
             awsPopup={this.state.awsPopup}
@@ -668,7 +672,8 @@ class App extends React.Component {
             updateFunction={this.updateFunction}
           // listFunctions={this.listFunctions}
           />
-          <AWSFunctionInfo closeFuncInfo={this.closeFuncInfo}
+          <AWSFunctionInfo
+            closeFuncInfo={this.closeFuncInfo}
             functionName={this.state.functionName}
             awsFuncState={this.state.awsFuncState}
             awsFuncRuntime={this.state.awsFuncRuntime}
