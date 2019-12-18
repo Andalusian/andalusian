@@ -403,6 +403,10 @@ hr {
   margin: 0 15px 5px 0
 }
 
+.azureCredBtns {
+  display: flex;
+  justify-content: space-around;
+}
 #graph {
   height: 200px;
   width: 200px;

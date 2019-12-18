@@ -37,14 +37,17 @@ gcloudController.deploy = (req, res, next) => {
     return res.status(400).json('Improper runtime');
   }
   // FUNCTION NAME
+  if (typeof fn_name !== 'string' || fn_name.length === 0) return res.status(400).json('No Function Name given.');
   for (let i = 0; i < fn_name.length; i++) {
     if (!/[a-z0-9A-Z-_]/gm.test(fn_name[i])) return res.status(400).json('Function Name formatted incorrectly.\nMust only contain letters, numbers, underscores, and hyphens.');
   }
   // PROJECT
+  if (typeof project !== 'string' || project.length === 0) return res.status(400).json('No Project Name given.');
   for (let i = 0; i < project.length; i++) {
     if (!/[a-z0-9A-Z-_]/gm.test(project[i])) return res.status(400).json('Project Name formatted incorrectly.\nMust only contain letters, numbers, underscores, and hyphens.');
   }
-
+  // USERNAME
+  if (typeof user_name !== 'string' || user_name.length === 0) return res.status(400).json('No Username given.');
 
   // BUILD FUNCTION FILE
   if (runtime === 'nodejs8' || runtime === 'nodejs10') {
@@ -65,14 +68,16 @@ gcloudController.deploy = (req, res, next) => {
     console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.deploy | stderr: ", `${stderr}`);
     console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${user_name}`, "| gcloudController.deploy | stdout: ", `${stdout}`);
 
-    // RESPOND WITH ENDPOINT
-    res.locals.endpoint = { endpoint: JSON.parse(stdout).httpsTrigger.url };
+    // RESPOND WITH 200 STATUS
     return next();
   });
 }
 
 // GET FUNCTIONS ASSOCIATED WITH THE PROJECT
 gcloudController.list = (req, res, next) => {
+  // VARIABLES
+  const { user_name } = req.params;
+
   exec(`gcloud functions list --format=json`, (error, stdout, stderr) => {
     // OUTPUT HANDLING
     if (error) {
@@ -100,10 +105,11 @@ gcloudController.list = (req, res, next) => {
 // DELETE FUNCTION
 gcloudController.deleteFunction = (req, res, next) => {
   // VARIABLES
-  const { fn_name } = req.body;
+  const { fn_name, user_name } = req.body;
 
   // SANITATION
   // FUNCTION NAME
+  if (typeof fn_name !== 'string' || fn_name.length === 0) return res.status(400).json('No Function Name given.');
   for (let i = 0; i < fn_name.length; i++) {
     if (!/[a-z0-9A-Z-_]/gm.test(fn_name[i])) return res.status(400).json('Function Name formatted incorrectly.\nMust only contain letters, numbers, underscores, and hyphens.');
   }
@@ -126,7 +132,7 @@ gcloudController.deleteFunction = (req, res, next) => {
 // CALL FUNCTION
 gcloudController.callFunction = (req, res, next) => {
   // VARIABLES
-  const { fn_name } = req.params;
+  const { fn_name, user_name } = req.params;
 
   // SANITATION
   // FUNCTION NAME
@@ -151,7 +157,7 @@ gcloudController.callFunction = (req, res, next) => {
 // GET INFORMATION ABOUT FUNCTION
 gcloudController.getinformation = (req, res, next) => {
   // VARIABLES
-  const { fn_name } = req.params;
+  const { fn_name, user_name } = req.params;
 
   // SANITATION
   // FUNCTION NAME
@@ -190,7 +196,7 @@ gcloudController.getinformation = (req, res, next) => {
 
 // GET FUNCTION SOURCE CODE
 gcloudController.getCode = (req, res, next) => {
-  const { fn_name } = req.params;
+  const { fn_name, user_name } = req.params;
 
   exec(`gcloud functions `, (error, stdout, stderr) => {
 

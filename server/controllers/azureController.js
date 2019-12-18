@@ -57,8 +57,22 @@ azureController.createFunc = (req, res, next) => {
         res.locals = fs.readFileSync(`./users/${username}/azure/${projectName}/${functionName}/index.js`, 'utf8')
         console.error(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| azureController.createFunc | stderr: ", `${stderr}`);
         console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| azureController.createFunc | stdout: ", `${stdout}`);
-        res.locals = stdout; return next();
+        return next();
     })
+}
+
+azureController.getFuncs = (req, res, next) => {
+    const { projectName } = req.body;
+
+    exec(`az functionapp list`, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`exec error: ${error}`);
+            return res.sendStatus(500);
+        }
+        res.locals = stdout;
+        return next();
+    })
+
 }
 
 azureController.updateCode = (req, res, next) => {

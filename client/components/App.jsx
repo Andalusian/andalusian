@@ -73,6 +73,8 @@ class App extends React.Component {
       azureUser: '',
       azurePass: '',
       azureTenant: '',
+      azureFunctions: [],
+      azureNames: [],
       // both
       pageSelect: '',
       functionName: '',
@@ -103,13 +105,17 @@ class App extends React.Component {
     this.closeFuncInfo = this.closeFuncInfo.bind(this)
     this.updateFunction = this.updateFunction.bind(this)
     this.updateCode = this.updateCode.bind(this)
+    this.listAzure = this.listAzure.bind(this)
     // this.createBucket = this.createBucket.bind(this)
     // this.listBuckets = this.listBuckets.bind(this)
   }
 
   componentDidMount() {
     axios.get('/checkLogin')
-      .then(response => this.setState(response.data));
+      .then(response => this.setState(response.data))
+        .catch(function(error) {
+          console.error('componentDidMount error');
+        });
   }
 
   updateInfo(property, value) {
@@ -131,12 +137,16 @@ class App extends React.Component {
         axios.post('/gcloud/auth', { user_name: this.state.username, key_file: updateKey[0].key, project })
           .then((res) => {
             if (res.status === 200) this.googleListFunctions();
-          });
+          })
+            .catch(function(error) {
+              console.error(error);
+            });
         updateObj.googleKey = updateKey[0].key;
       }
     }
     this.setState(updateObj);
   }
+
 
   handleLogin(e) {
     e.preventDefault();
@@ -163,6 +173,9 @@ class App extends React.Component {
         this.setState(updateStateObject);
         this.osChecker();
       })
+        .catch(function(error) {
+          console.error(error);
+        });
   }
 
   handleSignup(e) {
@@ -174,7 +187,10 @@ class App extends React.Component {
           isSignup: false,
         });
         this.osChecker()
-      });
+      })
+  .catch(function(error) {
+      console.error(error);
+    });
   }
 
   handleSignout() {
@@ -235,6 +251,8 @@ class App extends React.Component {
           azureUser: '',
           azurePass: '',
           azureTenant: '',
+          azureFunctions: [],
+          azureNames: [],
           // both
           pageSelect: '',
           functionName: '',
@@ -249,6 +267,9 @@ class App extends React.Component {
         })
       })
       .then(setTimeout(() => console.log(this.state), 2000))
+        .catch(function(error) {
+          console.error('handle sign out error');
+        });
   }
 
   osChecker() {
@@ -308,7 +329,10 @@ class App extends React.Component {
               if (response.status === 200) {
                 axios
                   .post('/db/storeKey', keyObject)
-                  .then(response => this.setState({ keys: response.data.keys }));
+                  .then(response => this.setState({ keys: response.data.keys }))
+                    .catch(function(error) {
+                  console.error(error);
+                });
               }
             });
           break;
@@ -318,7 +342,10 @@ class App extends React.Component {
           keyObject.keyAlias = this.state.awsKeyAlias;
           axios
             .post('/db/storeKey', keyObject)
-            .then(response => this.setState({ keys: response.data.keys }));
+            .then(response => this.setState({ keys: response.data.keys }))
+              .catch(function(error) {
+                console.error(error);
+              });
 
           break;
         case 'dockerPassword':
@@ -326,7 +353,10 @@ class App extends React.Component {
           keyObject.dockerUsername = this.state.dockerUsername;
           axios
             .post('/db/storeKey', keyObject)
-            .then(response => this.setState({ keys: response.data.keys }));
+            .then(response => this.setState({ keys: response.data.keys }))
+              .catch(function(error) {
+                console.error(error);
+              });
           break;
         case 'azurePass':
           keyObject.azureUser = this.state.azureUser;
@@ -334,7 +364,10 @@ class App extends React.Component {
           keyObject.azureTenant = this.state.azureTenant;
           axios
             .post('/db/storeKey', keyObject)
-            .then(response => this.setState({ keys: response.data.keys }));
+            .then(response => this.setState({ keys: response.data.keys }))
+              .catch(function(error) {
+                console.error(error);
+              });
           break;
       }
     }
@@ -358,8 +391,25 @@ class App extends React.Component {
         setTimeout(() => this.listFunctions(), 3000);
       })
       .catch((error) => {
-        console.log(error);
+        console.log('configure AWS error');
       });
+  }
+
+  listAzure() {
+    const azureFuncArr = [];
+    const azureNameArr = [];
+
+    axios.post('/azure/getFuncs', {projectName: this.state.azureProject})
+        .then(data => {
+          for (let i = 0; i < data.data.length; i += 1) {
+            azureFuncArr.push(<div id={data.data[0].name} className="myAzureFuncs">{data.data[i].name} <button>Get Info</button> <button>Start</button> <button>Stop</button> </div>)
+          azureNameArr.push(data.data[i].name)
+          }
+          this.setState({azureFunctions: azureFuncArr, azureNames: azureNameArr})
+        })
+        .catch(function(error) {
+          console.error(error);
+        });
   }
 
   listFunctions() {
@@ -381,13 +431,13 @@ class App extends React.Component {
         this.setState({ shortCurrentFunctions: shortAllFuncArray });
       })
       .catch(function (error) {
-        console.log(error);
+        console.log('list functions error');
       });
   }
 
   googleListFunctions() {
     if (!this.state.googleFunctionButtons[0]) {
-      fetch('/gcloud/list')
+      fetch(`/gcloud/list/${this.state.username}`)
         .then(data => data.json())
         .then(data => {
           const fnList = data.fn_list;
@@ -400,7 +450,7 @@ class App extends React.Component {
             fnButtons.push(<div id={el}>
               <span>{el}</span>
               <button onClick={() => {
-                fetch(`/gcloud/info/${el}`)
+                fetch(`/gcloud/info/${el}/${this.state.username}`)
                   .then(data => data.json())
                   .then(data => {
                     this.setState({
@@ -410,10 +460,10 @@ class App extends React.Component {
                   })
               }}>Info</button>
               <button onClick={() => {
-                fetch(`/gcloud/call/${el}`)
+                fetch(`/gcloud/call/${el}/${this.state.username}`)
                   .then(data => {
                     if (data.status === 200) {
-                      console.log('do something!');
+                      console.log();
                     }
                   })
               }}>Invoke</button>
@@ -423,7 +473,7 @@ class App extends React.Component {
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  body: JSON.stringify({ fn_name: el }),
+                  body: JSON.stringify({ fn_name: el, user_name: this.state.username }),
                 })
                   .then(data => {
                     if (data.status === 200) {
@@ -438,6 +488,9 @@ class App extends React.Component {
             googleFunctionNames: fnNames
           });
         })
+          .catch(function(error) {
+            console.error(error);
+          });
     }
   }
 
@@ -453,7 +506,7 @@ class App extends React.Component {
         document.getElementById("codeHere").value = data.data
         document.getElementById("functionName").value = funcName
       })
-      .catch(error => console.log(error))
+      .catch(error => {})
   }
 
   updateCode() {
@@ -464,7 +517,7 @@ class App extends React.Component {
       functionName: this.state.functionName
     })
       .then(data => console.log('Updated'))
-      .catch(error => console.log(error))
+      .catch(error => console.log('updateCode error'))
   }
 
   getFuncInfo(funcName) {
@@ -492,7 +545,7 @@ class App extends React.Component {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        console.log('getFuncInfo error');
       });
   }
 
@@ -507,7 +560,7 @@ class App extends React.Component {
         username: this.state.username
       })
       .catch(function (error) {
-        console.log(error);
+        console.log('invokeFunc error');
       });
     alert("Function invoked.")
   }
@@ -522,7 +575,7 @@ class App extends React.Component {
         this.listFunctions()
       })
       .catch(function (error) {
-        console.log(error);
+        console.log('deleteFunc error');
       });
   }
 
@@ -542,7 +595,7 @@ class App extends React.Component {
           setTimeout(() => this.listFunctions(), 2000);
         })
         .catch((error) => {
-          console.log(error);
+          console.log('create Function error');
         });
     } else {
       alert("Please enter Region, Function Name, Runtime, Role, and Code to create function")
@@ -561,7 +614,7 @@ class App extends React.Component {
         setTimeout(() => this.listFunctions(), 2000);
       })
       .catch((error) => {
-        console.log(error);
+        console.log('update Function error');
       });
   }
 
@@ -576,6 +629,8 @@ class App extends React.Component {
           shortCurrentFunctions={this.state.shortCurrentFunctions}
           googleFunctionNames={this.state.googleFunctionNames}
           googleListFunctions={this.googleListFunctions}
+          azureNames={this.state.azureNames}
+          listAzure={this.listAzure}
         />
       </React.Fragment>)
     }
@@ -722,6 +777,8 @@ class App extends React.Component {
             submitKey={this.handleSubmitKey}
             uploadedFunction={this.state.uploadedFunction}
             updateCode={this.updateCode}
+            azureFunctions={this.state.azureFunctions}
+            listAzure={this.listAzure}
           />)
       }
 
@@ -747,7 +804,7 @@ class App extends React.Component {
             }
           </div>
         )}
-        
+
         {this.state.isLogin && (
           <div id="microGrid">
             <MicroList pageSelect={this.state.pageSelect} updateInfo={this.updateInfo} />
@@ -760,3 +817,5 @@ class App extends React.Component {
 }
 
 export default App;
+// module.exports = App;
+
