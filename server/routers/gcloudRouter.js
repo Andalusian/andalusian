@@ -9,7 +9,7 @@ router.post('/auth', gcloudController.authUser, (req, res) => {
 
 // DEPLOY THE FUNCTION
 router.post('/deploy', gcloudController.deploy, (req, res) => {
-  res.status(200).json(res.locals.endpoint);
+  res.sendStatus(200);
 });
 
 // GET FUNCTIONS ASSOCIATED WITH THE PROJECT

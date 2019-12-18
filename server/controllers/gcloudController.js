@@ -37,14 +37,17 @@ gcloudController.deploy = (req, res, next) => {
     return res.status(400).json('Improper runtime');
   }
   // FUNCTION NAME
+  if (typeof fn_name !== 'string' || fn_name.length === 0) return res.status(400).json('No Function Name given.');
   for (let i = 0; i < fn_name.length; i++) {
     if (!/[a-z0-9A-Z-_]/gm.test(fn_name[i])) return res.status(400).json('Function Name formatted incorrectly.\nMust only contain letters, numbers, underscores, and hyphens.');
   }
   // PROJECT
+  if (typeof project !== 'string' || project.length === 0) return res.status(400).json('No Project Name given.');
   for (let i = 0; i < project.length; i++) {
     if (!/[a-z0-9A-Z-_]/gm.test(project[i])) return res.status(400).json('Project Name formatted incorrectly.\nMust only contain letters, numbers, underscores, and hyphens.');
   }
-  
+  // USERNAME
+  if (typeof user_name !== 'string' || user_name.length === 0) return res.status(400).json('No Username given.');
 
   // BUILD FUNCTION FILE
   if (runtime === 'nodejs8' || runtime === 'nodejs10') {
@@ -65,8 +68,7 @@ gcloudController.deploy = (req, res, next) => {
     console.error(`stderr: ${stderr}`);
     console.log(`stdout: ${stdout}`);
 
-    // RESPOND WITH ENDPOINT
-    res.locals.endpoint = {endpoint: JSON.parse(stdout).httpsTrigger.url};
+    // RESPOND WITH 200 STATUS
     return next();
   });
 }
@@ -104,6 +106,7 @@ gcloudController.deleteFunction = (req, res, next) => {
 
   // SANITATION
   // FUNCTION NAME
+  if (typeof fn_name !== 'string' || fn_name.length === 0) return res.status(400).json('No Function Name given.');
   for (let i = 0; i < fn_name.length; i++) {
     if (!/[a-z0-9A-Z-_]/gm.test(fn_name[i])) return res.status(400).json('Function Name formatted incorrectly.\nMust only contain letters, numbers, underscores, and hyphens.');
   }
@@ -127,6 +130,7 @@ gcloudController.deleteFunction = (req, res, next) => {
 gcloudController.callFunction = (req, res, next) => {
   // VARIABLES
   const { fn_name } = req.params;
+  console.log(`\nfn_name: ${fn_name}\n`)
 
   // SANITATION
   // FUNCTION NAME

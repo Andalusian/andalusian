@@ -185,19 +185,27 @@ class App extends React.Component {
     axios.post('db/deleteUserFiles', { username: this.state.username })
       .then(() => {
         this.setState({
+          // shinobi
           username: '',
           password: '',
+          keys: [],
           // google
           googleKey: '',
+          googleKeyAlias: '',
+          googleAddKeyModalClicked: false,
           runtime: undefined,
           googleProject: '',
+          googleFunctionButtons: [],
+          googleFunctionInfoButtonClicked: false,
+          googleFunctionInfo: {},
           // aws
           awsAccessKey: '',
           awsSecretAccessKey: '',
-          S3BucketName: '',
-          newBucketRegion: "",
-          currRegion: "",
-          currentBuckets: [],
+          awsKeyAlias: '',
+          // S3BucketName: '',
+          // newBucketRegion: "",
+          // currRegion: "",
+          // currentBuckets: [],
           codeHere: "",
           currentFunctions: [],
           awsRegion: '',
@@ -205,10 +213,8 @@ class App extends React.Component {
           awsRole: '',
           awsAccountID: '',
           codeLoaded: '',
-          awsFuncState: '',
-          awsFuncRuntime: '',
-          awsFuncLastModified: '',
-          awsFuncRole: '',
+          awsPopup: false,
+          functionInvocations: [],
           // docker
           dockerUsername: '',
           dockerPassword: '',
@@ -218,6 +224,7 @@ class App extends React.Component {
           exposePort: '',
           com: '',
           copy: '',
+          repository: '',
           //azure
           azureRuntime: '',
           azureTemplate: '',
@@ -227,15 +234,17 @@ class App extends React.Component {
           azurePass: '',
           azureTenant: '',
           // both
+          pageSelect: 'Gcloud',
           // pageSelect: '',
           functionName: '',
           uploadedFunction: '',
-          uploadedFiles: [],
           operatingSystem: '',
           checkCount: 0,
+          //Dropzone prop for file data and text
+          uploadedFiles: [],
           // render states
           isLogin: false,
-          isSignup: false
+          isSignup: false,
         })
       });
     console.log(this.state);
