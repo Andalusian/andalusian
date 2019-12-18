@@ -441,46 +441,48 @@ class App extends React.Component {
         .then(data => data.json())
         .then(data => {
           const fnList = data.fn_list;
-          const fnButtons = [<hr />, <h4>Project's Functions</h4>];
+          const fnButtons = [<h3 className="container short">Project's Functions</h3>];
           const fnNames = [];
           fnList.forEach((el) => {
             fnNames.push(<div id={el} className="myGoogleFuncsShort">{el}</div>)
           })
           fnList.forEach((el) => {
-            fnButtons.push(<div id={el}>
-              <span>{el}</span>
-              <button onClick={() => {
-                fetch(`/gcloud/info/${el}/${this.state.username}`)
-                  .then(data => data.json())
-                  .then(data => {
-                    this.setState({
-                      googleFunctionInfoButtonClicked: true,
-                      googleFunctionInfo: data,
+            fnButtons.push(<div id={el} className="container short">
+              <h4>{el}</h4>
+              <div class="buttonContainer">
+                <button onClick={() => {
+                  fetch(`/gcloud/info/${el}/${this.state.username}`)
+                    .then(data => data.json())
+                    .then(data => {
+                      this.setState({
+                        googleFunctionInfoButtonClicked: true,
+                        googleFunctionInfo: data,
+                      })
                     })
+                }}>Get Info</button>
+                <button onClick={() => {
+                  fetch(`/gcloud/call/${el}/${this.state.username}`)
+                    .then(data => {
+                      if (data.status === 200) {
+                        console.log();
+                      }
+                    })
+                }}>Invoke Function</button>
+                <button onClick={() => {
+                  fetch(`/gcloud/delete/`, {
+                    method: 'DELETE',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ fn_name: el, user_name: this.state.username }),
                   })
-              }}>Info</button>
-              <button onClick={() => {
-                fetch(`/gcloud/call/${el}/${this.state.username}`)
-                  .then(data => {
-                    if (data.status === 200) {
-                      console.log();
-                    }
-                  })
-              }}>Invoke</button>
-              <button onClick={() => {
-                fetch(`/gcloud/delete/`, {
-                  method: 'DELETE',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({ fn_name: el, user_name: this.state.username }),
-                })
-                  .then(data => {
-                    if (data.status === 200) {
-                      document.getElementById(el).remove();
-                    }
-                  })
-              }}>Delete</button>
+                    .then(data => {
+                      if (data.status === 200) {
+                        document.getElementById(el).remove();
+                      }
+                    })
+                }}>Delete Function</button>
+              </div>
             </div>);
           });
           this.setState({
@@ -817,5 +819,4 @@ class App extends React.Component {
 }
 
 export default App;
-// module.exports = App;
 
