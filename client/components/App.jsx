@@ -408,8 +408,8 @@ class App extends React.Component {
     axios.post('/azure/getFuncs', { projectName: this.state.azureProject })
       .then(data => {
         for (let i = 0; i < data.data.length; i += 1) {
-          azureFuncArr.push(<div id={data.data[0].name} className="myAzureFuncs">{data.data[i].name} <button>Get Info</button> <button>Start</button> <button>Stop</button> </div>)
-          azureNameArr.push(data.data[i].name)
+          azureFuncArr.push(data.data[i].name);
+          azureNameArr.push(data.data[i].name);
         }
         this.setState({ azureFunctions: azureFuncArr, azureNames: azureNameArr })
       })
