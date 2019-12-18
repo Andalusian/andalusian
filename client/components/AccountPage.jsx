@@ -56,7 +56,7 @@ const AccountPage = props => {
             <option value="sa-east-1">SA East 1</option>
         </select>
         {props.shortCurrentFunctions}
-        {/* <h3>Azure</h3> */}
+         <h3>Azure</h3>
         {props.azureNames}
       </div>
     );
