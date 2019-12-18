@@ -14,6 +14,8 @@ module.exports = {
     // The paths to modules that run some code to configure or set up the testing environment before each test
     setupFiles: ['./enzyme.config.js'],
 
+    setupFilesAfterEnv: ['./jest.setup.js'],
+
     // The test environment that will be used for testing
     testEnvironment: 'jsdom',
 
@@ -35,4 +37,5 @@ module.exports = {
 
     // Indicates whether each individual test should be reported during the run
     verbose: true,
+
 };
