@@ -40,7 +40,6 @@ const AWSCredentials = (props) => {
             })
           }
         </select>
-        <button type="button" id="regionBtn" onClick={() => { props.configureAWS() }}>Save Config</button>
         <select id="awsRegion" name="awsRegion" onChange={e => props.updateInfo(e.target.name, e.target.value)} >
           <option defaultValue={"a"}>select region</option>
           <option value="us-east-1">US East 1</option>
@@ -62,6 +61,7 @@ const AWSCredentials = (props) => {
           <option value="me-south-1">ME South 1</option>
           <option value="sa-east-1">SA East 1</option>
         </select>
+        <button type="button" id="regionBtn" onClick={() => { props.configureAWS() }}>Save Config</button>
       </form>
     </div>
   );
