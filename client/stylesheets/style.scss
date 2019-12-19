@@ -95,11 +95,6 @@ input, textarea, .dropzone, .microList {
   }
 }
 
-#andalusianTitle {
-  grid-column: 6 / span 2;
-  text-align: center;
-}
-
 input {
   letter-spacing: .035rem;
 }
@@ -462,4 +457,21 @@ display: flex;
   display: inline-block;
   vertical-align: top;
   margin-right: 100px;
+}
+
+#myLogo {
+  height: 50px;
+  width: 50px;
+  border-radius: 2px;
+}
+
+#andalusianname {
+  height: 50px;
+  width: 200px;
+  grid-column: 6 / span 2;
+  text-align: center;
+  font-weight: bold;
+  font-family: Roboto;
+  font-size: 28pt;
+  color: #2b2b2b;
 }
