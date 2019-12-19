@@ -13,6 +13,8 @@ import DockerSetup from "./DockerSetup.jsx";
 import GoogleWelcomeForm from "./GoogleWelcomeForm.jsx";
 import Header from './Header.jsx';
 import Sidebar from './Sidebar.jsx';
+import Loading from "./Loading.jsx";
+
 
 class App extends React.Component {
   constructor(props) {
@@ -81,6 +83,7 @@ class App extends React.Component {
       uploadedFunction: '',
       operatingSystem: '',
       checkCount: 0,
+      loading: false,
       //Dropzone prop for file data and text
       uploadedFiles: [],
       // render states
@@ -90,6 +93,9 @@ class App extends React.Component {
 
     this.updateInfo = this.updateInfo.bind(this);
     this.getFuncInfo = this.getFuncInfo.bind(this);
+    this.loadCode = this.loadCode.bind(this);
+    this.invokeFunc = this.invokeFunc.bind(this);
+    this.deleteFunc = this.deleteFunc.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignup = this.handleSignup.bind(this);
     this.handleToggleSignup = this.handleToggleSignup.bind(this);
@@ -110,9 +116,9 @@ class App extends React.Component {
   componentDidMount() {
     axios.get('/checkLogin')
       .then(response => this.setState(response.data))
-        .catch(function(error) {
-          console.error('componentDidMount error');
-        });
+      .catch(function (error) {
+        console.error('componentDidMount error');
+      });
   }
 
   updateInfo(property, value) {
@@ -135,9 +141,9 @@ class App extends React.Component {
           .then((res) => {
             if (res.status === 200) this.googleListFunctions();
           })
-            .catch(function(error) {
-              console.error(error);
-            });
+          .catch(function (error) {
+            console.error(error);
+          });
         updateObj.googleKey = updateKey[0].key;
       }
     }
@@ -170,9 +176,9 @@ class App extends React.Component {
         this.setState(updateStateObject);
         this.osChecker();
       })
-        .catch(function(error) {
-          console.error(error);
-        });
+      .catch(function (error) {
+        console.error(error);
+      });
   }
 
   handleSignup(e) {
@@ -185,9 +191,9 @@ class App extends React.Component {
         });
         this.osChecker()
       })
-  .catch(function(error) {
-      console.error(error);
-    });
+      .catch(function (error) {
+        console.error(error);
+      });
   }
 
   handleSignout() {
@@ -256,6 +262,7 @@ class App extends React.Component {
           uploadedFunction: '',
           operatingSystem: '',
           checkCount: 0,
+          loading: false,
           //Dropzone prop for file data and text
           uploadedFiles: [],
           // render states
@@ -263,10 +270,9 @@ class App extends React.Component {
           isSignup: false,
         })
       })
-      .then(setTimeout(() => console.log(this.state), 2000))
-        .catch(function(error) {
-          console.error('handle sign out error');
-        });
+      .catch(function (error) {
+        console.error('handle sign out error');
+      });
   }
 
   osChecker() {
@@ -327,9 +333,9 @@ class App extends React.Component {
                 axios
                   .post('/db/storeKey', keyObject)
                   .then(response => this.setState({ keys: response.data.keys }))
-                    .catch(function(error) {
-                  console.error(error);
-                });
+                  .catch(function (error) {
+                    console.error(error);
+                  });
               }
             });
           break;
@@ -340,9 +346,9 @@ class App extends React.Component {
           axios
             .post('/db/storeKey', keyObject)
             .then(response => this.setState({ keys: response.data.keys }))
-              .catch(function(error) {
-                console.error(error);
-              });
+            .catch(function (error) {
+              console.error(error);
+            });
 
           break;
         case 'dockerPassword':
@@ -351,9 +357,9 @@ class App extends React.Component {
           axios
             .post('/db/storeKey', keyObject)
             .then(response => this.setState({ keys: response.data.keys }))
-              .catch(function(error) {
-                console.error(error);
-              });
+            .catch(function (error) {
+              console.error(error);
+            });
           break;
         case 'azurePass':
           keyObject.azureUser = this.state.azureUser;
@@ -362,9 +368,9 @@ class App extends React.Component {
           axios
             .post('/db/storeKey', keyObject)
             .then(response => this.setState({ keys: response.data.keys }))
-              .catch(function(error) {
-                console.error(error);
-              });
+            .catch(function (error) {
+              console.error(error);
+            });
           break;
       }
     }
@@ -377,6 +383,8 @@ class App extends React.Component {
   }
 
   configureAWS() {
+    this.setState({ loading: true })
+
     axios
       .post("/aws/configureAWS", {
         awsAccessKey: this.state.awsAccessKey,
@@ -396,21 +404,20 @@ class App extends React.Component {
     const azureFuncArr = [];
     const azureNameArr = [];
 
-    axios.post('/azure/getFuncs', {projectName: this.state.azureProject})
-        .then(data => {
-          for (let i = 0; i < data.data.length; i += 1) {
-            azureFuncArr.push(<div id={data.data[0].name} className="myAzureFuncs">{data.data[i].name} <button>Get Info</button> <button>Start</button> <button>Stop</button> </div>)
-          azureNameArr.push(data.data[i].name)
-          }
-          this.setState({azureFunctions: azureFuncArr, azureNames: azureNameArr})
-        })
-        .catch(function(error) {
-          console.error(error);
-        });
+    axios.post('/azure/getFuncs', { projectName: this.state.azureProject })
+      .then(data => {
+        for (let i = 0; i < data.data.length; i += 1) {
+          azureFuncArr.push(data.data[i].name);
+          azureNameArr.push(data.data[i].name);
+        }
+        this.setState({ azureFunctions: azureFuncArr, azureNames: azureNameArr })
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
   }
 
   listFunctions() {
-    // console.log(this.state.username);
     let allFuncArray = [];
     let shortAllFuncArray = [];
     axios
@@ -418,14 +425,16 @@ class App extends React.Component {
         username: this.state.username
       })
       .then(data => {
-        console.log(data);
         for (let i = 0; i < data.data.Functions.length; i++) {
           let funcName = data.data.Functions[i].FunctionName;
-          allFuncArray.push(<div className="container short" key={i}><h4>{funcName}</h4> <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>);
+          allFuncArray.push(funcName); //<div className="container short function" key={i}><h4>{funcName}</h4> <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke Function</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>
           shortAllFuncArray.push(<div className="myAWSFuncsShort" key={i}>{funcName} </div>)
         }
-        this.setState({ currentFunctions: allFuncArray });
-        this.setState({ shortCurrentFunctions: shortAllFuncArray });
+        this.setState({
+          currentFunctions: allFuncArray,
+          shortCurrentFunctions: shortAllFuncArray,
+          loading: false
+        });
       })
       .catch(function (error) {
         console.log('list functions error');
@@ -433,61 +442,142 @@ class App extends React.Component {
   }
 
   googleListFunctions() {
+    this.setState({ loading: true })
+
     if (!this.state.googleFunctionButtons[0]) {
+      this.setState({ loading: true });
       fetch(`/gcloud/list/${this.state.username}`)
         .then(data => data.json())
         .then(data => {
+          this.setState({ loading: false });
           const fnList = data.fn_list;
-          const fnButtons = [<hr />, <h4>Project's Functions</h4>];
+          const fnButtons = [<h3 className="container short">Project's Functions</h3>];
           const fnNames = [];
           fnList.forEach((el) => {
             fnNames.push(<div id={el} className="myGoogleFuncsShort">{el}</div>)
           })
           fnList.forEach((el) => {
-            fnButtons.push(<div id={el}>
-              <span>{el}</span>
-              <button onClick={() => {
-                fetch(`/gcloud/info/${el}/${this.state.username}`)
-                  .then(data => data.json())
-                  .then(data => {
-                    this.setState({
-                      googleFunctionInfoButtonClicked: true,
-                      googleFunctionInfo: data,
+            fnButtons.push(<div id={el} className="container short">
+              <h4>{el}</h4>
+              <div class="buttonContainer">
+                <button id={el + "GetInfo"} onClick={() => {
+                  this.setState({ loading: true });
+                  fetch(`/gcloud/info/${el}/${this.state.username}`)
+                    .then(data => data.json())
+                    .then(data => {
+                      this.setState({
+                        loading: false,
+                        googleFunctionInfoButtonClicked: true,
+                        googleFunctionInfo: data,
+                      })
                     })
+                }}>Get Info</button>
+                <button id={el + "InvokeFunction"} onClick={() => {
+                  this.setState({ loading: true });
+                  fetch(`/gcloud/call/${el}/${this.state.username}`)
+                    .then(data => {
+                      this.setState({ loading: false });
+                      if (data.status === 200) {
+                        document.getElementById(el + "InvokeFunction").style.backgroundColor = "green";
+                        setTimeout(() => { document.getElementById(el + "InvokeFunction").style.backgroundColor = "#80a9b9"; }, 1000);
+                      } else if (data.status === 500) {
+                        document.getElementById(el + "InvokeFunction").style.backgroundColor = "red";
+                        setTimeout(() => { document.getElementById(el + "InvokeFunction").style.backgroundColor = "#80a9b9"; }, 1000);
+                      }
+                    })
+                }}>Invoke Function</button>
+                <button id={el + "DeleteFunction"} onClick={() => {
+                  this.setState({ loading: true });
+                  fetch(`/gcloud/delete/`, {
+                    method: 'DELETE',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ fn_name: el, user_name: this.state.username }),
                   })
-              }}>Info</button>
-              <button onClick={() => {
-                fetch(`/gcloud/call/${el}/${this.state.username}`)
-                  .then(data => {
-                    if (data.status === 200) {
-                      console.log();
-                    }
-                  })
-              }}>Invoke</button>
-              <button onClick={() => {
-                fetch(`/gcloud/delete/`, {
-                  method: 'DELETE',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({ fn_name: el, user_name: this.state.username }),
-                })
-                  .then(data => {
-                    if (data.status === 200) {
-                      document.getElementById(el).remove();
-                    }
-                  })
-              }}>Delete</button>
+                    .then(data => {
+                      if (data.status === 200) {
+                        fetch(`/gcloud/list/${this.state.username}`)
+                          .then(data => data.json())
+                          .then(data => {
+                            this.setState({ loading: false });
+                            const fnList = data.fn_list;
+                            const fnButtons = [<h3 className="container short">Project's Functions</h3>];
+                            const fnNames = [];
+                            fnList.forEach((el) => {
+                              fnNames.push(<div id={el} className="myGoogleFuncsShort">{el}</div>)
+                            })
+                            fnList.forEach((el) => {
+                              fnButtons.push(<div id={el} className="container short">
+                                <h4>{el}</h4>
+                                <div class="buttonContainer">
+                                  <button id={el + "GetInfo"} onClick={() => {
+                                    this.setState({ loading: true });
+                                    fetch(`/gcloud/info/${el}/${this.state.username}`)
+                                      .then(data => data.json())
+                                      .then(data => {
+                                        this.setState({
+                                          loading: false,
+                                          googleFunctionInfoButtonClicked: true,
+                                          googleFunctionInfo: data,
+                                        })
+                                      })
+                                  }}>Get Info</button>
+                                  <button id={el + "InvokeFunction"} onClick={() => {
+                                    this.setState({ loading: true });
+                                    fetch(`/gcloud/call/${el}/${this.state.username}`)
+                                      .then(data => {
+                                        this.setState({ loading: false });
+                                        if (data.status === 200) {
+                                          document.getElementById(el + "InvokeFunction").style.backgroundColor = "green";
+                                          setTimeout(() => { document.getElementById(el + "InvokeFunction").style.backgroundColor = "#80a9b9"; }, 1000);
+                                        } else if (data.status === 500) {
+                                          document.getElementById(el + "InvokeFunction").style.backgroundColor = "red";
+                                          setTimeout(() => { document.getElementById(el + "InvokeFunction").style.backgroundColor = "#80a9b9"; }, 1000);
+                                        }
+                                      })
+                                  }}>Invoke Function</button>
+                                  <button id={el + "DeleteFunction"} onClick={() => {
+                                    fetch(`/gcloud/delete/`, {
+                                      method: 'DELETE',
+                                      headers: {
+                                        'Content-Type': 'application/json',
+                                      },
+                                      body: JSON.stringify({ fn_name: el, user_name: this.state.username }),
+                                    })
+                                      .then(data => {
+                                        if (data.status === 200) {
+                                          document.getElementById(el).remove();
+                                        }
+                                      })
+                                  }}>Delete Function</button>
+                                </div>
+                              </div>);
+                            });
+                            this.setState({
+                              googleFunctionButtons: fnButtons,
+                              googleFunctionNames: fnNames,
+                              loading: false
+                            });
+                          })
+                          .catch(function (error) {
+                            console.error(error);
+                          });
+                      }
+                    })
+                }}>Delete Function</button>
+              </div>
             </div>);
           });
           this.setState({
             googleFunctionButtons: fnButtons,
-            googleFunctionNames: fnNames
+            googleFunctionNames: fnNames,
+            loading: false
           });
         })
-          .catch(function(error) {
-            console.error(error);
-          });
+        .catch(function (error) {
+          console.error(error);
+        });
     }
   }
 
@@ -502,7 +592,7 @@ class App extends React.Component {
         document.getElementById("codeHere").value = data.data
         document.getElementById("functionName").value = funcName
       })
-      .catch(error => {})
+      .catch(error => { })
   }
 
   updateCode() {
@@ -577,6 +667,8 @@ class App extends React.Component {
 
   createFunction() {
     if (this.state.functionName && this.state.uploadedFunction && this.state.awsRuntime && this.state.awsRole && this.state.awsRegion) {
+      this.setState({ loading: true })
+
       axios
         .post("aws/createFunction", {
           functionName: this.state.functionName,
@@ -588,7 +680,7 @@ class App extends React.Component {
           operatingSystem: this.state.operatingSystem
         })
         .then((response) => {
-          setTimeout(() => this.listFunctions(), 2000);
+          setTimeout(() => this.listFunctions(), 3000);
         })
         .catch((error) => {
           console.log('create Function error');
@@ -616,6 +708,9 @@ class App extends React.Component {
 
   render() {
     let displayed;
+    let loadStatus;
+    if (this.state.loading) loadStatus = (<Loading />)
+    if (!this.state.loading) loadStatus = (<span></span>)
     if ((this.state.pageSelect === '' && this.state.isLogin)) {
       displayed = (<React.Fragment>
         <AccountPage
@@ -665,6 +760,7 @@ class App extends React.Component {
         displayed = (<React.Fragment>
           <AWSFunctionForm id="AWSFunctionForm"
             currentFunctions={this.state.currentFunctions}
+            currentFunctionFunctions={{getFuncInfo: this.getFuncInfo, loadCode: this.loadCode, invokeFunc: this.invokeFunc, deleteFunc: this.deleteFunc}}
             currRegion={this.state.currRegion}
             submitKey={this.handleSubmitKey}
             uploadedFunction={this.state.uploadedFunction}
@@ -685,7 +781,6 @@ class App extends React.Component {
             configureAWS={this.configureAWS}
             createBucket={this.createBucket}
             awsKeyAlias={this.state.awsKeyAlias}
-            keys={this.state.keys}
             keys={this.state.keys.filter(key => key.keyType === 'awsSecretAccessKey')}
             codeLoaded={this.state.codeLoaded}
             awsPopup={this.state.awsPopup}
@@ -723,7 +818,8 @@ class App extends React.Component {
             updateFunction={this.updateFunction}
           // listFunctions={this.listFunctions}
           />
-          <AWSFunctionInfo closeFuncInfo={this.closeFuncInfo}
+          <AWSFunctionInfo
+            closeFuncInfo={this.closeFuncInfo}
             functionName={this.state.functionName}
             awsFuncState={this.state.awsFuncState}
             awsFuncRuntime={this.state.awsFuncRuntime}
@@ -758,23 +854,23 @@ class App extends React.Component {
         />)
       } else if (this.state.pageSelect === 'Azure') {
         displayed = (<AzureFunctionForm
-            username={this.state.username}
-            updateInfo={this.updateInfo}
-            azureRuntime={this.state.azureRuntime}
-            azureTemplate={this.state.azureTemplate}
-            azureApp={this.state.azureApp}
-            azureProject={this.state.azureProject}
-            functionName={this.state.functionName}
-            azureUser={this.state.azureUser}
-            azurePass={this.state.azurePass}
-            azureTenant={this.state.azureTenant}
-            codeHere={this.state.codeHere}
-            submitKey={this.handleSubmitKey}
-            uploadedFunction={this.state.uploadedFunction}
-            updateCode={this.updateCode}
-            azureFunctions={this.state.azureFunctions}
-            listAzure={this.listAzure}
-          />)
+          username={this.state.username}
+          updateInfo={this.updateInfo}
+          azureRuntime={this.state.azureRuntime}
+          azureTemplate={this.state.azureTemplate}
+          azureApp={this.state.azureApp}
+          azureProject={this.state.azureProject}
+          functionName={this.state.functionName}
+          azureUser={this.state.azureUser}
+          azurePass={this.state.azurePass}
+          azureTenant={this.state.azureTenant}
+          codeHere={this.state.codeHere}
+          submitKey={this.handleSubmitKey}
+          uploadedFunction={this.state.uploadedFunction}
+          updateCode={this.updateCode}
+          azureFunctions={this.state.azureFunctions}
+          listAzure={this.listAzure}
+        />)
       }
 
     return (
@@ -806,11 +902,11 @@ class App extends React.Component {
           </div>
         )}
         {displayed}
+        {loadStatus}
       </div>
     );
   }
 }
 
 export default App;
-// module.exports = App;
 

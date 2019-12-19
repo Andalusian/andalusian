@@ -9,7 +9,7 @@ const GoogleInvokedFunctionModal = (props) => {
     <div id="googleInvokedFunctionModal">
       <button onClick={() => {
         props.updateInfo('googleFunctionInfoButtonClicked', false);
-      }}>X</button>
+      }}>Close Window</button>
       <h4>{props.name}</h4>
       { information }
     </div>

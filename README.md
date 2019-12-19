@@ -12,12 +12,29 @@ The Account Overview page displays:
 
 Functions will only be displayed if the user has added GCloud, AWS, Azure configurations to authenticate user accounts with these cloud services.
 
-## GCloud -----> AUSTIN TO EDIT THIS
+## GCloud
 ### Configuration
-User must create a key-file and enable the CLOUD RESOURCE MANAGER API in order to use this service.
+User must have the following in order to use the service:
+1. A project on the Google Cloud Platform,
+2. Cloud Functions API enabled,
+3. Cloud Resource Manager API enabled,
+4. A key_file for the App Engine default service account.
+
+### Landing Page
+Upon signup to our service you are requested to enter your key_file. This is used to authorize you and allow us to deploy your functions on your behalf. The key will be saved for future use under the alias you give for it.
+
+### Project's Functions
+This portal will display all deployed AWS Lambda functions within the selected region.  
+**Info** will display a number of properties of the function.  
+**Invoke** will call the endpoint of that function.  
+**Delete** will remove the function from your project.
 
 ### Create Function
-
+To deploy a function, it needs:
+1. **Function Name:** This needs to be the name of the function from the file you upload or the function you write.
+2. **Runtime:** Choose the runtime you would like to use.
+3. **Upload Function Files DropZone:** You can click or drag to upload your file to be deployed. It will then be displayed inside the field below. Alternatively, you can write your own function inside the field.
+4. **Deploy:** After everything is filled out, this button will deploy your function. It can take up to 2 minutes to deploy.
 
 ## AWS
 ### Configuration
@@ -36,10 +53,24 @@ To deploy a function to AWS Lambda, the user will enter a function name, an AWS 
 ### Update Function
 To update the code of a previously deployed function, the user will click on **Load Code** which will populate function name and function code field. Once the code is edited in the textbox, user will click on **Update Function** to update the deployed function.
 
-## Azure -----> JUSTIN TO EDIT THIS
+## Azure
 ### Configuration
+Upon logging in for the first time, the user will configure the account to authenticate with Azure. To do so, the user should enter their Azure Username, Password, and (if applicable) their Tenant ID. This information will get encrypted before being saved in the database. Clicking the Store Credentials Button will save this encrypted information in the database, and clicking the Log In Button will actually submit the stored credentials and log the user in to Microsoft Azure.
+
+### My Azure Functions
+This portal will display all deployed Microsoft Azure functionapps tied to the user's account.
+
+### Create Project
+To begin the process of deploying a function to your Azure functionapp, please enter a project name and select a runtime. Once both fields are entered, clicking the **Create Project** button will create all necessary boilerplate files in a directory associated with your account. This directory will be deleted upon logout as a security measure.
 
 ### Create Function
+To create a function to deploy to your functionapp, please enter a name for the function and optionally select a template to use. Upon selection of the template, click the Create Function to create this function in your already created Project directory.
+
+### Save Changes
+Upon creation of the function, the selected template's code will load in a text display field. Feel free to edit this code as you wish, as any changes will be immediately reflected in the code to be deployed. After making any changes, click the Save Changes button to write those changes to the actual code files.
+
+### Deploy Function
+To finally deploy the newly created function to your functionapp, simply enter the name of your functionapp's resource group in the supplied input field and then click the Deploy button. Within seconds, the deployed function will be found with your functionapp in Microsoft Azure.
 
 ## Docker
 ### Configuration
@@ -59,8 +90,4 @@ To test your image you can click **Containerize**. This will run the image in a 
 Once you have a built image, paste your desired Docker Hub repository in the Docker Hub repository field and then click **Deploy to Docker Hub** to send it to the repository.
 
 ### AWS ECR Deployment
-In order to connect to your ECR you must supply your AWS Access Key and Secret Access Key to the AWS Lambda tab prior to following the next steps. After you have done so and saved those credentials, paste your ECR Repository URI in the field provided. Click **Connect to ECR** to establish a secure connection to your default ECR instance then click **Push to AWS ECR** to push your image up to the repository. (edited)
-
-### Container Setup
-
-
+In order to connect to your ECR you must supply your AWS Access Key and Secret Access Key to the AWS Lambda tab prior to following the next steps. After you have done so and saved those credentials, paste your ECR Repository URI in the field provided. Click **Connect to ECR** to establish a secure connection to your default ECR instance then click **Push to AWS ECR** to push your image up to the repository. 
