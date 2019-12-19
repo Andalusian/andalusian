@@ -445,9 +445,11 @@ class App extends React.Component {
     this.setState({ loading: true })
 
     if (!this.state.googleFunctionButtons[0]) {
+      this.setState({ loading: true });
       fetch(`/gcloud/list/${this.state.username}`)
         .then(data => data.json())
         .then(data => {
+          this.setState({ loading: false });
           const fnList = data.fn_list;
           const fnButtons = [<h3 className="container short">Project's Functions</h3>];
           const fnNames = [];
@@ -458,25 +460,34 @@ class App extends React.Component {
             fnButtons.push(<div id={el} className="container short">
               <h4>{el}</h4>
               <div class="buttonContainer">
-                <button onClick={() => {
+                <button id={el + "GetInfo"} onClick={() => {
+                  this.setState({ loading: true });
                   fetch(`/gcloud/info/${el}/${this.state.username}`)
                     .then(data => data.json())
                     .then(data => {
                       this.setState({
+                        loading: false,
                         googleFunctionInfoButtonClicked: true,
                         googleFunctionInfo: data,
                       })
                     })
                 }}>Get Info</button>
-                <button onClick={() => {
+                <button id={el + "InvokeFunction"} onClick={() => {
+                  this.setState({ loading: true });
                   fetch(`/gcloud/call/${el}/${this.state.username}`)
                     .then(data => {
+                      this.setState({ loading: false });
                       if (data.status === 200) {
-                        console.log();
+                        document.getElementById(el + "InvokeFunction").style.backgroundColor = "green";
+                        setTimeout(() => { document.getElementById(el + "InvokeFunction").style.backgroundColor = "#80a9b9"; }, 1000);
+                      } else if (data.status === 500) {
+                        document.getElementById(el + "InvokeFunction").style.backgroundColor = "red";
+                        setTimeout(() => { document.getElementById(el + "InvokeFunction").style.backgroundColor = "#80a9b9"; }, 1000);
                       }
                     })
                 }}>Invoke Function</button>
-                <button onClick={() => {
+                <button id={el + "DeleteFunction"} onClick={() => {
+                  this.setState({ loading: true });
                   fetch(`/gcloud/delete/`, {
                     method: 'DELETE',
                     headers: {
@@ -486,7 +497,72 @@ class App extends React.Component {
                   })
                     .then(data => {
                       if (data.status === 200) {
-                        document.getElementById(el).remove();
+                        fetch(`/gcloud/list/${this.state.username}`)
+                          .then(data => data.json())
+                          .then(data => {
+                            this.setState({ loading: false });
+                            const fnList = data.fn_list;
+                            const fnButtons = [<h3 className="container short">Project's Functions</h3>];
+                            const fnNames = [];
+                            fnList.forEach((el) => {
+                              fnNames.push(<div id={el} className="myGoogleFuncsShort">{el}</div>)
+                            })
+                            fnList.forEach((el) => {
+                              fnButtons.push(<div id={el} className="container short">
+                                <h4>{el}</h4>
+                                <div class="buttonContainer">
+                                  <button id={el + "GetInfo"} onClick={() => {
+                                    this.setState({ loading: true });
+                                    fetch(`/gcloud/info/${el}/${this.state.username}`)
+                                      .then(data => data.json())
+                                      .then(data => {
+                                        this.setState({
+                                          loading: false,
+                                          googleFunctionInfoButtonClicked: true,
+                                          googleFunctionInfo: data,
+                                        })
+                                      })
+                                  }}>Get Info</button>
+                                  <button id={el + "InvokeFunction"} onClick={() => {
+                                    this.setState({ loading: true });
+                                    fetch(`/gcloud/call/${el}/${this.state.username}`)
+                                      .then(data => {
+                                        this.setState({ loading: false });
+                                        if (data.status === 200) {
+                                          document.getElementById(el + "InvokeFunction").style.backgroundColor = "green";
+                                          setTimeout(() => { document.getElementById(el + "InvokeFunction").style.backgroundColor = "#80a9b9"; }, 1000);
+                                        } else if (data.status === 500) {
+                                          document.getElementById(el + "InvokeFunction").style.backgroundColor = "red";
+                                          setTimeout(() => { document.getElementById(el + "InvokeFunction").style.backgroundColor = "#80a9b9"; }, 1000);
+                                        }
+                                      })
+                                  }}>Invoke Function</button>
+                                  <button id={el + "DeleteFunction"} onClick={() => {
+                                    fetch(`/gcloud/delete/`, {
+                                      method: 'DELETE',
+                                      headers: {
+                                        'Content-Type': 'application/json',
+                                      },
+                                      body: JSON.stringify({ fn_name: el, user_name: this.state.username }),
+                                    })
+                                      .then(data => {
+                                        if (data.status === 200) {
+                                          document.getElementById(el).remove();
+                                        }
+                                      })
+                                  }}>Delete Function</button>
+                                </div>
+                              </div>);
+                            });
+                            this.setState({
+                              googleFunctionButtons: fnButtons,
+                              googleFunctionNames: fnNames,
+                              loading: false
+                            });
+                          })
+                          .catch(function (error) {
+                            console.error(error);
+                          });
                       }
                     })
                 }}>Delete Function</button>
