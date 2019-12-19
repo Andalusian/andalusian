@@ -29,15 +29,15 @@ module.exports = {
         use: ["style-loader", "css-loader", "sass-loader"]
       },
       {
-        test: /\.(jpg|png)$/,
-        use: {
-          loader: "url-loader"
-        }
-      },
-      {
         test: /\.(png|svg|jpg|gif)$/,
         use: [
-          'file-loader',
+          {
+            loader: 'file-loader',
+            options: {
+              esModule: false,
+              publicPath: 'build',
+            }
+          }
         ],
       }
     ]
