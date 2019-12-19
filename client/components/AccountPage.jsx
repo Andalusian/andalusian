@@ -12,7 +12,7 @@ const AccountPage = props => {
     return (
         <div id="accountGrid" className="grid">
             <h2 className="container">Account Overview</h2>
-            <div className="accountDiv">
+            <div className="container thirdColumn accountDiv">
                 <h3>GCloud</h3>
                 <select id="GKeySelect" className="keySelection" name="googleKeyAlias" onChange={function (e) {
                     props.updateInfo(e.target.name, e.target.value);
@@ -29,7 +29,7 @@ const AccountPage = props => {
                 </select>
                 {props.googleFunctionNames}
             </div>
-            <div className="accountDiv">
+            <div className="container thirdColumn accountDiv">
                 <h3>AWS</h3>
                 <select id="awsRegionAcct" name="awsRegion" onChange={function (e) {
                     props.updateInfo(e.target.name, e.target.value);
@@ -60,7 +60,7 @@ const AccountPage = props => {
                 </select>
                 {props.shortCurrentFunctions}
             </div>
-            <div className="accountDiv">
+            <div className="container thirdColumn accountDiv">
                 <h3>Azure</h3>
                 {props.azureNames}
             </div>

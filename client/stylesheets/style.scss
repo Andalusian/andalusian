@@ -161,6 +161,17 @@ select {
 
 .short {
   padding: 1rem 3rem;
+  margin-bottom: 10px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.buttonContainer button {
+  font-size: .75rem;
+  padding: 1em;
 }
 
 h3.container {
@@ -168,7 +179,7 @@ h3.container {
 }
 
 .container h4 {
-  margin-top: 0;
+  margin: 0;
 }
 
 button, .dropzone {
@@ -240,8 +251,19 @@ header {
 .leftColumn {
   grid-column: 1 / span 5;
 }
+
 .mainColumn {
   grid-column: 6 / span 7;
+}
+
+.thirdColumn {
+  grid-column: span 4;
+  display: flex;
+  flex-direction: column;
+}
+
+.thirdColumn select {
+  height: auto !important;
 }
 
 #loginButton {
