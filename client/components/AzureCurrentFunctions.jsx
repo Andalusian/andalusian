@@ -8,10 +8,28 @@ const AzureCurrentFunctions = props => {
     }, [])
 
     return (
-        <React.Fragment>
-            <h3>My Azure Functions</h3>
-            <div id="azureFunctions">{props.azureFunctions}</div>
-        </React.Fragment>
+      <React.Fragment>
+        <h3 className="container short">My Azure Functions</h3>
+        {props.azureFunctions.map((funcName, i) => {
+          return (
+            <div className="container short" key={i}>
+              <h4>{funcName}</h4>
+              <div class="buttonContainer">
+                <button>
+                  Get Info
+                </button>
+                <button>
+                  Start Function
+                </button>
+                <button>
+                  Stop Function
+                </button>
+              </div>
+            </div>
+          )
+        }
+        )}
+      </React.Fragment>
     )
 }
 

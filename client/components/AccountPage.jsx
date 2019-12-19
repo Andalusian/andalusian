@@ -62,6 +62,11 @@ const AccountPage = props => {
           </div>
           <div className="container thirdColumn">
             <h3>Azure</h3>
+              <select id="AzureSelect" className="keySelection" name="azureKeyAlias" onChange={function (e) {
+                props.updateInfo(e.target.name, e.target.value);
+              }} >
+                <option defaultValue=''>select project</option>
+              </select>
             {props.azureNames}
           </div>
         </div>
