@@ -270,7 +270,6 @@ class App extends React.Component {
           isSignup: false,
         })
       })
-      .then(setTimeout(() => console.log(this.state), 2000))
       .catch(function (error) {
         console.error('handle sign out error');
       });
@@ -419,7 +418,6 @@ class App extends React.Component {
   }
 
   listFunctions() {
-    // console.log(this.state.username);
     let allFuncArray = [];
     let shortAllFuncArray = [];
     axios
@@ -427,7 +425,6 @@ class App extends React.Component {
         username: this.state.username
       })
       .then(data => {
-        console.log(data);
         for (let i = 0; i < data.data.Functions.length; i++) {
           let funcName = data.data.Functions[i].FunctionName;
           allFuncArray.push(funcName); //<div className="container short function" key={i}><h4>{funcName}</h4> <button onClick={() => this.getFuncInfo(funcName)}>Get Info</button><button onClick={() => this.loadCode(funcName)}>Load Code</button><button onClick={() => this.invokeFunc(funcName)}>Invoke Function</button><button onClick={() => this.deleteFunc(funcName)}>Delete Function</button></div>
@@ -509,7 +506,6 @@ class App extends React.Component {
   }
 
   loadCode(funcName) {
-    console.log(this);
     axios
       .post("/aws/loadCode", {
         funcName,
@@ -608,7 +604,7 @@ class App extends React.Component {
           operatingSystem: this.state.operatingSystem
         })
         .then((response) => {
-          setTimeout(() => this.listFunctions(), 2000);
+          setTimeout(() => this.listFunctions(), 3000);
         })
         .catch((error) => {
           console.log('create Function error');
