@@ -384,9 +384,11 @@ class App extends React.Component {
 
   googleListFunctions() {
     if (!this.state.googleFunctionButtons[0]) {
+      this.setState({ loading: true });
       fetch(`/gcloud/list/${this.state.username}`)
         .then(data => data.json())
         .then(data => {
+          this.setState({ loading: false });
           const fnList = data.fn_list;
           const fnButtons = [<hr />, <h4>Project's Functions</h4>];
           const fnNames = [];
@@ -397,24 +399,29 @@ class App extends React.Component {
             fnButtons.push(<div id={el}>
               <span>{el}</span>
               <button onClick={() => {
+                this.setState({ loading: true });
                 fetch(`/gcloud/info/${el}/${this.state.username}`)
                   .then(data => data.json())
                   .then(data => {
                     this.setState({
+                      loading: false,
                       googleFunctionInfoButtonClicked: true,
                       googleFunctionInfo: data,
                     })
                   })
               }}>Info</button>
               <button onClick={() => {
+                this.setState({ loading: true });
                 fetch(`/gcloud/call/${el}/${this.state.username}`)
                   .then(data => {
+                    this.setState({ loading: false });
                     if (data.status === 200) {
                       console.log('do something!');
                     }
                   })
               }}>Invoke</button>
               <button onClick={() => {
+                this.setState({ loading: true });
                 fetch(`/gcloud/delete/`, {
                   method: 'DELETE',
                   headers: {
@@ -423,6 +430,7 @@ class App extends React.Component {
                   body: JSON.stringify({ fn_name: el, user_name: this.state.username }),
                 })
                   .then(data => {
+                    this.setState({ loading: false });
                     if (data.status === 200) {
                       document.getElementById(el).remove();
                     }
