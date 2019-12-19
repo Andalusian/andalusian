@@ -2,7 +2,9 @@ import React from 'react';
 const axios = require('axios');
 
 const AzureCredentials = (props) => {
+
     return (
+
       <div id="azureCredentialsContainer" className="container">
         <h3>Configuration</h3>
           <form id="azureCredentials">

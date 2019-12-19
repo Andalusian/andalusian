@@ -24,6 +24,16 @@ h2, h3, h4, h5 {
   margin: 25px;
 }
 
+.accountDiv {
+  padding: 10px;
+  grid-column: span 4;
+background-color: rgba(255,255,255,.85);
+border-radius: 5px;
+h3 {
+  text-align: center;
+}
+}
+
 .grid h2 {
   grid-column: span 12;
   text-align: center;
@@ -151,6 +161,17 @@ select {
 
 .short {
   padding: 1rem 3rem;
+  margin-bottom: 10px;
+}
+
+.buttonContainer {
+  display: flex;
+  // justify-content: space-between;
+}
+
+.buttonContainer button {
+  font-size: .75rem;
+  padding: 1em;
 }
 
 h3.container {
@@ -158,7 +179,7 @@ h3.container {
 }
 
 .container h4 {
-  margin-top: 0;
+  margin: 0;
 }
 
 button, .dropzone {
@@ -230,8 +251,19 @@ header {
 .leftColumn {
   grid-column: 1 / span 5;
 }
+
 .mainColumn {
   grid-column: 6 / span 7;
+}
+
+.thirdColumn {
+  grid-column: span 4;
+  display: flex;
+  flex-direction: column;
+}
+
+.thirdColumn select {
+  height: auto !important;
 }
 
 #loginButton {
@@ -323,7 +355,7 @@ h5 {
 
 #awsRegionAcct, #GKeySelect {
   width: 100%;
-  height: 100%;
+  // height: 100%;
   margin: 0;
   margin-bottom: 15px;
 }
@@ -355,16 +387,43 @@ hr {
   margin: 20px 0;
 }
 
-#AWSFunctionInfo {
+
+#AWSFunctionInfo, #googleInvokedFunctionModal {
   position: fixed;
-  top: 5%;
-  left: 10%;
-  width: 80%;
+  top: 11%;
+  left: 20%;
+  width: 60%;
   background-color: white;
-  border: 2px solid rgb(87, 87, 87);
+  border: 1px solid rgb(194, 194, 194);
   border-radius: 5px;
   padding: 30px;
   margin: 0;
+}
+
+#loading {
+display: flex;
+  // justify-content: center;
+  justify-items: center;
+  align-items: center;
+  margin: 0;
+  // height: 100%;
+  // width: 100%;
+  border: none;
+  transform: scale(.5);
+  // margin: 0 auto;
+  // border: 1px solid rgb(223, 223, 223);
+  // border-radius: 5px;
+}
+
+#loadingDiv {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  align-items: center;
 }
 
 #AWSFunctionInfoGrid {
