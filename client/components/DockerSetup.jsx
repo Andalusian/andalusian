@@ -36,6 +36,7 @@ const DockerSetup = props => {
             .post('/docker/funcSetup', {
                 code: props.code,
                 functionName: props.functionName,
+                username: props.username,
             })
             .then((response) => {
                 console.log(response);
@@ -73,6 +74,7 @@ const DockerSetup = props => {
         axios
             .post('/docker/deployDocker', {
                 functionName: props.functionName,
+                username: props.username,
             })
             .then((response) => { console.log(response); })
             .catch((error) => { console.log(error); })
@@ -99,6 +101,7 @@ const DockerSetup = props => {
             .post('/docker/dockerHubDeploy', {
                 repository: props.repository,
                 functionName: props.functionName,
+                username: props.username,
             })
             .then((response) => { console.log(response); })
             .catch((error) => { console.log(error); })

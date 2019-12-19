@@ -13,7 +13,7 @@ const AccountPage = props => {
         <div id="accountGrid" className="grid">
             <h2 className="container">Account Overview</h2>
             <div className="container thirdColumn accountDiv">
-                <h3>GCloud</h3>
+                <h3>Google Cloud</h3>
                 <select id="GKeySelect" className="keySelection" name="googleKeyAlias" onChange={function (e) {
                     props.updateInfo(e.target.name, e.target.value);
                     props.googleListFunctions()

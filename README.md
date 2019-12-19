@@ -90,8 +90,4 @@ To test your image you can click **Containerize**. This will run the image in a 
 Once you have a built image, paste your desired Docker Hub repository in the Docker Hub repository field and then click **Deploy to Docker Hub** to send it to the repository.
 
 ### AWS ECR Deployment
-In order to connect to your ECR you must supply your AWS Access Key and Secret Access Key to the AWS Lambda tab prior to following the next steps. After you have done so and saved those credentials, paste your ECR Repository URI in the field provided. Click **Connect to ECR** to establish a secure connection to your default ECR instance then click **Push to AWS ECR** to push your image up to the repository. (edited)
-
-### Container Setup
-
-
+In order to connect to your ECR you must supply your AWS Access Key and Secret Access Key to the AWS Lambda tab prior to following the next steps. After you have done so and saved those credentials, paste your ECR Repository URI in the field provided. Click **Connect to ECR** to establish a secure connection to your default ECR instance then click **Push to AWS ECR** to push your image up to the repository. 
