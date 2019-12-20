@@ -8,7 +8,7 @@ In order to use the Account Overview page, the user must have configured one or 
 The Account Overview page displays:
 1. deployed GCloud functions within the selected project
 2. deployed AWS functions within the selected region
-3. deployed Azure functions within the selected project -----> JUSTIN TO EDIT THIS
+3. deployed Azure functions apps within the selected resource group
 
 Functions will only be displayed if the user has added GCloud, AWS, Azure configurations to authenticate user accounts with these cloud services.
 
