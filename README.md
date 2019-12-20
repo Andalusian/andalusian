@@ -91,3 +91,5 @@ Once you have a built image, paste your desired Docker Hub repository in the Doc
 
 ### AWS ECR Deployment
 In order to connect to your ECR you must supply your AWS Access Key and Secret Access Key to the AWS Lambda tab prior to following the next steps. After you have done so and saved those credentials, paste your ECR Repository URI in the field provided. Click **Connect to ECR** to establish a secure connection to your default ECR instance then click **Push to AWS ECR** to push your image up to the repository. 
+
+![alt-text](https://raw.githubusercontent.com/Andalusian/andalusian/master/andalusian_demo50.gif)
