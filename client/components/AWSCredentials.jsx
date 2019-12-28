@@ -1,5 +1,5 @@
 import React from 'react';
-
+// This is the component displayed on the top left when on the AWS page. It is used to configure user's AWS account by creating a "Configuration.json" file with the info provided by the user below (Access Key, Secret Access Key, Region). If user has multiple Access/Secret Key sets, they can all be saved in user's account under different aliases.
 const AWSCredentials = (props) => {
   return (
     <div id="awsCredentialsContainer" className="container">
