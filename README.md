@@ -8,7 +8,7 @@ In order to use the Account Overview page, the user must have configured one or 
 The Account Overview page displays:
 1. deployed GCloud functions within the selected project
 2. deployed AWS functions within the selected region
-3. deployed Azure functions within the selected project -----> JUSTIN TO EDIT THIS
+3. deployed Azure functions apps within the selected resource group
 
 Functions will only be displayed if the user has added GCloud, AWS, Azure configurations to authenticate user accounts with these cloud services.
 
@@ -38,7 +38,7 @@ To deploy a function, it needs:
 
 ## AWS
 ### Configuration
-Upon logging in for the first time, the user will configure the account to authenticate with AWS. Each user can save multiple Access Key/Secret Access Key pairs. To do so, user will enter Access Key, Secret Access Key, and a Key Alias (a nickname for the pair). This information will get encripted before being saved in the database. AWS groups deployed functions by regions (us-east-1, us-east-2, etc). Selecting the appropriate region and clicking **Save Config** will create user's temporary credentials file for the session.
+Upon logging in for the first time, the user will configure the account to authenticate with AWS. Each user can save multiple Access Key/Secret Access Key pairs. To do so, user will enter Access Key, Secret Access Key, and a Key Alias (a nickname for the pair). This information will get encrypted before being saved in the database. AWS groups deployed functions by regions (us-east-1, us-east-2, etc). Selecting the appropriate region and clicking **Save Config** will create user's temporary credentials file for the session.
 
 ### My AWS Lambda Functions
 This portal will display all deployed AWS Lambda functions within the selected region.
