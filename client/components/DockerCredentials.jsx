@@ -2,7 +2,7 @@ import React from 'react';
 import axios from "axios";
 
 const DockerCredentials = props => {
-
+//Logs the user into the Docker Daemon(Front-End)
   function dockerLogin() {
     axios
       .post('/docker/dockerLogin', {

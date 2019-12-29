@@ -6,6 +6,8 @@ import axios from "axios";
 
 
 const DockerSetup = props => {
+
+    //Pulls data from Dockerfile setup fields
     function containerSetup() {
         axios
             .post('/docker/containerSetup', {
@@ -24,6 +26,7 @@ const DockerSetup = props => {
             })
     }
 
+    //Creates 'default' Dockerfile
     function defaultSetup() {
         axios
             .post('/docker/defaultSetup', { username: props.username, })
@@ -31,21 +34,23 @@ const DockerSetup = props => {
             .catch((error) => { console.log(error); })
     }
 
-    function funcSetup() {
-        axios
-            .post('/docker/funcSetup', {
-                code: props.code,
-                functionName: props.functionName,
-                username: props.username,
-            })
-            .then((response) => {
-                console.log(response);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-    }
+    // function funcSetup() {
+    //     axios
+    //         .post('/docker/funcSetup', {
+    //             code: props.code,
+    //             functionName: props.functionName,
+    //             username: props.username,
+    //         })
+    //         .then((response) => {
+    //             console.log(response);
+    //         })
+    //         .catch((error) => {
+    //             console.log(error);
+    //         })
+    // }
 
+
+    //Uses the name entered in the 'image name' field
     function buildImage() {
         axios
             .post('/docker/buildImage', {
@@ -56,6 +61,7 @@ const DockerSetup = props => {
             .catch((error) => { console.log(error); })
     }
 
+    //Sends uploaded file data to the server
     function dockerDirect() {
         axios
             .post('/docker/dockerDirect', {
@@ -70,6 +76,7 @@ const DockerSetup = props => {
             })
     }
 
+    
     function deployDocker() {
         axios
             .post('/docker/deployDocker', {
@@ -79,6 +86,8 @@ const DockerSetup = props => {
             .then((response) => { console.log(response); })
             .catch((error) => { console.log(error); })
     }
+
+    //Stops running container
     function stopDocker() {
         axios
             .post('/docker/stopDocker', {
@@ -88,6 +97,8 @@ const DockerSetup = props => {
             .then((response) => { console.log(response); })
             .catch((error) => { console.log(error); })
     }
+
+    //Deletes all images and containers on system
     function deleteContainers() {
         axios
             .post('/docker/dockerDeleteContainers', {
@@ -96,6 +107,8 @@ const DockerSetup = props => {
             .then((response) => { console.log(response); })
             .catch((error) => { console.log(error); })
     }
+
+    //Takes data from the Docker Hub repository field and image name field
     function dockerHubDeploy() {
         axios
             .post('/docker/dockerHubDeploy', {
@@ -106,6 +119,8 @@ const DockerSetup = props => {
             .then((response) => { console.log(response); })
             .catch((error) => { console.log(error); })
     }
+
+    //Takes data from the AWS tab credentials field
     function deployImageToAws() {
         axios
             .post('/docker/deployContToAws', {
@@ -119,6 +134,8 @@ const DockerSetup = props => {
             .then((response) => { console.log(response); })
             .catch((error) => { console.log(error); })
     }
+
+    //Takes data from the ECR Repository URI field
     function connectToEcr() {
         axios
             .post('/docker/connectToEcr', {
@@ -182,9 +199,9 @@ const DockerSetup = props => {
                     {/* <button onClick={() => funcSetup()}>Set Function</button> */}
                     <button onClick={() => dockerDirect()}>Setup Directory</button>
                     <button onClick={() => buildImage()}>Build Image</button>
-                    <button onClick={() => deployDocker()}>Containerize</button>
+                    {/* <button onClick={() => deployDocker()}>Containerize</button>
                     <button onClick={() => stopDocker()}>Stop Container</button>
-                    <button onClick={() => deleteContainers()}>Delete Containers/Images</button>
+                    <button onClick={() => deleteContainers()}>Delete Containers/Images</button> */}
                 </div>
                 <div>
                     <div>
