@@ -20,11 +20,11 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // andalusian
+      // // andalusian
       username: '',
       password: '',
       keys: [],
-      // google
+      // // google
       googleKey: '',
       googleKeyAlias: '',
       googleAddKeyModalClicked: false,
@@ -34,25 +34,25 @@ class App extends React.Component {
       googleFunctionInfoButtonClicked: false,
       googleFunctionInfo: {},
       googleFunctionNames: '',
-      // aws
-      awsAccessKey: '',
-      awsSecretAccessKey: '',
-      awsKeyAlias: '',
-      codeHere: "",
-      currentFunctions: [],
-      awsRegion: '',
-      awsRuntime: '',
-      awsRole: '',
-      awsAccountID: '',
-      codeLoaded: '',
-      awsPopup: false,
-      functionInvocations: [],
-      shortCurrentFunctions: [],
+      // // aws
+      awsAccessKey: '', // once account's been configured, awsAccessKey will be saved in database and state for future  logins
+      awsSecretAccessKey: '', // same as awsAccessKey
+      awsKeyAlias: '', // user can save multip awsAccessKey/awsSecretAccessKey in one account and give it aliases
+      codeHere: "", // user can write function code to be deployed here
+      currentFunctions: [], // listFunctions() will populate this with current deployed functions along with it's associated buttons (Get Info, Load Code, Invoke, Delete)
+      awsRegion: '', // used to configure account and listFunctions for a given region
+      awsRuntime: '', // this info is required by AWS when deploying a function. It's entered by the user
+      awsRole: '', // this info is required by AWS when deploying a function. It's entered by the user
+      awsAccountID: '', // this info is required by AWS when deploying a function. It's pulled from AWS SDK
+      codeLoaded: '', // loadCode() populates this field
+      awsPopup: false, // when Get Info is clicked, this is set to true and a popup is displayed with all the info of a given function
+      functionInvocations: [], // this is used for the graph displaying when and how many time a function was invoked
+      shortCurrentFunctions: [], // similar to currentFunctions, without the buttons (used on Account Overview page)
       // S3BucketName: '',
       // newBucketRegion: "",
       // currRegion: "",
       // currentBuckets: [],
-      // docker
+      // // docker
       dockerUsername: '',
       dockerPassword: '',
       runtimeEnv: '',
@@ -66,8 +66,7 @@ class App extends React.Component {
       ec2User: '',
       publicDns: '',
       awsRepoUri: '',
-
-      //azure
+      // // azure
       azureRuntime: '',
       azureTemplate: '',
       azureApp: '',
@@ -77,13 +76,13 @@ class App extends React.Component {
       azureTenant: '',
       azureFunctions: [],
       azureNames: [],
-      // both
+      // // all
       pageSelect: '',
       functionName: '',
       uploadedFunction: '',
       operatingSystem: '',
       checkCount: 0,
-      loading: false,
+      loading: false, // when loading is set to true, a gif is displayed to show user something is loading
       //Dropzone prop for file data and text
       uploadedFiles: [],
       // render states
@@ -121,6 +120,7 @@ class App extends React.Component {
       });
   }
 
+  // updateInfo is used across all microservice platforms to setState for the approptiate field, which is then used for various functions
   updateInfo(property, value) {
     let updateObj = {};
     updateObj[property] = value;
@@ -196,6 +196,7 @@ class App extends React.Component {
       });
   }
 
+  // when user signs out, all fields within state are cleared
   handleSignout() {
     axios.post('db/deleteUserFiles', { username: this.state.username })
       .then(() => {
@@ -382,6 +383,7 @@ class App extends React.Component {
     }));
   }
 
+  // configureAWS() will trigger a Credentials file within the username folder to be created with user's Access Key, Secret Access Key and region. Upon completion of task, listFunctions() is triggered.
   configureAWS() {
     this.setState({ loading: true })
 
@@ -417,6 +419,7 @@ class App extends React.Component {
       });
   }
 
+  // Used specifically for AWS. It will do a post request using AWS SDK to get a list of deployed functions and push them into two arrays allFuncArray and shortAllFuncArray. allFuncArray will have the function name as well as the associated buttons with them. shortAllFuncArray will only have the function names in them. Both arrays are put in state with setState.
   listFunctions() {
     let allFuncArray = [];
     let shortAllFuncArray = [];
@@ -581,6 +584,7 @@ class App extends React.Component {
     }
   }
 
+  // Used specifically for AWS. It will do a post request using AWS SDK to retrieve the function code for a given deployed function. The retrieved code is saved in state and displayed in the textarea with the id "codeHere".
   loadCode(funcName) {
     axios
       .post("/aws/loadCode", {
@@ -606,6 +610,7 @@ class App extends React.Component {
       .catch(error => console.log('updateCode error'))
   }
 
+  // Used specifically for AWS. It will do a post request using AWS SDK to retrieve all info on a given deployed function (runtime, status, invocations, etc.). The retrieved info is saved in state. awsPopup is set to true, which enables a popup.
   getFuncInfo(funcName) {
     let functionInvocations = [];
     axios
@@ -635,10 +640,12 @@ class App extends React.Component {
       });
   }
 
+  // Used specifically for AWS. The function is linked to a "Close" button on the popup. When clicked, awsPopup within state is set to false and the popup is removed from screen.
   closeFuncInfo() {
     this.setState({ awsPopup: false })
   }
 
+  // Used specifically for AWS. It will do a post request using AWS SDK to invoke a function. No setState is triggered for this action.
   invokeFunc(funcName) {
     axios
       .post("/aws/invokeFunc", {
@@ -648,9 +655,9 @@ class App extends React.Component {
       .catch(function (error) {
         console.log('invokeFunc error');
       });
-    alert("Function invoked.")
   }
 
+  // Used specifically for AWS. It will do a post request using AWS SDK to delete a given deployed. listFunctions is triggered to update state with current functions and display the new list on the screen.
   deleteFunc(funcName) {
     axios
       .post("/aws/deleteFunc", {
@@ -665,6 +672,7 @@ class App extends React.Component {
       });
   }
 
+  // Used specifically for AWS. It will do a post request using AWS SDK to deploy a new function. A function name, function code, runtime, role, region and accountID are required. accountID is pulled from another AWS SDK call without the need for the user to enter it. listFunctions is triggered to update state with current functions and display the new list on the screen.
   createFunction() {
     if (this.state.functionName && this.state.uploadedFunction && this.state.awsRuntime && this.state.awsRole && this.state.awsRegion) {
       this.setState({ loading: true })
@@ -677,7 +685,6 @@ class App extends React.Component {
           awsRole: this.state.awsRole,
           awsAccountID: this.state.awsAccountID,
           username: this.state.username,
-          operatingSystem: this.state.operatingSystem
         })
         .then((response) => {
           setTimeout(() => this.listFunctions(), 3000);
@@ -690,6 +697,7 @@ class App extends React.Component {
     }
   }
 
+  // Used specifically for AWS. It will do a post request using AWS SDK to update the code of an already deployed function. A function name and function code are required. listFunctions is triggered to update state with current functions and display the new list on the screen.
   updateFunction() {
     axios
       .post("aws/updateFunction", {
@@ -707,10 +715,13 @@ class App extends React.Component {
   }
 
   render() {
+    // displayed variable is used to determine which platform will be displayed.
     let displayed;
+    // loadStatus variable is used to determine whether a "loading" gif will be displayed or not.
     let loadStatus;
     if (this.state.loading) loadStatus = (<Loading />)
     if (!this.state.loading) loadStatus = (<span></span>)
+    // if user is logged in and no platform is selected, user will be directed to the Account Overview page.
     if ((this.state.pageSelect === '' && this.state.isLogin)) {
       displayed = (<React.Fragment>
         <AccountPage
@@ -725,6 +736,8 @@ class App extends React.Component {
         />
       </React.Fragment>)
     }
+    // if user is logged in and Gcloud is selected, user will be directed to the Gcloud page.
+    // if there is no Gcloud configuration associated with the user account, GoogleWelcomeForm is displayed before GoogleFunction form, prompting user to configure account for Gcloud.
     else
       if ((this.state.pageSelect === 'Gcloud' && this.state.isLogin)) {
         let filteredkeys = this.state.keys.filter(key => key.keyType === 'googleKey');
@@ -756,11 +769,13 @@ class App extends React.Component {
             googleAddKeyModalClicked={this.state.googleAddKeyModalClicked}
           />
         }
+        // if user is logged in and Lambda is selected, user will be directed to the Lambda page.
+        // if awsPopup is true (Get Info button is clicked) AWSFucntionInfo popup is displayed over AWSFunctionForm.
       } else if (this.state.pageSelect === 'Lambda' && this.state.isLogin && !this.state.awsPopup) {
         displayed = (<React.Fragment>
           <AWSFunctionForm id="AWSFunctionForm"
             currentFunctions={this.state.currentFunctions}
-            currentFunctionFunctions={{getFuncInfo: this.getFuncInfo, loadCode: this.loadCode, invokeFunc: this.invokeFunc, deleteFunc: this.deleteFunc}}
+            currentFunctionFunctions={{ getFuncInfo: this.getFuncInfo, loadCode: this.loadCode, invokeFunc: this.invokeFunc, deleteFunc: this.deleteFunc }}
             currRegion={this.state.currRegion}
             submitKey={this.handleSubmitKey}
             uploadedFunction={this.state.uploadedFunction}
@@ -832,6 +847,7 @@ class App extends React.Component {
             graph={this.state.graph}
           />
         </React.Fragment>)
+        // if user is logged in and Docker is selected, user will be directed to the Docker page.
       } else if ((this.state.pageSelect === 'Docker' && this.state.isLogin)) {
         displayed = (<DockerSetup id="DockerSetup"
           code={this.state.uploadedFunction}
@@ -852,6 +868,7 @@ class App extends React.Component {
           dockerPassword={this.state.dockerPassword}
           awsRepoUri={this.state.awsRepoUri}
         />)
+        // if user is logged in and Azure is selected, user will be directed to the Azure page.
       } else if (this.state.pageSelect === 'Azure') {
         displayed = (<AzureFunctionForm
           username={this.state.username}

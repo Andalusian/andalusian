@@ -31,12 +31,10 @@ const AccountPage = props => {
             </div>
             <div className="container thirdColumn accountDiv">
                 <h3>AWS</h3>
+                // Below dropdown menu (same as the one in AWSCredential.jsx) allows user to select a region and configure the users account with that region.
                 <select id="awsRegionAcct" name="awsRegion" onChange={function (e) {
                     props.updateInfo(e.target.name, e.target.value);
-                    // props.configureAWS();
-                    // props.listFunctions();
                     setTimeout(() => props.configureAWS(), 1000)
-                    // setTimeout(() => props.listFunctions(), 2000);
                 }} >
                     <option defaultValue={"a"}>select region</option>
                     <option value="us-east-1">US East 1</option>
@@ -58,6 +56,7 @@ const AccountPage = props => {
                     <option value="me-south-1">ME South 1</option>
                     <option value="sa-east-1">SA East 1</option>
                 </select>
+                // The above triggers configureAWS(), which in itself triggers listFunctions(). Once listFunctions() is ran, shortCurrentFunctions in state will be populated with current function names for that given region, which will be displayed below.
                 {props.shortCurrentFunctions}
             </div>
             <div className="container thirdColumn accountDiv">

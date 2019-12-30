@@ -1,8 +1,8 @@
 import React from 'react';
 import { VictoryBar, VictoryChart, VictoryAxis, VictoryTheme, VictoryStack, VictoryLabel } from 'victory'; // npm i victory
-
+// This component is the popup that is displayed when user clicks "Get Info"
 const AWSFunctionInfo = (props) => {
-
+    // The below is used solely for the graph displaying invocation information of a given function. The data received from AWS SDK needs to be parsed and saved as an array of objects (keys being the date of invocation and values being how many times it was invoked on that date). This info is saved in invocationData array and fed to the graph.
     let invokeObj = {};
     for (let i = 0; i < props.functionInvocations.length; i++) {
         let dates = props.functionInvocations[i].props.children[0].split(",")[0];
