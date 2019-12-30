@@ -4,6 +4,7 @@ import { useDropzone } from 'react-dropzone'
 
 function FileDropzone(props) {
   const onDrop = useCallback((acceptedFiles) => {
+    //Reads file data
     let filesArray = []
     acceptedFiles.forEach((file) => {
       const reader = new FileReader()
@@ -11,10 +12,10 @@ function FileDropzone(props) {
       reader.onabort = () => console.log('file reading was aborted')
       reader.onerror = () => console.log('file reading has failed')
       reader.onload = () => {
-        // Do whatever you want with the file contents
         const binaryStr = reader.result
         filesArray.push(binaryStr)
       }
+      //Creates file array
       reader.readAsText(file)
       filesArray.push(file)
 
