@@ -182,9 +182,11 @@ const DockerSetup = props => {
                     {/* <button onClick={() => funcSetup()}>Set Function</button> */}
                     <button onClick={() => dockerDirect()}>Setup Directory</button>
                     <button onClick={() => buildImage()}>Build Image</button>
-                    <button onClick={() => deployDocker()}>Containerize</button>
+                    <button onClick={() => connectToEcr()}>Connect to ECR Instance</button>
+
+                    {/* <button onClick={() => deployDocker()}>Containerize</button>
                     <button onClick={() => stopDocker()}>Stop Container</button>
-                    <button onClick={() => deleteContainers()}>Delete Containers/Images</button>
+                    <button onClick={() => deleteContainers()}>Delete Containers/Images</button> */}
                 </div>
                 <div>
                     <div>
@@ -205,7 +207,6 @@ const DockerSetup = props => {
                             onChange={e => props.updateInfo('awsRepoUri', e.target.value)}
                         />
 
-                        <button onClick={() => connectToEcr()}>Connect to ECR Instance</button>
                         <button onClick={() => deployImageToAws()}>Push to AWS ECR</button>
                     </div>
                 </div>

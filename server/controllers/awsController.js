@@ -5,6 +5,7 @@ const zipper = require("zip-local"); // npm i zip-local
 
 const awsController = {};
 
+// One of the ways to configure AWS account to use it's SDK is to create a credentials.json file with the user's "accessKeyId", "secretAccessKey" and "region". This function does that using the information sent from the frontend.
 awsController.configureAWS = (req, res, next) => {
   let data = `{ "accessKeyId": ${JSON.stringify(req.body.awsAccessKey)}, "secretAccessKey": ${JSON.stringify(req.body.awsSecretAccessKey)} , "region": ${JSON.stringify(req.body.awsRegion)}  }`;
   fs.writeFileSync(`users/${req.body.username}/aws/credentials.json`, data, (err) => {
@@ -14,6 +15,7 @@ awsController.configureAWS = (req, res, next) => {
   return next();
 }
 
+// For all AWS SDK function, credentials.json is read first, then the AWS SDK function is ran. The deploy a new function using "lambda.createFunction", a file with the function code needs to be created, then zipped. lambda.createFunction requires params, which is an object that can include many key/value pairs, but at the minimum, it needs a ZipFile (which is given the same name as the function name for simplicity), FunctionName, Role and Runtime (all sent from the frontend).
 awsController.createFunction = (req, res, next) => {
   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
   const lambda = new AWS.Lambda();
@@ -40,6 +42,7 @@ awsController.createFunction = (req, res, next) => {
   return next();
 }
 
+// This is similar to createFunction. The difference is since the function is already deployed, role and runtime are not required.
 awsController.updateFunction = (req, res, next) => {
   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
   const lambda = new AWS.Lambda();
@@ -58,6 +61,7 @@ awsController.updateFunction = (req, res, next) => {
   return next();
 }
 
+// After reading the credentials.json file, lambda.listFunctions (which takes no parameters) will retrieve a list of deployed functions.
 awsController.listFunctions = (req, res, next) => {
   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
   const lambda = new AWS.Lambda();
@@ -74,6 +78,7 @@ awsController.listFunctions = (req, res, next) => {
   });
 }
 
+// After reading the credentials.json file, lambda.invoke takes a function name as its only parameter, and will invoke a deployed function.
 awsController.invokeFunc = (req, res, next) => {
   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
   const lambda = new AWS.Lambda();
@@ -89,6 +94,7 @@ awsController.invokeFunc = (req, res, next) => {
   });
 }
 
+// After reading the credentials.json file, lambda.deleteFunction takes a function name as its only parameter, and will delete a deployed function.
 awsController.deleteFunc = (req, res, next) => {
   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
   const lambda = new AWS.Lambda();
@@ -102,22 +108,23 @@ awsController.deleteFunc = (req, res, next) => {
   });
 }
 
-awsController.allBuckets = (req, res, next) => {
-  AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
-  const s3 = new AWS.S3();
-  const params = {}
-  s3.listBuckets(params, (err, data) => {
-    if (err) {
-      console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| awsController.allBuckets | ERROR: ", err)
-      return (err)
-    } else {
-      console.log("awsController.allBuckets COMPLETED");
-      res.locals.buckets = data;
-    }
-    return next();
-  });
-}
+// awsController.allBuckets = (req, res, next) => {
+//   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
+//   const s3 = new AWS.S3();
+//   const params = {}
+//   s3.listBuckets(params, (err, data) => {
+//     if (err) {
+//       console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| awsController.allBuckets | ERROR: ", err)
+//       return (err)
+//     } else {
+//       console.log("awsController.allBuckets COMPLETED");
+//       res.locals.buckets = data;
+//     }
+//     return next();
+//   });
+// }
 
+// After reading the credentials.json file, lambda.getFunction takes a function name as its only parameter, retrieves a set of data on the function. One of the data is a link that allows user to download a zipfile a deployed function with it's code. The file is then unzipped, and the contents are sent to the frontend.
 awsController.loadCode = async (req, res, next) => {
   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`);
   const lambda = new AWS.Lambda();
@@ -148,6 +155,7 @@ awsController.loadCode = async (req, res, next) => {
   })
 }
 
+// After reading the credentials.json file, lambda.getFunction takes a function name as its only parameter, retrieves a set of data on the function.
 awsController.getFuncInfo = (req, res, next) => {
   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
   const lambda = new AWS.Lambda();
@@ -165,6 +173,7 @@ awsController.getFuncInfo = (req, res, next) => {
   });
 }
 
+// After reading the credentials.json file, cloudwatchlogs.describeLogStreams takes a function name as its only parameter, retrieves invocation information of that function.
 awsController.getInvocationInfo = (req, res, next) => {
   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
   const cloudwatchlogs = new AWS.CloudWatchLogs();
@@ -181,27 +190,28 @@ awsController.getInvocationInfo = (req, res, next) => {
   });
 }
 
-awsController.createBucket = (req, res, next) => {
-  AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
-  const s3 = new AWS.S3();
-  const params = {
-    Bucket: `${req.body.S3BucketName} `,
-    CreateBucketConfiguration: {
-      LocationConstraint: `${req.body.newBucketRegion}`
-    }
-  };
-  s3.createBucket(params, function (err, data) {
-    if (err) {
-      console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| awsController.createBucket | ERROR: ", err, err.stack);
-      return (err)
-    }
-    else {
-      console.log("awsController.createBucket COMPLETED");
-      return next();
-    }
-  })
-}
+// awsController.createBucket = (req, res, next) => {
+//   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
+//   const s3 = new AWS.S3();
+//   const params = {
+//     Bucket: `${req.body.S3BucketName} `,
+//     CreateBucketConfiguration: {
+//       LocationConstraint: `${req.body.newBucketRegion}`
+//     }
+//   };
+//   s3.createBucket(params, function (err, data) {
+//     if (err) {
+//       console.log(`${new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })}`, "| USERNAME:", `${req.body.username}`, "| awsController.createBucket | ERROR: ", err, err.stack);
+//       return (err)
+//     }
+//     else {
+//       console.log("awsController.createBucket COMPLETED");
+//       return next();
+//     }
+//   })
+// }
 
+// This function is used when a function is being deployed. A part of "role" parameter includes the user's AWS account ID, which is retrieved automatically with sts.getCallerIdentity.
 awsController.getawsAccountID = (req, res, next) => {
   AWS.config.loadFromPath(`users/${req.body.username}/aws/credentials.json`)
   const sts = new AWS.STS();
